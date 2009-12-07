@@ -30,6 +30,7 @@
 
 #include <chimp/interaction/Equation.h>
 #include <chimp/interaction/model/Base.h>
+#include <chimp/interaction/ParticleAccessors.h>
 
 #include <xylose/power.h>
 #include <xylose/Vector.h>
@@ -62,6 +63,66 @@ namespace chimp {
         /** Obtain the label of the model. */
         virtual std::string getLabel() const {
           return label;
+        }
+
+        /** Two-body collision interface. */
+        virtual void interact( const Particle & part1,
+                               const Particle & part2,
+                               std::vector< ParticleParam > & products ) {
+
+          /* create all of the products first. */
+          createProducts( eq, reactants, products );
+
+          /* velocity of center of mass of all particles. */
+          Vector<double,3u> P(0.0);
+          double M = 0;
+          for r in reactants:
+            P += mass(r) * velocity(r);
+            M += mass(r);
+
+          Vector<double,3u> VelCM = P/M;
+
+          for p in products {
+            double m = mass(p);
+            Vector<double,3u> v = velocity(p);
+
+            if p is last products {
+              assert( M == m );
+              velocity(p) = P / m;
+              break;
+            }
+
+            /* relative speed prior to collision */
+            Vector<double,3u> Pn_1 = P - m * v;
+            double Mn_1 = M - m;
+            double v_rel = ( v - ( P - m * v ) / ( M - m ) ).abs();
+
+            // use the VHS logic
+            double B = 2.0 * MTRNGrand() - 1.0;
+            // B is the cosine of a random elevation angle
+            double A = std::sqrt( 1.0 - SQR(B) );
+            // C is a random azimuth angle
+            double C = 2.0 * M_PI * MTRNGrand();
+
+            /* relative velocity after collision */
+            Vector<double,3> VelRelPost =
+              V3( B * v_rel,
+                  A * std::cos(C) * v_rel,
+                  A * std::sin(C) * v_rel );
+
+            // VelRelPost is the post-collision relative v.
+            velocity(part1) = (P/M) + ( mu.over_m1 * VelRelPost );
+
+            P = Pn_1i - mu.something * VRelPost;
+            M = Mn_1;
+          }
+        }
+
+        /** Three-body collision interface. */
+        virtual void interact( const Particle & part1,
+                               const Particle & part2,
+                               const Particle & part3,
+                               std::vector< ParticleParam > & products ) {
         }
 
         /** load a new instance of the Interaction. */
