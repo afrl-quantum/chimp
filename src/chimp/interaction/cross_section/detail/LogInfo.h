@@ -55,11 +55,6 @@ namespace chimp {
 
         struct LogInfo {
           /* MEMBER STORAGE */
-          /** A cross section using two variables for a logarithmic curve fit.
-           *
-           * @see cross_section(const double &).  */
-          double cross_section;
-
           /** First variable in curve-fit.
            * ADD PAPER INFO AGAIN
            */
@@ -74,8 +69,7 @@ namespace chimp {
           /* MEMBER FUNCTIONS */
 
           std::ostream & print(std::ostream & out) const {
-            out << "{cross-section: " << cross_section << ", "
-                    "A: " << A << ", "
+            out << "{"A: " << A << ", "
                     "B: " << B << ", "
                 << '}';
             return out;
@@ -88,7 +82,8 @@ namespace chimp {
            *
            * @see DSMCInfo::load().
            * */
-          static LogInfo load(const xml::Context & x);
+	  /* Is the following necessary? */
+	  static LogInfo load(const xml::Context & x);
         };
 
       } /* namespace chimp::interaction::cross_section::detail */

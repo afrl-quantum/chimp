@@ -37,7 +37,8 @@ namespace chimp {
           x.query<Quantity>("B").assertMatch(Angstrom*Angstrom).getCoeff(out.B);
         }
 
-        LogInfo LogInfo::load(const xml::Context & x) {
+        /* Is the following necessary? */
+	LogInfo LogInfo::load(const xml::Context & x) {
           return x.parse<LogInfo>();
         }
 

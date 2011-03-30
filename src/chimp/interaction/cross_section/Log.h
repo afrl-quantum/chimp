@@ -66,7 +66,7 @@ namespace chimp {
         detail::LogInfo log;
 
         /** The reduced mass. */
-        ReducedMass mu;
+        //ReducedMass mu;
 
 
 
@@ -79,11 +79,11 @@ namespace chimp {
         Log() : cross_section::Base<options>() { }
 
         /** Constructor with the reduced mass already specified. */
-        Log( const xml::Context & x,
-             const ReducedMass & mu )
-        : cross_section::Base<options>(),
-          log( detail::LogInfo::load(x) ),
-          mu( mu ) { }
+        //Log( const xml::Context & x,
+        //     const ReducedMass & mu )
+        //: cross_section::Base<options>(),
+        //  log( detail::LogInfo::load(x) ),
+        //  mu( mu ) { }
 
         /** Virtual NO-OP destructor. */
         virtual ~Log() {}
@@ -96,13 +96,12 @@ namespace chimp {
          *     The relative velocity between two particles.
          * */
         inline virtual double operator() (const double & v_relative) const {
-	  using std::log10
+	  using std::log10;
 
           /* the collision cross-section is based on a the curve fit of ADD MORE.
            */
           return 
-	    log.A
-	    - log.B * log10( v_relative );
+	    log.A - log.B * log10( v_relative );
         }
 
         virtual std::pair<double,double>
@@ -115,7 +114,7 @@ namespace chimp {
         virtual Log * new_load( const xml::Context & x,
                                 const interaction::Equation<options> & eq,
                                 const RuntimeDB<options> & db ) const {
-          return new Log( x, eq.reducedMass );
+          return new Log( x );
         }
 
         /** Obtain the label of the model. */
@@ -125,8 +124,7 @@ namespace chimp {
 
         /** Print the Log data cross section parameters. */
         std::ostream & print(std::ostream & out) const {
-          out << "{reduced-mass: " << mu.value << ", "
-              << "log: ";
+          out << "{log: ";
           log.print(out) << '}';
           return out;
         }
