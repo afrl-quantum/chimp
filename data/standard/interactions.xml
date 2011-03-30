@@ -5498,6 +5498,35 @@ publisher = {Springer}
           </cross_section>
         </Interaction>
 
+<!-- Additions by Paul Giuliano, pgiulian@umich.edu -->
+
+        <Interaction>
+            <Eq><In> <T><P>Xe^+</P></T> + <T><P>Xe</P></T> </In>  --&gt;  <Out> <T><P>Xe^+</P></T> + <T><P>Xe</P></T> </Out></Eq>
+            <cross_section model="log">
+	        <A>171.23 Angstrom^2</A>
+		<B>27.2 Angstrom^2</B>
+		<reference>
+		    <bibtex>
+			@ARTICLE{Miller2002,
+			  author = {J. Scott Miller and Steve H. Pullins and Dale J. Levandier and Yu-hui
+				Chiu and Rainer A. Dressler},
+			  title = {Xenon charge exchange cross sections for electrostatic thruster models},
+			  journal = {Journal of Applied Physics},
+			  year = {2002},
+			  volume = {91},
+			  pages = {984-991},
+			  number = {3},
+			  doi = {10.1063/1.1426246},
+			  keywords = {atom-ion collisions; charge exchange; xenon; positive ions; space
+				vehicles; plasma devices; aerospace engines; ion engines},
+			  publisher = {AIP},
+			  url = {http://link.aip.org/link/?JAP/91/984/1}
+			}
+		    </bibtex>
+		</reference>
+	    </cross_section>
+	</Interaction>
+
 
     </Interactions>
 </standard>
