@@ -61,6 +61,11 @@ namespace chimp {
          * */
         virtual double operator() (const double & v_relative) const  = 0;
 
+        /** Obtain the threshold energy for this cross section.  The units are
+         * such that (getThresholdEnergy() / mass ) has the units of [velocity]^2
+         * where [velocity] are the units as used in operator()(v_relative). */
+        virtual double getThresholdEnergy() const = 0;
+
         /** Find the local maximum of cross-section*velocity (within a given
          * range of velocity space.  The actual implementation of this function is
          * done by the specific cross section model. 

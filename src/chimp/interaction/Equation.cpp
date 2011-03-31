@@ -105,6 +105,31 @@ namespace chimp {
         retval.products.push_back(it);
       }
 
+
+      {
+        /* now, instantiate the child cross_section::Base object with the correct
+         * model. */
+        using std::string;
+
+        xml::Context cs_x = x.find("cross_section");
+        string cs_model = cs_x.query<string>("@model");
+
+        typedef typename RnDB::CrossSectionRegistry::const_iterator CSRIter;
+        CSRIter i = db.cross_section_registry.find(cs_model);
+
+        if ( i != db.cross_section_registry.end() ) {
+          retval.cs.reset(
+            i->second->new_load( cs_x, retval, db )
+          );
+        } else {
+          string Eq = x.query<string>("Eq");
+          throw xml::error(
+            "cross section model '"+cs_model+
+            "' not found for interaction '" + Eq + '\'' );
+        }
+      }
+
+
       {
         /* Determine which model of interaction we are dealing with and
          * instantiate the implementation of the interaction. */
@@ -130,31 +155,6 @@ namespace chimp {
           string Eq = x.query<string>("Eq");
           throw xml::error(
             "Could not determine interaction model found for interaction '" + Eq + '\'' );
-        }
-      }
-
-
-
-      {
-        /* now, instantiate the child cross_section::Base object with the correct
-         * model. */
-        using std::string;
-
-        xml::Context cs_x = x.find("cross_section");
-        string cs_model = cs_x.query<string>("@model");
-
-        typedef typename RnDB::CrossSectionRegistry::const_iterator CSRIter;
-        CSRIter i = db.cross_section_registry.find(cs_model);
-
-        if ( i != db.cross_section_registry.end() ) {
-          retval.cs.reset(
-            i->second->new_load( cs_x, retval, db )
-          );
-        } else {
-          string Eq = x.query<string>("Eq");
-          throw xml::error(
-            "cross section model '"+cs_model+
-            "' not found for interaction '" + Eq + '\'' );
         }
       }
 

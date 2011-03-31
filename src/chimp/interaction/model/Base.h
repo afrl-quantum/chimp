@@ -97,7 +97,11 @@ namespace chimp {
           );
         }
 
-        /** load a new instance of the Interaction. */
+        /** load a new instance of the Interaction.
+         * By the time that this function is called by Equation::load(...), the
+         * cross section model will already be loaded (allowing interaction
+         * models to make decisions based on the cross section data).
+         */
         virtual Base * new_load( const xml::Context & x,
                                  const interaction::Equation<options> & eq,
                                  const RuntimeDB<options> & db ) const = 0;
