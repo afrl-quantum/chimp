@@ -29,8 +29,6 @@
 #define chimp_interaction_model_VSSElastic_h
 
 #include <chimp/accessors.h>
-#include <chimp/property/mass.h>
-#include <chimp/interaction/Term.h>
 #include <chimp/interaction/Equation.h>
 #include <chimp/interaction/model/Base.h>
 #include <chimp/interaction/ReducedMass.h>
@@ -53,7 +51,6 @@ namespace chimp {
       struct VSSElastic : Base<options> {
         /* TYPEDEFS */
         typedef typename options::Particle Particle;
-        typedef property::mass mass;
 
 
         /* STATIC STORAGE */
