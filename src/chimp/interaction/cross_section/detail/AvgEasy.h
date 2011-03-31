@@ -94,6 +94,14 @@ namespace chimp {
                                sqrt(cs1->operator()(v_relative)) );
           }
 
+          /** Obtain the threshold energy for this cross section.  The units are
+           * such that (getThresholdEnergy() / mass ) has the units of [velocity]^2
+           * where [velocity] are the units as used in operator()(v_relative). */
+          virtual double getThresholdEnergy() const {
+            return std::min( cs0->getThresholdEnergy(),
+                             cs1->getThresholdEnergy() );
+          }
+
           virtual std::pair<double,double>
           findMaxSigmaV(const double & v_rel_max) const {
             /* just return the product since the product is monotonically
