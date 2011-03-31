@@ -29,6 +29,7 @@
 #define chimp_interaction_cross_section_Constant_h
 
 #include <chimp/interaction/cross_section/Base.h>
+#include <chimp/interaction/cross_section/detail/generic.h>
 #include <chimp/interaction/Equation.h>
 #include <chimp/interaction/ReducedMass.h>
 
@@ -45,7 +46,6 @@ namespace chimp {
 
       namespace detail {
         double loadConstantValue( const xml::Context & x );
-        double loadThreshold( const xml::Context & x, const double & def =0.0 );
       }
 
       /** Constant cross section provider.
@@ -103,7 +103,7 @@ namespace chimp {
         void setThresholdEnergy( const double & threshold,
                                  const ReducedMass & mu ) {
           if ( threshold < 0.0 )
-            throw std::runtime_error( 
+            throw std::runtime_error(
               "Constant cross section threshold energy must >= 0!"
             );
 

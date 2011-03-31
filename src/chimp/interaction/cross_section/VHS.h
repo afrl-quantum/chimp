@@ -30,6 +30,7 @@
 
 #include <chimp/interaction/cross_section/Base.h>
 #include <chimp/interaction/cross_section/detail/VHSInfo.h>
+#include <chimp/interaction/cross_section/detail/generic.h>
 #include <chimp/interaction/Equation.h>
 #include <chimp/interaction/ReducedMass.h>
 
@@ -53,37 +54,62 @@ namespace chimp {
        *    default options class).  
        */
       template < typename options >
-      struct VHS : cross_section::Base<options> {
+      class VHS : public cross_section::Base<options> {
         /* STATIC STORAGE */
+      public:
         static const std::string label;
 
 
         /* MEMBER STORAGE */
+      public:
         /** The vhs information for this particular interaction. */
         detail::VHSInfo vhs;
 
         /** The reduced mass. */
         ReducedMass mu;
 
+      private:
+        /** Threshold energy of the cross section (defaults to 0.0*eV). */
+        double threshold_E;
+
+        /** Threshold velocity. */
+        double threshold_v;
+
 
 
 
         /* MEMBER FUNCTIONS */
+      public:
         /** Default constructor creates a VHS instance with invalid data.  This
          * is primarily useful for obtaining a class from which to call
          * VHS::new_load. 
          */
-        VHS() : cross_section::Base<options>() { }
+        VHS()
+          : cross_section::Base<options>(),
+            threshold_E(0.0), threshold_v(0.0) { }
 
         /** Constructor with the reduced mass already specified. */
         VHS( const xml::Context & x,
              const ReducedMass & mu )
         : cross_section::Base<options>(),
           vhs( detail::VHSInfo::load(x) ),
-          mu( mu ) { }
+          mu( mu ) {
+          setThresholdEnergy( detail::loadThreshold(x, 0.0), mu );
+        }
 
         /** Virtual NO-OP destructor. */
         virtual ~VHS() {}
+
+        void setThresholdEnergy( const double & threshold,
+                                 const ReducedMass & mu ) {
+          if ( threshold < 0.0 )
+            throw std::runtime_error(
+              "VHS cross section threshold energy must >= 0!"
+            );
+
+          threshold_E = threshold;
+          threshold_v = std::sqrt( threshold / (0.5 * mu.value) );
+        }
 
         /** Compute the cross section.
          * This implements the variable hard-sphere model as
@@ -93,6 +119,9 @@ namespace chimp {
          *     The relative velocity between two particles.
          * */
         inline virtual double operator() (const double & v_relative) const {
+          if ( v_relative < threshold_v )
+            return 0.0;
+
           using physical::constant::si::K_B;
           using xylose::SQR;
           using xylose::fast_pow;
@@ -110,6 +139,16 @@ namespace chimp {
                 ), (vhs.visc_T_law - 0.5))
             * vhs.gamma_visc_inv;
         }
+
+        /** Obtain the threshold energy for this cross section.  The units are
+         * such that (getThresholdEnergy() / mass ) has the units of [velocity]^2
+         * where [velocity] are the units as used in operator()(v_relative). */
+        virtual double getThresholdEnergy() const { return threshold_E; }
+
+        /** Obtain the threshold energy for this cross section.  The units are
+         * such that (getThresholdEnergy() / mass ) has the units of [velocity]^2
+         * where [velocity] are the units as used in operator()(v_relative). */
+        virtual double getThresholdVelocity() const { return threshold_v; }
 
         virtual std::pair<double,double>
         findMaxSigmaV(const double & v_rel_max) const {
@@ -133,7 +172,9 @@ namespace chimp {
         std::ostream & print(std::ostream & out) const {
           out << "{reduced-mass: " << mu.value << ", "
               << "vhs: ";
-          vhs.print(out) << '}';
+          vhs.print(out)
+              << "threshold: " << threshold_v << "(m/s)"
+              << '}';
           return out;
         }
       };

@@ -22,30 +22,31 @@
 
 
 /** \file
- * Implementation of cross_section::Constant xml load function.
+ * Generic cross section xml loaders.
  * */
 
-#include <chimp/interaction/cross_section/Constant.h>
+#ifndef chimp_interaction_cross_section_detail_generic_h
+#define chimp_interaction_cross_section_detail_generic_h
 
-#include <xylose/xml/physical_parse.h>
-
-#include <physical/math.h>
+#include <xylose/xml/Doc.h>
 
 namespace chimp {
   namespace interaction {
+    namespace xml = xylose::xml;
     namespace cross_section {
       namespace detail {
 
-        using runtime::physical::Quantity;
-        using runtime::physical::unit::m;
-        using runtime::physical::constant::eV;
-
-        double loadConstantValue( const xml::Context & x ) {
-          static const Quantity m2  = m*m;
-          return x.query<Quantity>("value").assertMatch(m2).getCoeff<double>();
-        }
+        /** Load the threshold energy from the current context.
+         * @param x
+         *    The current xml context.
+         * @param def
+         *    The default threshold value in SI units (Joules).
+         */
+        double loadThreshold( const xml::Context & x, const double & def =0.0 );
 
       } /* namespace chimp::interaction::cross_section::detail */
     } /* namespace chimp::interaction::cross_section */
   } /* namespace chimp::interaction */
 } /* namespace chimp */
+
+#endif // chimp_interaction_cross_section_detail_generic_h

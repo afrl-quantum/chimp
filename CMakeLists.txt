@@ -116,6 +116,7 @@ set( ${PROJECT_NAME}_SOURCES
     src/chimp/interaction/filter/Base.cpp
     src/chimp/interaction/cross_section/DATA.cpp
     src/chimp/interaction/cross_section/Constant.cpp
+    src/chimp/interaction/cross_section/detail/generic.cpp
     src/chimp/interaction/cross_section/detail/VHSInfo.cpp
     src/chimp/interaction/cross_section/detail/LotzDetails.cpp
     src/chimp/interaction/model/detail/vss_helpers.cpp

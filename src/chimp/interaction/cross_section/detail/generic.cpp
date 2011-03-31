@@ -22,10 +22,10 @@
 
 
 /** \file
- * Implementation of cross_section::Constant xml load function.
+ * Implementation of generic cross_section info xml load function.
  * */
 
-#include <chimp/interaction/cross_section/Constant.h>
+#include <chimp/interaction/cross_section/detail/generic.h>
 
 #include <xylose/xml/physical_parse.h>
 
@@ -37,12 +37,12 @@ namespace chimp {
       namespace detail {
 
         using runtime::physical::Quantity;
-        using runtime::physical::unit::m;
+        using runtime::physical::unit::Joule;
         using runtime::physical::constant::eV;
 
-        double loadConstantValue( const xml::Context & x ) {
-          static const Quantity m2  = m*m;
-          return x.query<Quantity>("value").assertMatch(m2).getCoeff<double>();
+        double loadThreshold( const xml::Context & x, const double & def ) {
+          return x.query<Quantity>( "threshold", def*Joule )
+                  .assertMatch(eV).getCoeff<double>();
         }
 
       } /* namespace chimp::interaction::cross_section::detail */
