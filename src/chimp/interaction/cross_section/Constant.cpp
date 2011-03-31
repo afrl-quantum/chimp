@@ -38,11 +38,17 @@ namespace chimp {
 
         using runtime::physical::Quantity;
         using runtime::physical::unit::m;
+        using runtime::physical::constant::eV;
 
         double loadConstantValue( const xml::Context & x ) {
           static const Quantity m2  = m*m;
           return x.query<Quantity>("value").assertMatch(m2).getCoeff<double>();
         }
+
+        double loadThreshold( const xml::Context & x, const double & def ) {
+          return x.query<Quantity>("threshold",def).assertMatch(eV).getCoeff<double>();
+        }
+
 
       } /* namespace chimp::interaction::cross_section::detail */
     } /* namespace chimp::interaction::cross_section */

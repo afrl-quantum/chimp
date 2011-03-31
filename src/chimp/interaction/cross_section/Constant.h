@@ -30,6 +30,7 @@
 
 #include <chimp/interaction/cross_section/Base.h>
 #include <chimp/interaction/Equation.h>
+#include <chimp/interaction/ReducedMass.h>
 
 #include <xylose/xml/Doc.h>
 
@@ -44,6 +45,7 @@ namespace chimp {
 
       namespace detail {
         double loadConstantValue( const xml::Context & x );
+        double loadThreshold( const xml::Context & x, const double & def =0.0 );
       }
 
       /** Constant cross section provider.
@@ -59,8 +61,16 @@ namespace chimp {
 
 
         /* MEMBER STORAGE */
+      public:
         /** Extrapolation warning issued already. */
         double value;
+
+      private:
+        /** Threshold energy of the cross section (defaults to 0.0*eV). */
+        double threshold_E;
+
+        /** Threshold velocity. */
+        double threshold_v;
 
 
         /* MEMBER FUNCTIONS */
@@ -70,18 +80,36 @@ namespace chimp {
          * Constant::new_load. 
          */
         Constant()
-          : cross_section::Base<options>(), value(0.0) { }
+          : cross_section::Base<options>(),
+            value(0.0), threshold_E(0.0), threshold_v { }
 
         /** Constructor to load from specific xml context. */
-        Constant( const xml::Context & x )
-          : value( detail::loadConstantValue(x) ) { }
+        Constant( const xml::Context & x, const ReducedMass & mu )
+          : value( detail::loadConstantValue(x) ) {
+          setThresholdEnergy( detail::loadThreshold(x, 0.0), mu );
+        }
 
         /** Constructor to initialize the cross section specifically. */
-        Constant( const double & value )
-          : cross_section::Base<options>(), value( value ) { }
+        Constant( const double & value,
+                  const ReducedMass & mu = ReducedMass(),
+                  const double & threshold = 0.0 )
+          : cross_section::Base<options>(), value( value ) {
+          setThresholdEnergy( threshold, mu );
+        }
 
         /** Virtual NO-OP destructor. */
         virtual ~Constant() { }
+
+        void setThresholdEnergy( const double & threshold,
+                                 const ReducedMass & mu ) {
+          if ( threshold < 0.0 )
+            throw std::runtime_error( 
+              "Constant cross section threshold energy must >= 0!"
+            );
+
+          threshold_E = threshold;
+          threshold_v = std::sqrt( threshold / (0.5 * mu.value) );
+        }
 
         /** Interpolate the cross-section from a lookup table.
          *
@@ -89,8 +117,21 @@ namespace chimp {
          *     The relative velocity between two particles.
          * */
         inline virtual double operator() (const double & v_relative) const {
-          return value;
+          if ( v_relative >= threshold_v )
+            return value;
+          else
+            return 0.0;
         }
+
+        /** Obtain the threshold energy for this cross section.  The units are
+         * such that (getThresholdEnergy() / mass ) has the units of [velocity]^2
+         * where [velocity] are the units as used in operator()(v_relative). */
+        virtual double getThresholdEnergy() const { return threshold_E; }
+
+        /** Obtain the threshold energy for this cross section.  The units are
+         * such that (getThresholdEnergy() / mass ) has the units of [velocity]^2
+         * where [velocity] are the units as used in operator()(v_relative). */
+        virtual double getThresholdVelocity() const { return threshold_v; }
 
         /** Determine by inspection the maximum value of the product v_rel *
          * cross_section given a specific maximum v_rel to include in the search.
@@ -108,7 +149,7 @@ namespace chimp {
         virtual Constant * new_load( const xml::Context & x,
                                  const interaction::Equation<options> & eq,
                                  const RuntimeDB<options> & db ) const {
-          return new Constant( x );
+          return new Constant( x, eq.reducedMass );
         }
 
         /** Obtain the label of the model. */
