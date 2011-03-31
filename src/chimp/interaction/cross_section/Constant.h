@@ -143,7 +143,10 @@ namespace chimp {
          */
         virtual std::pair<double,double>
         findMaxSigmaV(const double & v_rel_max) const {
-          return std::make_pair( value * v_rel_max, v_rel_max);
+          if ( v_rel_max >= threshold_v )
+            return std::make_pair( value * v_rel_max, v_rel_max);
+          else
+            return std::make_pair( 0.0, 0.0 );
         }
 
         virtual Constant * new_load( const xml::Context & x,

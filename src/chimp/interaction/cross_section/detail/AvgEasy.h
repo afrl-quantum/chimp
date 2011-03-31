@@ -104,9 +104,13 @@ namespace chimp {
 
           virtual std::pair<double,double>
           findMaxSigmaV(const double & v_rel_max) const {
-            /* just return the product since the product is monotonically
-             * increasing. */
-            return std::make_pair(operator()(v_rel_max) * v_rel_max, v_rel_max);
+            double val = operator()(v_rel_max);
+            if ( val > 0.0 )
+              /* just return the product since the product is monotonically
+               * increasing. */
+              return std::make_pair(val * v_rel_max, v_rel_max);
+            else
+              return std::make_pair( 0.0, 0.0 );
           }
 
           virtual AvgEasy * new_load( const xml::Context & x,
