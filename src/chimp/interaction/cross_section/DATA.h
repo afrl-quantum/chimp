@@ -230,7 +230,7 @@ namespace chimp {
         }
 
         void checkThreshold() {
-          using xylose::logger::log_warning;
+          using namespace xylose::logger;
           /* this funcion checks whether the first element is the threshold.  It
            * is the threshold if it or the next element's sigma value is
            * non-zero.  If an extra zero element is found, this code removes it

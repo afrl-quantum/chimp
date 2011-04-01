@@ -28,6 +28,7 @@
 
 
 #include <chimp/interaction/cross_section/Lotz.h>
+#include <chimp/interaction/ReducedMass.h>
 #include <chimp/physical_calc.h>
 #include <chimp/make_options.h>
 
@@ -110,7 +111,7 @@ BOOST_AUTO_TEST_SUITE( Lotz_test ); // {
     {
       xml::Context x = doc.find("//good/LotzVector");
 
-      Lotz lotz(x);
+      Lotz lotz(x, chimp::interaction::ReducedMass() );
 
       /* check the things that were read in... */
       BOOST_CHECK_EQUAL( lotz.parameters.size(), 2u );

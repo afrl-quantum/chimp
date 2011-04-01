@@ -81,7 +81,7 @@ namespace chimp {
          */
         Constant()
           : cross_section::Base<options>(),
-            value(0.0), threshold_E(0.0), threshold_v { }
+            value(0.0), threshold_E(0.0), threshold_v(0.0) { }
 
         /** Constructor to load from specific xml context. */
         Constant( const xml::Context & x, const ReducedMass & mu )

@@ -38,11 +38,10 @@ namespace chimp {
 
         using runtime::physical::Quantity;
         using runtime::physical::unit::Joule;
-        using runtime::physical::constant::eV;
 
         double loadThreshold( const xml::Context & x, const double & def ) {
-          return x.query<Quantity>( "threshold", def*Joule )
-                  .assertMatch(eV).getCoeff<double>();
+          return x.query<Quantity>( "threshold", Joule * def )
+                  .assertMatch(Joule).getCoeff<double>();
         }
 
       } /* namespace chimp::interaction::cross_section::detail */
