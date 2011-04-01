@@ -55,7 +55,7 @@ namespace chimp {
                                   i != end; ++i) {
           Quantity v = i->first;
           if (v.units == eV.units)
-            v = sqrt(v / (mu.value * kg) );
+            v = sqrt(v / (0.5 * mu.value * kg) );
 
           register double v_coeff, m2_coeff;
           v.assertMatch(m_s).getCoeff(v_coeff);
