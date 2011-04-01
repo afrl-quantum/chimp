@@ -181,7 +181,7 @@ namespace chimp {
          *     The relative velocity between two particles.
          * */
         inline virtual double operator() (const double & v) const {
-          if ( v <= this->threshold )
+          if ( v < this->threshold )
             return 0.0;
 
           const double v2 = v*v;
