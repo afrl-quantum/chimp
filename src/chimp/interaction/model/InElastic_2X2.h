@@ -55,7 +55,7 @@ namespace chimp {
           template < typename V >
           double operator() ( const V & v1,
                               const V & v2,
-                              const double & dV ) const {
+                              const double & dV2 ) const {
             return (v1 - v2).abs();
           }
         };
@@ -65,12 +65,15 @@ namespace chimp {
           template < typename V >
           double operator() ( const V & v1,
                               const V & v2,
-                              const double & dV ) const {
+                              const double & dV2 ) const {
             using xylose::SQR;
-            return std::sqrt( SQR(v1 - v2) + dVrel );
+            return std::sqrt( SQR(v1 - v2) + dV2 );
           }
         };
       }
+
+      template < typename options >
+      struct InElastic;
 
       /** Implementation of an <b>in</b>elastic interaction model. */
       template < typename options, bool hasEnergyChange >
@@ -88,17 +91,17 @@ namespace chimp {
 
         /** Change in relative velocity due to inelastic collision energy
          * change. */
-        double dVrel;
+        double dV2rel;
 
 
 
         /* MEMBER FUNCTIONS */
         /** Default constructor sets mu to invalid values. */
-        InElastic_2X2() : mu(), dVrel(0.0) { }
+        InElastic_2X2() : mu(), dV2rel(0.0) { }
 
         /** Constructor that specifies the reduced mass explicitly. */
         InElastic_2X2( const ReducedMass & mu, const double & dE = 0.0 )
-          : mu( mu ), dVrel( dE / ( 0.5 * mu.value ) ) {
+          : mu( mu ), dV2rel( dE / ( 0.5 * mu.value ) ) {
           if ( hasEnergyChange && dE == 0.0 )
             throw std::runtime_error("dE == 0.0 for hasEnergyChange == true ");
         }
@@ -130,7 +133,7 @@ namespace chimp {
                                    (mu.over_m1 * v2);
 
           /* relative velocity prior to collision */
-          double SpeedRel = CalculateVRel()(v1, v2, dVrel);
+          double SpeedRel = CalculateVRel()(v1, v2, dV2rel);
 
           // use the VHS logic
           double B = 2.0 * rng.rand() - 1.0;
