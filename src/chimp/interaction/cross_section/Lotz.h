@@ -35,6 +35,7 @@
 #include <chimp/interaction/cross_section/detail/LotzDetails.h>
 #include <chimp/interaction/cross_section/Base.h>
 #include <chimp/interaction/Equation.h>
+#include <chimp/interaction/ReducedMass.h>
 
 #include <xylose/xml/Doc.h>
 #include <xylose/xml/vector_parse.h>
@@ -88,6 +89,8 @@ namespace chimp {
          * [threshold, inf] as determined during initialization time. */
         double sigmaV_max_vrel;
 
+        ReducedMass mu;
+
 
         /* MEMBER FUNCTIONS */
         /** Default constructor creates a Lotz instance with no parameters.
@@ -99,15 +102,17 @@ namespace chimp {
             parameters(),
             threshold( std::numeric_limits<double>::infinity() ),
             maxSigmaV(0),
-            sigmaV_max_vrel( std::numeric_limits<double>::infinity() )
+            sigmaV_max_vrel( std::numeric_limits<double>::infinity() ),
+            mu()
           { }
 
         /** Constructor with the reduced mass already specified. */
-        Lotz( const xml::Context & x )
+        Lotz( const xml::Context & x, const ReducedMass & mu )
           : parameters( x.parse< ParametersVector >() ),
             threshold(0),
             maxSigmaV(0),
-            sigmaV_max_vrel( std::numeric_limits<double>::infinity() ) {
+            sigmaV_max_vrel( std::numeric_limits<double>::infinity() ),
+            mu( mu ) {
           using boost::math::tools::toms748_solve;
           boost::math::tools::eps_tolerance<double> tol(64);
           typedef typename ParametersVector::const_iterator CIter;
@@ -197,6 +202,14 @@ namespace chimp {
           return sigma;
         }
 
+        /** Obtain the threshold energy for this cross section.  The units are
+         * such that (getThresholdEnergy() / mass ) has the units of [velocity]^2
+         * where [velocity] are the units as used in operator()(v_relative). */
+        virtual double getThresholdEnergy() const {
+          using xylose::SQR;
+          return 0.5 * mu.value * SQR(threshold);
+        }
+
         /** Determine the maximum value of the product v_rel * cross_section
          * based on cached results of the maximum search done at class
          * initialization time.
@@ -218,7 +231,7 @@ namespace chimp {
         virtual Lotz * new_load( const xml::Context & x,
                                  const interaction::Equation<options> & eq,
                                  const RuntimeDB<options> & db ) const {
-          return new Lotz( x );
+          return new Lotz( x, eq.reducedMass );
         }
 
         /** Obtain the label of the model. */
