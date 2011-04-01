@@ -30,6 +30,7 @@
 #include <chimp/interaction/Equation.h>
 #include <chimp/interaction/model/Base.h>
 #include <chimp/interaction/model/InElastic_2X2.h>
+#include <chimp/interaction/model/detail/inelastic_helpers.h>
 
 #include <string>
 #include <stdexcept>
@@ -65,38 +66,40 @@ namespace chimp {
                                       const interaction::Equation<options> & eq,
                                       const RuntimeDB<options> & db ) const {
 
-          unsigned int prod_size = countAllProducts( eq.products );
+          double dE = 0.0;
+          if ( ! detail::loadKineticEnergyChange( x, dE ) )
+            /* if sigma( E < e0 ) = 0 for e0 > 0 && data does not specify:
+             *   This indicates an interaction that requires binding energy
+             *   that must be overcome for the interaction to take place.
+             *   Such an interaction requires the binding energy to be
+             *   overcome by the kinetic energy of the incident particles.
+             */
+            dE = -eq.cs->getThresholdEnergy();
 
-          switch ( prod_size ) {
+          // TODO:  When chimp reactants are stored in a list someday, then we
+          //        will need to count the number of reactants as well.
+
+          switch ( detail::countComponents( eq.products ) ) {
             case 2u : {
-              double dE;
-              bool dE_set = detail::loadKineticEnergyChange( x, dE );
-              if ( ! dE_set )
-                /* if sigma( E < e0 ) = 0 for e0 > 0 && data does not specify:
-                 *   This indicates an interaction that requires binding energy
-                 *   that must be overcome for the interaction to take place.
-                 *   Such an interaction requires the binding energy to be
-                 *   overcome by the kinetic energy of the incident particles.
-                 */
-                dE = -eq.cs->getThresholdEnergy();
-
               if ( dE == 0.0 )
                 return new InElastic_2X2<options,false>( eq.reducedMass );
               else
-                FIXME: FIXME
-                  /* dE comes to this point in SI units?
-                   * dE/mu _MUST_ be in the same units as velocity as passed
-                   * into model::interact(...).  For now, everything in chimp is
-                   * done in SI units.  At some time in the future, it may
-                   * become desirable to use energy instead of velocity.
-                   */
+                /* dE comes to this point in SI units.
+                 * dE/mu _MUST_ be in the same units as velocity as passed
+                 * into model::interact(...).  For now, everything in chimp is
+                 * done in SI units.  At some time in the future, it may
+                 * become desirable to use energy instead of velocity.
+                 */
                 return new InElastic_2X2<options,true>( eq.reducedMass, dE );
             }
+
             default :
               break;
-          }
-          throw std::runtime_error( "Inelastic collision not yet support: "
-                                    << eq );
+          }/* switch */
+
+          std::ostringstream ostr;
+          eq.print( ostr << "Inelastic collision not yet support: ", db );
+          throw std::runtime_error( ostr.str() );
         }
       };
 
