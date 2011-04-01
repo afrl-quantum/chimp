@@ -99,6 +99,9 @@ namespace chimp {
         /** Extrapolation warning issued already. */
         mutable unsigned int extraps_done;
 
+        /** A copy of the Reduced mass passed in at constructor time. */
+        ReducedMass mu;
+
 
         /* MEMBER FUNCTIONS */
       public:
@@ -112,15 +115,15 @@ namespace chimp {
         /** Constructor with the reduced mass already specified. */
         DATA( const xml::Context & x,
               const ReducedMass & mu )
-          : table( loadCrossSectionData(x, mu ) ) {
-          setCoeffs();
+          : table( loadCrossSectionData(x, mu ) ), mu( mu ) {
+          init();
         }
 
         /** Constructor to initialize the cross section data by copying from a
          * set of data previously loaded. */
         DATA( const DoubleDataSet & table )
           : cross_section::Base<options>(), table( table ) {
-          setCoeffs();
+          init();
         }
 
         /** Virtual NO-OP destructor. */
@@ -134,6 +137,21 @@ namespace chimp {
         inline virtual double operator() (const double & v_relative) const {
           /* find the first entry not less that v_relative */
           return this->eval( table.lower_bound(v_relative), v_relative );
+        }
+
+        /** Obtain the threshold energy for this cross section.  The units are
+         * such that (getThresholdEnergy() / mass ) has the units of [velocity]^2
+         * where [velocity] are the units as used in operator()(v_relative). */
+        virtual double getThresholdEnergy() const {
+          using xylose::SQR;
+          return 0.5 * mu.value * SQR(table.begin()->first);
+        }
+
+        /** Obtain the threshold energy for this cross section.  The units are
+         * such that (getThresholdEnergy() / mass ) has the units of [velocity]^2
+         * where [velocity] are the units as used in operator()(v_relative). */
+        virtual double getThresholdVelocity() const {
+          return table.begin()->first;
         }
 
         /** Determine by inspection the maximum value of the product v_rel *
@@ -193,9 +211,11 @@ namespace chimp {
         }
 
         /** Set the table explicitly. */
-        void setTable( const DoubleDataSet & table ) {
+        void setTable( const DoubleDataSet & table,
+                       const ReducedMass & mu ) {
+          this->mu = mu;
           this->table = table;
-          setCoeffs();
+          init();
         }
 
         /** return the number of extrapolations performed till now. */
@@ -204,6 +224,46 @@ namespace chimp {
         }
 
       private:
+        void init() {
+          checkThreshold();
+          setCoeffs();
+        }
+
+        void checkThreshold() {
+          using xylose::logger::log_warning;
+          /* this funcion checks whether the first element is the threshold.  It
+           * is the threshold if it or the next element's sigma value is
+           * non-zero.  If an extra zero element is found, this code removes it
+           * and issues a warning that a superfluous non-threshold zero value
+           * exists at the beginning of the data set.
+           */
+          typedef DoubleDataSet::iterator Iter;
+          Iter i = table.begin(), e = table.end(), ip1 = table.begin();
+          if ( i != e )
+            ++ip1;
+
+          while (     i != e &&   i->second == 0.0 &&
+                  ( ip1 == e || ip1->second == 0.0 ) ) {
+            log_warning(
+              "DATA:  meaningless non-threshold zero value prefixes data set."
+            );
+            log_warning(
+              "DATA:  non-threshold zero value prefix will be removed."
+            );
+
+            table.erase( i );
+
+            i = ip1;
+            ++ip1;
+          }
+
+          /* one last check:  are there now no data elements? */
+          if ( table.size() == 0u )
+            throw std::runtime_error("DATA:  empty table");
+
+          log_fine("DATA:  threshold found at %g m/s", table.begin()->first );
+        }
+
         void setCoeffs() {
           C = a = b = v02 = 0.0;
           extraps_done = 0u;

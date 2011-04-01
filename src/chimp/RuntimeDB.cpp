@@ -443,7 +443,7 @@ namespace chimp {
           } else if ( vmax > 0.0 && dv > 0.0 ) {
             /* Adding two arbitrary cross sections together--more difficult. */
             typedef interaction::cross_section::AveragedDiameters<options> AvgCS;
-            eq.cs.reset( new AvgCS(eqii.cs, eqjj.cs, vmax, dv) );
+            eq.cs.reset(new AvgCS(eqii.cs, eqjj.cs, vmax, dv, eq.reducedMass) );
           } else {
             /* Can't add arbitrary pairs together when vmax and dv are not set.
              * Emit a warning. */

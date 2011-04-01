@@ -31,6 +31,7 @@
 #include <chimp/interaction/cross_section/DATA.h>
 #include <chimp/interaction/cross_section/Base.h>
 #include <chimp/interaction/Equation.h>
+#include <chimp/interaction/ReducedMass.h>
 
 #include <xylose/xml/Doc.h>
 #include <xylose/power.h>
@@ -72,7 +73,8 @@ namespace chimp {
         /** Constructor to initialize the cross section data by copying from a
          * set of data previously loaded. */
         AveragedDiameters( const CSPtr & cs0, const CSPtr & cs1,
-                           const double & vmax, const double & dv )
+                           const double & vmax, const double & dv,
+                           const ReducedMass & mu )
           : cross_section::DATA<options>(), cs0(cs0), cs1(cs1) {
 
           cross_section::Base<options> & sigma0 = *cs0,
@@ -86,7 +88,7 @@ namespace chimp {
             new_table.insert( std::make_pair( v, sigma ) );
           }
 
-          this->setTable( new_table );
+          this->setTable( new_table, mu );
         }
 
         /** Virtual NO-OP destructor. */
