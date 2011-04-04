@@ -107,7 +107,7 @@ namespace chimp {
           interact( part1, part2, rng );
         }
 
-        /** Binary elastic collision of VHS and VSS models. */
+        /** Binary elastic collision of VSS model. */
         void interact( Particle & part1, Particle & part2,
                        typename options::RNG & rng ) {
           using xylose::SQR;
@@ -135,23 +135,32 @@ namespace chimp {
           Vector<double,3> VelRelPre = v1 - v2;
           double SpeedRel = VelRelPre.abs();
 
-          // use the VSS logic
-          double B = 2.0 * fast_pow( rng.rand(), vss_param_inv ) - 1.0;
           // B is the cosine of the deflection angle for the VSS model (eqn (11.8)
-          double A = std::sqrt( 1.0 - B*B);
+          // A is the sine of the same angle
+          double B = 2.0 * fast_pow( rng.rand(), vss_param_inv ) - 1.0;
+          double A = std::sqrt( 1.0 - SQR(B) );
+          // C is a random azimuth angle
           double C = 2.0 * M_PI * rng.rand();
+
           double COSC = std::cos(C);
           double SINC = std::sin(C);
           double D = std::sqrt( SQR(VelRelPre[Y]) + SQR(VelRelPre[Z]) );
+
           Vector<double,3> VelRelPost;
           if ( D > 1.0E-6 ) {
-              VelRelPost[X] = B * VelRelPre[X] + A * SINC * D;
-              VelRelPost[Y] = B * VelRelPre[Y] + A * (SpeedRel * VelRelPre[Z] * COSC - VelRelPre[X] * VelRelPre[Y] * SINC)/D;
-              VelRelPost[Z] = B * VelRelPre[Z] - A * (SpeedRel * VelRelPre[Y] * COSC + VelRelPre[X] * VelRelPre[Z] * SINC)/D;
+            const register double A_D = A / D;
+
+            VelRelPost[X] = B * VelRelPre[X] + A * SINC * D;
+            VelRelPost[Y] = B * VelRelPre[Y]
+                          + A_D * (  SpeedRel     * VelRelPre[Z] * COSC
+                                   - VelRelPre[X] * VelRelPre[Y] * SINC );
+            VelRelPost[Z] = B * VelRelPre[Z]
+                          - A_D * (  SpeedRel     * VelRelPre[Y] * COSC
+                                   + VelRelPre[X] * VelRelPre[Z] * SINC );
           } else {
-              VelRelPost[X] = B * VelRelPre[X];
-              VelRelPost[Y] = A * COSC * VelRelPre[X];
-              VelRelPost[Z] = A * SINC * VelRelPre[X];
+            VelRelPost[X] = B * VelRelPre[X];
+            VelRelPost[Y] = A * COSC * VelRelPre[X];
+            VelRelPost[Z] = A * SINC * VelRelPre[X];
           }
           // the post-collision rel. velocity components are based on eqn (2.22)
 

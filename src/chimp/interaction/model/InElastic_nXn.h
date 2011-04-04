@@ -132,9 +132,9 @@ namespace chimp {
           /* relative velocity prior to collision */
           double SpeedRel = CalculateVRel()(v1, v2, dVrel);
 
-          // use the VHS logic
-          double B = 2.0 * rng.rand() - 1.0;
           // B is the cosine of a random elevation angle
+          // A is the sine of the same elevation angle
+          double B = 2.0 * rng.rand() - 1.0;
           double A = std::sqrt( 1.0 - SQR(B) );
           // C is a random azimuth angle
           double C = 2.0 * M_PI * rng.rand();
@@ -192,12 +192,12 @@ namespace chimp {
             double Mn_1 = M - m;
             double v_rel = ( v - ( P - m * v ) / ( M - m ) ).abs();
 
-            // use the VHS logic
-            double B = 2.0 * MTRNGrand() - 1.0;
             // B is the cosine of a random elevation angle
+            // A is the sine of the same elevation angle
+            double B = 2.0 * rng.rand() - 1.0;
             double A = std::sqrt( 1.0 - SQR(B) );
             // C is a random azimuth angle
-            double C = 2.0 * M_PI * MTRNGrand();
+            double C = 2.0 * M_PI * rng.rand();
 
             /* relative velocity after collision */
             Vector<double,3> VelRelPost =

@@ -130,9 +130,9 @@ namespace chimp {
           Vector<double,3> VelRelPre = v1 - v2;
           double SpeedRel = VelRelPre.abs();
 
-          // use the VHS logic
-          double B = 2.0 * rng.rand() - 1.0;
           // B is the cosine of a random elevation angle
+          // A is the sine of the same elevation angle
+          double B = 2.0 * rng.rand() - 1.0;
           double A = std::sqrt( 1.0 - SQR(B) );
           // C is a random azimuth angle
           double C = 2.0 * M_PI * rng.rand();
