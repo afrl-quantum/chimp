@@ -16,7 +16,7 @@
         </comment>
 
         <Interaction>
-            <Eq><In><T><n>2</n> <P>87Rb</P></T></In>  --&gt;  <Out><T><n>2</n> <P>87Rb</P></T></Out></Eq>
+            <Eq><In><T><n>2</n> <P>87Rb</P></T></In>  --&gt;  <Out><T CopyFrom="0" ops="setPosition(.5*T('0','x')+.5*T('0','charge')/T('1','charge')*T('0','x'),T('0','y'),T('0','z'))" ><n>2</n> <P>87Rb</P></T></Out></Eq>
             <cross_section model="vhs">
                 <value uncertainty="130 * nm^2">540 * nm^2</value>
                 <T_ref>25*uK</T_ref>
