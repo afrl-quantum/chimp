@@ -57,7 +57,7 @@ path-constant TOP : . ;
 
 # For chimp we did not yet use signed/annotated tags, therefore the --tags
 # option for describe
-constant VERSION : [ SHELL "printf `cd $(TOP); git describe --tags 2> /dev/null` || printf chimp-0.1.0 " ] ;
+constant VERSION : [ SHELL "printf `cd $(TOP); git describe --tags 2> /dev/null` || printf chimp-0.1.3 " ] ;
 
 local xml2-features = [ mpi.cmdline_to_features [ SHELL "printf '%s ' compiler `xml2-config --cflags --libs`" ] ] ;
 

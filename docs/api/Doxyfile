@@ -31,7 +31,7 @@ PROJECT_NAME           = "CHIMP"
 # This could be handy for archiving the generated documentation or 
 # if some version control system is used.
 
-PROJECT_NUMBER         = "CHIMP 0.1.0"
+PROJECT_NUMBER         = "CHIMP 0.1.3"
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) 
 # base path where the generated documentation will be put. 
@@ -1247,7 +1247,7 @@ SKIP_FUNCTION_MACROS   = YES
 # is run, you must also specify the path to the tagfile here.
 
 TAGFILES               = \
-  ../../../olson-tools/docs/api/olson-tools.tag=../../../../olson-tools/docs/api/html \
+  ../../../xylose/docs/api/xylose.tag=../../../../xylose/docs/api/html \
   ../../../physical/docs/api/physical.tag=../../../../physical/docs/api/html
 
 # When a file name is specified after GENERATE_TAGFILE, doxygen will create 
