@@ -90,16 +90,25 @@ namespace chimp {
           load( const xml::Context & x ) const = 0;
         };
 
-        /** Map from filter-name to xml load facility for that filter. */
-        extern std::map< std::string,
-                         shared_ptr<filter::loader::Base> > list;
+        /** Map from filter-name to xml load facility for that filter (type). */
+        typedef std::map< std::string, shared_ptr<filter::loader::Base> > List;
+
+        /** Map from filter-name to xml load facility for that filter
+         * (default-list generator). */
+        loader::List get_default_list();
+
+        /** Map from filter-name to xml load facility for that filter
+         * (accessor). */
+        inline loader::List & list() {
+          static List l = get_default_list();
+          return l;
+        }
 
         /** Lookup a loader from the list map with error reporting. */
         inline shared_ptr<filter::loader::Base>
         lookup( const std::string & name) {
-          std::map< std::string, shared_ptr<filter::loader::Base> >::iterator i
-              = loader::list.find( name );
-          if ( i == loader::list.end() )
+          const loader::List::iterator i = loader::list().find( name );
+          if ( i == loader::list().end() )
             throw std::invalid_argument("no filter known by name '"+name+"'");
           else
             return i->second;
