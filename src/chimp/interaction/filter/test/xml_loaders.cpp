@@ -57,7 +57,7 @@ namespace {
 
   BOOST_AUTO_TEST_SUITE( load_leaf_filters_separately ); // {
     BOOST_AUTO_TEST_CASE( loaders_unique ) {
-      BOOST_CHECK_EQUAL( filter::loader::list.size(), 8u );
+      BOOST_CHECK_EQUAL( filter::loader::list().size(), 8u );
     }
 
     BOOST_AUTO_TEST_CASE( load_Null ) {
