@@ -630,7 +630,7 @@ EXAMPLE_RECURSIVE      = YES
 # directories that contain image that are included in the documentation (see 
 # the \image command).
 
-IMAGE_PATH             = 
+IMAGE_PATH             = ../images
 
 # The INPUT_FILTER tag can be used to specify a program that doxygen should 
 # invoke to filter for each input file. Doxygen will invoke the filter program 
@@ -1217,7 +1217,9 @@ PREDEFINED             = APPEND
 # The macro definition that is found in the sources will be used. 
 # Use the PREDEFINED tag if you want to use a different macro definition.
 
-EXPAND_AS_DEFINED      = 
+EXPAND_AS_DEFINED      = CHIMP_DEFINE_PARTICLE_PROPERTY \
+                         CHIMP_DEFINE_PARTICLE_PROPERTY_IMPL \
+                         CHIMP_DEFINE_REQUIRED_PARTICLE_PROPERTY
 
 # If the SKIP_FUNCTION_MACROS tag is set to YES (the default) then 
 # doxygen's preprocessor will remove all function-like macros that are alone 

@@ -60,8 +60,9 @@ documentation for each function, class, and namespace of the API.
 <h3>Additional Material</h3>
   Please refer to the following material for current status, future direction,
   and otherwise typical package information:
-  - \subpage chimp_discussions
   - \subpage chimp_platforms
+  - \subpage chimp-impl-todos
+  - \subpage chimp-collaboration
   - \subpage chimp_license
   - \subpage chimp_readme
   - \subpage chimp_install
@@ -95,6 +96,10 @@ documentation for each function, class, and namespace of the API.
     \verbinclude README
 */
 
+//-----------------------------------------------------------
+/** \page chimp_python_readme CHIMP::Python
+    \verbinclude python/README
+*/
 
 
 //-----------------------------------------------------------
@@ -118,22 +123,6 @@ documentation for each function, class, and namespace of the API.
 
 
 //-----------------------------------------------------------
-/** \page chimp_discussions Direction and Discussions
-
-If appropriate public information exists (e.g. in journals or databases such as
-from NIST), the level of fidelity will also be documented.  
-A recent discussion among AFRL/DOE collaborators brought out the following
-idea for documenting fidelity of the data that we will be distributing.
-  - Baked from thin air
-  - Published
-  - Published works cited
-  - Experimental data claimed to have compared favorably
-  - etc.
-  .
-*/
-
-
-//-----------------------------------------------------------
 /** \page chimp_platforms Supported Platforms
   <h3>The following table represents the various platform, compiler, and
   operating system distribution combinations for which compilation has been
@@ -141,9 +130,14 @@ idea for documenting fidelity of the data that we will be distributing.
 
   <table border=1>
     <tr><th>Platform</th>          <th>Compiler</th>     <th>Version</th><th>OS Distribution</th>  <th>Status</th></tr>
-    <tr><td rowspan="12">Linux</td> <td rowspan="3">GCC</td><td>4.1.2</td><td>RHEL/Centos 5.3</td> <td bgcolor="#00FF00">Supported</td></tr>
+    <tr><td rowspan="17">Linux</td> <td rowspan="8">GCC</td><td>4.1.2</td><td>RHEL/Centos 5.3</td> <td bgcolor="#00FF00">Supported</td></tr>
     <tr>                                                   <td>4.1.2</td><td>Linux Networx (SLES 9)</td><td bgcolor="#00FF00">Supported</td></tr>
+    <tr>                                                   <td>4.1.2</td><td>Cray XT4</td>         <td bgcolor="#00FF00">Supported</td></tr>
     <tr>                                                   <td>4.4.1</td><td>Ubuntu 9.10</td>      <td bgcolor="#00FF00">Supported</td></tr>
+    <tr>                                                   <td>4.4.3</td><td>Ubuntu 10.04</td>     <td bgcolor="#00FF00">Supported</td></tr>
+    <tr>                                                   <td>4.4.5</td><td>Ubuntu 10.10</td>     <td bgcolor="#00FF00">Supported</td></tr>
+    <tr>                                                   <td>4.4.?</td><td>Cray XT5</td>         <td bgcolor="#00FF00">Supported</td></tr>
+    <tr>                                                   <td>4.5.2</td><td>Cray XE6</td>         <td bgcolor="#00FF00">Supported</td></tr>
     <tr>           <td rowspan="3">Pathscale</td>         <td>3.2.99</td><td>Cray XT5</td>         <td>Unknown</td></tr>
     <tr>                                         <td rowspan="2">3.2</td><td>Cray XT4</td>         <td bgcolor="#00FF00">Supported</td></tr>
     <tr>                                                                 <td>Cray XT3</td>         <td>Unknown</td></tr>
@@ -164,6 +158,9 @@ idea for documenting fidelity of the data that we will be distributing.
     <tr>                                                                 <td>Dell PowerEdge M610 (RHEL?)</td><td bgcolor="#00FF00">Supported</td></tr>
     <tr><td rowspan="2">Cygwin</td><td rowspan="2">GCC</td><td>3.5</td>  <td></td>                 <td bgcolor="#00FF00">Supported</td></tr>
     <tr>                                                   <td>4.x</td>  <td></td>                 <td bgcolor="#FF3030">Unsupported</td></tr>
+    <tr><td rowspan="3">AIX</td><td rowspan="3">IBM XL</td><td>9.0.0.8</td>  <td></td>             <td bgcolor="#00FF00">Supported</td></tr>
+    <tr>                                                   <td>10.01.0.0</td><td></td>             <td bgcolor="#00FF00">Supported</td></tr>
+    <tr>                                                   <td>11.01.0.0</td><td></td>             <td bgcolor="#00FF00">Supported</td></tr>
   </table>
 
   <hr>
@@ -176,4 +173,63 @@ idea for documenting fidelity of the data that we will be distributing.
   of the preprocessor.  Although a judicious reordering of the
   <code>\#include</code> directives causes the builds to succeed, I would rather
   not support a compiler that shows such a blatant bug.  
+*/
+
+
+
+//-----------------------------------------------------------
+/** \page chimp-impl-todos Direction & Todo/Wish List
+  @todo Finish inelastic interaction models (chimp::interaction::model
+  namespace).
+
+
+  @todo Finalize/formalize the documentation requirements and formats.  One of
+  the primary goals of this project is to accumulate a set of well documented
+  physical data, the documentation being sufficient for any researcher to
+  roughly gauge the quality and fidelity of the data.  The type of documentation
+  types anticipated include:
+    - Reference to peer reviewed journal
+      - Theoretical models
+      - Phenomenological models
+      - Experimental data
+      - Favorable comparisons of analytical models to experimental data
+      .
+    - Reference to non-peer reviewed publication or standards organization (e.g.
+      NIST)
+      - Theoretical models
+      - Phenomenological models
+      - Experimental data
+      - Favorable comparisons of analytical models to experimental data
+      .
+    - Citation counts of reference measured at a specified date
+    - Source of unpublished data (to indicate at least vaguely where the data
+      came from)
+      - "Baked from thin air"
+      - Assumed data based on ...
+      .
+    .
+
+
+  @todo Extend the python interfaces to provide the complete CHIMP interface to
+    Python applications.
+*/
+
+
+
+//-----------------------------------------------------------
+/** \page chimp-collaboration Community and Collaboration
+The intent of the CHIMP pacakge is to benefit and provide collaboration for all
+members of the research community with interest in simulation of collision
+processes.  To accommodate researchers from various organizations with various
+institutional rules, the development and sharing of CHIMP software and data uses
+the distributed version control system <a target=_blank href="http://git-scm.org">git</a>.
+From the git web site:
+\verbatim
+Git is a free & open source, distributed version control system designed to
+handle everything from small to very large projects with speed and efficiency.
+\endverbatim
+
+\image html  collaboration.png "CHIMP collaboration diagram"
+\image latex collaboration.eps "CHIMP collaboration diagram" width=10cm
+
 */
