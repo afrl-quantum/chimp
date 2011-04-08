@@ -1,0 +1,26 @@
+In order for this example to work, you need to put the path to the chimp python
+module in your PYTHONPATH variable (or into the sys.path list at runtime).
+Set PYTHONPATH like:
+ >>export PYTHONPATH=/path/to/chimp/python:$PYTHONPATH
+
+
+You will also need the python component of the physical package to be in your
+PYTHONPATH variable.  The physical package can be downloaded from:
+  http://github.com/hpcdev/physical
+    or
+  http://github.com/olsonse/physical
+
+and then set PYTHONPATH like:
+ >>export PYTHONPATH=/path/to/physical/python:$PYTHONPATH
+
+
+If the chimp python package is not in an immediate subdirectory of the CHIMP
+package, you need to (in your python script):
+ >>import chimp
+ >>chimp.config.CHIMP_DATA = '/path/to/chimp/data/particledb.xml'
+
+ where the CHIMP_DATA path must point to a file that includes particle name and
+ mass information per the CHIMP data spec.
+
+
+ Then you can run the examples.

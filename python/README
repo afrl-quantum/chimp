@@ -1,0 +1,16 @@
+The purpose of this CHIMP::Python package is (currently) to ease the burden of importing
+and formatting new data into the formats used and defined by CHIMP.  
+
+Non-standard Python dependencies:
+  numpy
+    Numpy includes many numerical matrix and vector operations and related
+    tools.  This package is used to handle the data tables of the
+    chimp::interaction::cross_section::DATA class.
+  lxml
+    This is an excellent pythonesque interface to the libxml2 package.  The
+    interface it provides greatly simplifies working with libxml2 and allows
+    more rapid development.
+  physical::python
+    This is the Python component of the physical package.  This is the same
+    physical package that the C++ CHIMP code depends upon.  
+
