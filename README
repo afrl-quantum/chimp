@@ -19,3 +19,4 @@ data            The xml data set including the standard set of distributed data
 docs            documentation, including doxygen generated api documentation
 src             source code
 examples        Examples to demonstrate the use and capability of the package
+python          Python package to ease importing of new data into CHIMP format

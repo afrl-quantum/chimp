@@ -1,9 +1,11 @@
 Installation Instructions
 *************************
 
-This project uses the Boost.Build system which automatically tracks link,
-include, and other dependencies among any number of libraries and projects.
-These instructions assume that you have Boost.Build installed on your system.
+This project uses both the Boost.Build and CMake system which separately
+automatically track link, include, and other dependencies among any number of
+libraries and projects.  You may use either the Boost.Build or CMake build
+systems independently.  Below, you should find instructions for using either
+Boost.Build, CMake, or a general system-style installtion.
 
 Boost.Build:
   If you use Boost.Build, integrating this library into your own project is
@@ -39,6 +41,22 @@ Boost.Build:
     libxml2
         Should be installed somewhere on your system and the xml2-config command
         from that installation should be in your path.
+
+
+CMake:
+  CMake files also accompany the package and make it easier to use in a
+  CMake environment.  To use in a CMake environment, just add appropriate
+  lines to your master CMakeLists.txt file, such as
+
+      add_subdirectory(chimp)
+
+  You will also have to include the proper line for the include paths, such
+  as:
+      include_directories(
+        ${CMAKE_SOURCE_DIR}/path/to/your/code
+        ${CMAKE_SOURCE_DIR}/chimp/src
+      )
+
 
 General Install:
   These instructions are for installing this software into a standard layout
