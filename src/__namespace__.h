@@ -28,24 +28,22 @@
 #ifndef chimp___namespace___h
 #define chimp___namespace___h
 
-/** Namespace for the Chimp library. */
-namespace chimp {
+/** \namespace chimp
+ * Namespace for the Chimp library. */
 
-  /** Classes, types, and functions for Interactions. */
-  namespace interaction {
+/** \namespace chimp::interaction
+ * Classes, types, and functions for Interactions. */
 
-    /** Cross section data models. */
-    namespace cross_section { }
+/** \namespace chimp::interaction::cross_section
+ * Cross section data models. */
 
-    /** Filters for selecting appropriate interactions. */
-    namespace filter { }
+/** \namespace chimp::interaction::filter
+ * Filters for selecting appropriate interactions. */
 
-    /** Default Functional models for interactions supported by Chimp. */
-    namespace model { }
-  }
+/** \namespace chimp::interaction::model
+ * Default Functional models for interactions supported by Chimp. */
 
-  /** Properties of materials in various states of matter (gas, solid, ...). */
-  namespace property { }
-}
+/** \namespace chimp::property
+ * Properties of materials in various states of matter (gas, solid, \f$\ldots\f$). */
 
 #endif // chimp___namespace___h

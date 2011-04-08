@@ -20,7 +20,9 @@
  *                                                                             *
  -----------------------------------------------------------------------------*/
 
-
+/** \file
+ * Implementation of chimp::interaction::Equation.
+ */
 
 #include <chimp/interaction/Equation.h>
 #include <chimp/interaction/cross_section/Base.h>

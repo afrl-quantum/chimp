@@ -33,6 +33,7 @@
 namespace chimp {
   namespace property {
 
+    /** Charge chimp::property. */
     CHIMP_DEFINE_PARTICLE_PROPERTY(charge, double, dim::charge, "charge", 0.0);
 
   }/* namespace chimp::property */

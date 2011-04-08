@@ -82,7 +82,21 @@ namespace chimp {
         virtual std::string getLabel() const = 0;
       };
 
+
+      /** Collection of automatically used XML parsers for each of the filters
+       * in chimp::interaction::filter.
+       *
+       * A user wanting to add XML loaders for filters not yet defined in the
+       * chimp distribution should add these to the \ref
+       * chimp::interaction::filter::loader::list "map of filters".  This is a
+       * mapping from "name" -> to loader instance.  In this manner, it is
+       * possible to replace the filters provided by default by CHIMP.
+       */
       namespace loader {
+
+        /** The base loader class from which all other loaders <b><em>must</em></b>
+         * inherit.
+         */
         struct Base {
           virtual ~Base() { }
 

@@ -20,6 +20,9 @@
  *                                                                             *
  -----------------------------------------------------------------------------*/
 
+/** \file
+ * Accessors to default data paths.
+ */
 
 #ifndef chimp_default_data_h
 #define chimp_default_data_h
@@ -29,11 +32,16 @@
 #  include <string>
 
 namespace chimp {
+
+  /** Accessors to the default path of the chimp data. */
   namespace default_data {
+
+    /** The default path to the particle database data. */
     inline std::string particledb() {
       return XSTR(CHIMP_PARTICLEDB_XML);
     }
-  }
+
+  }/* namespace chimp::default_data */
 } /* namespace chimp */
 
 #endif // chimp_default_data_h

@@ -49,7 +49,9 @@
 #  include <string>
 #  include <algorithm>
 
-
+/** \file
+ * Implementation file for chimp::RuntimeDB.
+ */
 
 namespace chimp {
 

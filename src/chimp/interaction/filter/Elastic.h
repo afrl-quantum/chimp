@@ -81,6 +81,8 @@ namespace chimp {
       }
 
       namespace loader {
+
+        /** The XML loader for the Elastic filter. */
         struct Elastic : filter::loader::Base {
           typedef shared_ptr<filter::Base> SHB;
           virtual ~Elastic() { }
@@ -89,6 +91,7 @@ namespace chimp {
             return SHB( new filter::Elastic() );
           }
         };
+
       }/* namespace chimp::interaction::filter::loader */
 
     }/* namespace particldb::interaction::filter */

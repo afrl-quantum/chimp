@@ -20,6 +20,10 @@
  *                                                                             *
  -----------------------------------------------------------------------------*/
 
+/** \file
+ * Implementation for runtime::physical::calc::Driver (of \ref physical_cpp
+ * "physical::c++" package) preparation function.
+ */
 
 #include <chimp/physical_calc.h>
 

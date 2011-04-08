@@ -35,6 +35,7 @@
 namespace chimp {
   namespace property {
 
+    /** \cond CHIMP_DETAIL_DOC */
     namespace detail {
       using runtime::physical::dimension::make_dim;
       using runtime::physical::dimension::exp_dim;
@@ -48,7 +49,9 @@ namespace chimp {
       >::dim<SYS> {};
 
     }
+    /** \endcond */
 
+    /** Polarizability chimp::property. */
     CHIMP_DEFINE_PARTICLE_PROPERTY( polarizability,
                                     double,
                                     detail::polarizability_dims,

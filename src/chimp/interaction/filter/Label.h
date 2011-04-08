@@ -53,6 +53,8 @@ namespace chimp {
       };
 
       namespace loader {
+
+        /** The XML loader for the Label filter. */
         struct Label : filter::loader::Base {
           typedef shared_ptr<filter::Base> SHB;
           virtual ~Label() { }
@@ -61,6 +63,7 @@ namespace chimp {
             return SHB( new filter::Label( x.text() ) );
           }
         };
+
       }/* namespace chimp::interaction::filter::loader */
 
     }/* namespace particldb::interaction::filter */

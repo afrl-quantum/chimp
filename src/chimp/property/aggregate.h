@@ -59,7 +59,7 @@ namespace chimp {
         >::type type;
     };
 
-    /* Termination case for the Aggregate template meta-function. */
+    /** Termination case for the Aggregate template meta-function. */
     template< typename T0 > 
     struct Aggregate< T0,
                       detail::Null, detail::Null, detail::Null, detail::Null,

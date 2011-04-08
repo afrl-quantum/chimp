@@ -33,6 +33,7 @@
 namespace chimp {
   namespace property {
 
+    /** Mass chimp::property. */
     CHIMP_DEFINE_PARTICLE_PROPERTY(mass, double, dim::mass, "mass", 0.0);
 
   }/* namespace chimp::property */

@@ -185,6 +185,8 @@ namespace chimp {
       };
 
       namespace loader {
+
+        /** The XML loader for the EqIO filter. */
         struct EqIO : filter::loader::Base {
           typedef shared_ptr<filter::Base> SHB;
           virtual ~EqIO() { }
@@ -215,6 +217,7 @@ namespace chimp {
               ::EqIO( dir, EqTermSet(terms.begin(), terms.end()) ));
           }
         };
+
       }/* namespace chimp::interaction::filter::loader */
 
     }/* namespace particldb::interaction::filter */

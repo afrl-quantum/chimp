@@ -20,13 +20,35 @@
  *                                                                             *
  -----------------------------------------------------------------------------*/
 
+/** \file
+ * Simple routine for selecting a random pair of particles from two (or
+ * one) random access containers, such as std::vector<>.
+ */
+
 #ifndef chimp_interaction_selectRandomPair_h
 #define chimp_interaction_selectRandomPair_h
-
 
 namespace chimp {
   namespace interaction {
 
+    /** Simple routine for selecting a random pair of particles from two (or
+     * one) random access containers, such as std::vector<>.
+     *
+     * @tparam RandomAccessParticleContainer
+     *    The type of random access container.
+     * @tparam RNG
+     *    The type of random number generator.
+     *
+     * @param Aparticles
+     *    Reference the first random access container.
+     * @param Bparticles
+     *    Reference the second random access container.  This parameter may be
+     *    a reference to the same container as for Aparticles.
+     * @param rng
+     *    Reference to the random number generator to be used.
+     *
+     * @see xylose::random for compatible pseudo-random number generators.
+     */
     template <
       typename RandomAccessParticleContainer,
       typename RNG

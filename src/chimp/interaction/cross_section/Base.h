@@ -25,6 +25,21 @@
  * Base cross section provider class.
  * */
 
+/** \example CrossSection/single-input-equation/getCrossSection.cpp
+ * Example of accessing all cross section values from various cross section
+ * implementations for all interactions pertaining to two common inputs.
+ */
+
+/** \example CrossSection/all/getCrossSection.cpp
+ * Example of accessing all cross section values from various cross section
+ * implementations for all interactions.
+ */
+
+/** \example CrossSection/xpath-access/testCrossSection.cpp
+ * Direct XML access and test/example of chimp::interaction::cross_section::VHS
+ * and chimp::interaction::cross_section::DATA mechanics.
+ */
+
 #ifndef chimp_interaction_cross_section_Base_h
 #define chimp_interaction_cross_section_Base_h
 

@@ -71,6 +71,8 @@ namespace chimp {
       };
 
       namespace loader {
+
+        /** The XML loader for the Or filter. */
         struct Or : filter::loader::Base {
           typedef shared_ptr<filter::Base> SHB;
           virtual ~Or() { }
@@ -91,6 +93,7 @@ namespace chimp {
             return SHB( new filter::Or( l, r ) );
           }
         };
+
       }/* namespace chimp::interaction::filter::loader */
 
 

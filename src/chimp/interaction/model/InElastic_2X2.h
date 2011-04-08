@@ -46,6 +46,7 @@ namespace chimp {
   namespace interaction {
     namespace model {
 
+      /** \cond CHIMP_DETAIL_DOC */
       namespace detail {
         template < bool >
         struct CalculateVRelImpl;
@@ -71,6 +72,7 @@ namespace chimp {
           }
         };
       }
+      /** \endcond */
 
       template < typename options >
       struct InElastic;

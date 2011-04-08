@@ -71,6 +71,8 @@ namespace chimp {
       };
 
       namespace loader {
+
+        /** The XML loader for the And filter. */
         struct And : filter::loader::Base {
           typedef shared_ptr<filter::Base> SHB;
           virtual ~And() { }
@@ -91,6 +93,7 @@ namespace chimp {
             return SHB( new filter::And( l, r ) );
           }
         };
+
       }/* namespace chimp::interaction::filter::loader */
 
     }/* namespace particldb::interaction::filter */

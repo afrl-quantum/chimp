@@ -48,22 +48,26 @@ namespace chimp {
 
     namespace model {
 
-      template < typename T, bool creat_const >
-      struct TypeRef {
-        typedef T & const_ref;
-      };
+      /** \cond CHIMP_DETAIL_DOC */
+      namespace detail {
+        template < typename T, bool creat_const >
+        struct TypeRef {
+          typedef T & const_ref;
+        };
 
-      template < typename T >
-      struct TypeRef<T,false> {
-        typedef const T & const_ref;
-      };
+        template < typename T >
+        struct TypeRef<T,false> {
+          typedef const T & const_ref;
+        };
+      }
+      /** \endcond */
 
       /** The base class for interaction models.  */
       template < typename options >
       struct Base {
         /* TYPEDEFS */
         typedef typename options::Particle Particle;
-        typedef typename TypeRef<
+        typedef typename detail::TypeRef<
           Particle, options::inplace_interactions
         >::const_ref ParticleArgRef;
 

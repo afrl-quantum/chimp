@@ -44,9 +44,11 @@ namespace chimp {
   namespace interaction {
     namespace cross_section {
 
+      /** \cond CHIMP_DETAIL_DOC */
       namespace detail {
         double loadConstantValue( const xml::Context & x );
       }
+      /** \endcond */
 
       /** Constant cross section provider.
        * @tparam options

@@ -169,6 +169,8 @@ namespace chimp {
 
 
       namespace loader {
+
+        /** The XML loader for the Section filter. */
         struct Section : filter::loader::Base {
           typedef shared_ptr<filter::Base> SHB;
           virtual ~Section() { }
@@ -197,6 +199,7 @@ namespace chimp {
             return SHB( new filter::Section( section, prefer, f ) );
           }
         };
+
       }/* namespace chimp::interaction::filter::loader */
 
     }/* namespace particldb::interaction::filter */

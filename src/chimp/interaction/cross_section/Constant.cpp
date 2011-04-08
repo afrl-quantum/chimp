@@ -34,6 +34,8 @@
 namespace chimp {
   namespace interaction {
     namespace cross_section {
+
+      /** \cond CHIMP_DETAIL_DOC */
       namespace detail {
 
         using runtime::physical::Quantity;
@@ -46,6 +48,8 @@ namespace chimp {
         }
 
       } /* namespace chimp::interaction::cross_section::detail */
+      /** \endcond */
+
     } /* namespace chimp::interaction::cross_section */
   } /* namespace chimp::interaction */
 } /* namespace chimp */

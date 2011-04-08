@@ -20,6 +20,10 @@
  *                                                                             *
  -----------------------------------------------------------------------------*/
 
+/** \file
+ * Driver implementation for performing all interactions necessary for all the
+ * types that are present.
+ */
 
 #ifndef chimp_interaction_Driver_h
 #define chimp_interaction_Driver_h
@@ -40,7 +44,9 @@ namespace chimp {
   namespace interaction {
 
     /** Default generator and updater of
-     * \f$ \left( \sigma_{\rm T} v_{\rm rel} \right)_{\rm max} \f$.
+     * \f$ \left( \sigma_{\rm T} v_{\rm rel} \right)_{\rm max} \f$ for the
+     * chimp::interaction::Driver class.
+     *
      * This default implementation requires the CrossSpeciesInfo class to have a
      * maxRelativeVelocity function that accepts species A and B (as integer
      * parameters) and returns the maximum relative velocity of species A and B.

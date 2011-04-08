@@ -33,7 +33,14 @@
 #include <xylose/Vector.h>
 
 namespace chimp {
+
+  /** Argument-Dependent-Lookup (ADL) selectable functions for accessing/setting
+   * data items of structures such as particles. */
   namespace accessors {
+
+    /** Argument-Dependent-Lookup (ADL) selectable functions for
+     * accessing/setting particle properties such as position, velocity, weight,
+     * and so on. */
     namespace particle {
 
       using xylose::Vector;

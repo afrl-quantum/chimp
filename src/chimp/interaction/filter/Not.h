@@ -72,6 +72,8 @@ namespace chimp {
       };
 
       namespace loader {
+
+        /** The XML loader for the Not filter. */
         struct Not : filter::loader::Base {
           typedef shared_ptr<filter::Base> SHB;
           virtual ~Not() { }
@@ -92,6 +94,7 @@ namespace chimp {
             return SHB( new filter::Not( pos, neg ) );
           }
         };
+
       }/* namespace chimp::interaction::filter::loader */
 
     }/* namespace particldb::interaction::filter */

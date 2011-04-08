@@ -20,10 +20,11 @@
  *                                                                             *
  -----------------------------------------------------------------------------*/
 
-
 /** \file
- * Prototype for physical::calculator preparation function.
+ * Prototype for runtime::physical::calc::Driver (of \ref physical_cpp
+ * "physical::c++" package) preparation function.
  */
+
 #ifndef chimp_physical_calc_h
 #define chimp_physical_calc_h
 

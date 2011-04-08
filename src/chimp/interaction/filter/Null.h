@@ -53,6 +53,8 @@ namespace chimp {
       };
 
       namespace loader {
+
+        /** The XML loader for the Null filter. */
         struct Null : filter::loader::Base {
           typedef shared_ptr<filter::Base> SHB;
           virtual ~Null() { }
@@ -61,6 +63,7 @@ namespace chimp {
             return SHB( new filter::Null() );
           }
         };
+
       }/* namespace chimp::interaction::filter::loader */
 
     }/* namespace particldb::interaction::filter */

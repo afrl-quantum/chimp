@@ -25,6 +25,30 @@
  * Definition of the default set of properties to load from database.
  */
 
+/** \example Properties/xpath-access/getProperties.cpp
+ * Direct XML access and test/example of chimp::property mechanics.
+ */
+
+/** \example Properties/simple/getProperties.cpp
+ * Simple example of accessing particle properties after they have been
+ * loaded into memory from the xml dataset.  The properties available in this
+ * example are whatever is supplied in the default set of particle properties.
+ *
+ * @see chimp::property::DefaultSet
+ */
+
+/** \example Properties/specify-properties/getProperties.cpp
+ * Example specifying properties to load.
+ * In this example, we don't use the default set of particle properties to load
+ * from the database, but rather specify a (different) subset of particle
+ * properties to load.  We use the chimp::property::Aggregate class to aggregate the
+ * properties together.
+ *
+ * After creating the aggregate properties type, we use the chimp::make_options
+ * template metafunction to instantiate a RuntimeDB that only knows about the
+ * name and mass of particles.
+ */
+
 #ifndef chimp_property_DefaultSet_h
 #define chimp_property_DefaultSet_h
 

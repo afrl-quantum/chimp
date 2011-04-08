@@ -20,6 +20,11 @@
  *                                                                             *
  -----------------------------------------------------------------------------*/
 
+/** \file
+ * Implementation of chimp::interaction::filer::loader::get_default_list() and
+ * chimp::interaction::filter::parse_item(shared_ptr<filter::Base> &, const xml::Context &).
+ */
+
 #include <chimp/interaction/filter/Or.h>
 #include <chimp/interaction/filter/And.h>
 #include <chimp/interaction/filter/Not.h>

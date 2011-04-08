@@ -177,7 +177,7 @@ namespace chimp {
 
         /** Evaluate the cross-section of the Lotz model.
          *
-         * @param v_relative
+         * @param v
          *     The relative velocity between two particles.
          * */
         inline virtual double operator() (const double & v) const {

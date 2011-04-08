@@ -35,6 +35,7 @@
 namespace chimp {
   namespace property {
 
+    /** Name chimp::property. */
     CHIMP_DEFINE_REQUIRED_PARTICLE_PROPERTY(
       name, std::string, detail::NullDimension, "@name"
     );
