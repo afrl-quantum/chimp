@@ -23,9 +23,9 @@
 
 /** \file Simple example of accessing particle properties after they have been
  * loaded into memory from the xml dataset.  The properties available in this
- * example are whatever is supplied in the default set of particle properties
- * (see chimp::property::DefaultSet).
+ * example are whatever is supplied in the default set of particle properties.
  *
+ * @see chimp::property::DefaultSet
  */
 
 #include <chimp/RuntimeDB.h>

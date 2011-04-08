@@ -21,7 +21,10 @@
  -----------------------------------------------------------------------------*/
 
 
-/** \file Simple test of chimp::Particle mechanics. */
+/** \file
+ * Direct XML access and test/example of chimp::interaction::cross_section::VHS
+ * and chimp::interaction::cross_section::DATA mechanics.
+ */
 
 #include <chimp/RuntimeDB.h>
 #include <chimp/interaction/ReducedMass.h>

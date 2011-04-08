@@ -22,8 +22,8 @@
 
 
 /** \file
- * Example of accessing the data to create plots for all cross sections
- * pertaining to two common inputs.
+ * Example of accessing all cross section values from various cross section
+ * implementations for all interactions.
  * */
 
 #include <chimp/RuntimeDB.h>
