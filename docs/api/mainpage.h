@@ -25,15 +25,65 @@
  * The main documentation page for doxygen. 
  */
 
-/** \mainpage CHIMP API Documentation
+/** \mainpage
+<hr>
 
+<center>
 <table border=0>
-<tr><td><h2>Chemical Interactions, Materials, and Particles (CHIMP)</h2>
-        <center><h3>Database and Simulation Framework</h3></center></td></tr>
+<tr><td><h1>Chemical Interactions, Materials, and Particles</h1>
+        <center><h2>Database and Simulation Framework</h2></center></td></tr>
 </table>
+</center>
+
+<h1>Abstract</h1>
+Currently, it is very common for different simulations to use slightly, if not
+drastically, different physical data for the same materials. This creates both
+confusion as to how to compare the results of different simulations, but also
+questions the validity of any one simulation. There is a current need in the
+computational physics community for a common repository of physical data and a
+means to deliver that data to simulation tools.  The Chemical Interactions,
+Materials, and Particles (CHIMP) simulation framework and database represents a
+collaborative effort to develop a database and library to provide physical data
+and associated model calculations in a consistent, simple yet flexible manner.
+
+<h1>Contents</h1>
+  -# \subpage chimp_intro
+  -# \subpage chimp_format
+    -# \ref chimp_format_xml
+      -# \ref chimp_format_xml_particles
+      -# \ref chimp_format_xml_interactions
+      .
+    -# \ref chimp_format_units
+    .
+  -# \subpage chimp_cap
+    -# \ref chimp_cap_cross_sections
+    -# \ref chimp_cap_interactions
+    -# \ref chimp_cap_table
+  -# \subpage chimp_interface
+  -# \subpage chimp-collaboration
+  -# \subpage chimp_platforms
+  -# \subpage chimp-impl-todos
+  .
 
 
-<h3>Introduction</h3>
+<h3>Additional Material</h3>
+  Please refer to the following material for current status, future direction,
+  and otherwise typical package information:
+  - \subpage chimp_license
+  - \subpage chimp_readme
+  - \subpage chimp_install
+  - \subpage chimp_changelog
+  - \subpage chimp_authors
+  .
+*/
+
+
+
+//-----------------------------------------------------------
+/** \page chimp_intro Introduction
+This is a brief introduction to CHIMP, the problems it intends to solve, and the
+scope of the solutioh.
+
 Currently, it is very common for different simulations to use slightly, if not
 drastically, different physical data for the same materials.  This creates both
 confusion as to how to compare the results of different simulations, but also
@@ -55,20 +105,111 @@ interface (API) documentation for CHIMP.  This manual is automatically generated
 using the doxygen code documentation tool.  Currently, we support HTML and
 \f$\textnormal{\LaTeX}\f$ output generation.  Please follow the appropriate links to
 documentation for each function, class, and namespace of the API.
+*/
 
 
-<h3>Additional Material</h3>
-  Please refer to the following material for current status, future direction,
-  and otherwise typical package information:
-  - \subpage chimp_platforms
-  - \subpage chimp-impl-todos
-  - \subpage chimp-collaboration
-  - \subpage chimp_license
-  - \subpage chimp_readme
-  - \subpage chimp_install
-  - \subpage chimp_changelog
-  - \subpage chimp_authors
-  .
+
+//-----------------------------------------------------------
+/** \page chimp_format Storage Format
+
+\section chimp_format_bg Background
+
+<hr>
+\section chimp_format_xml eXtensible Markup Language (XML)
+  \subsection chimp_format_xml_particles Particles
+  \subsection chimp_format_xml_interactions Interactions
+
+<hr>
+\section chimp_format_units Units
+  Even for data file formats, such as XML, that are robust as to their
+  interpretation, additional difficulties arise when storing physical data:
+    - First, physical data have associated units.  For robustness, physical
+      units should either be implied according to a very strict format
+      definition, or explicitly stated via some expression of the physical data.
+    - Second, physical data can be expressed in a natural manner that conveys
+      additional meaning to a researcher.  Reading natural expressions, a
+      researcher can often quickly review older data and deduce errors or
+      discrepancies.  Therefore, for long-term robustness, it is necessary to
+      allow easy reading and review of data to take advantage of experienced
+      researchers.
+
+  <p>
+  The units-capabilities of CHIMP allow for natural numbers and expressions of
+  physical values.  For example, the following simple XML shows how mass is
+  represented within the CHIMP format:
+  <b><code> <mass>10 * amu</mass> </code></b>.
+  Although this is exactly equivalent (up to precision) to the expression
+  <b><code> <mass>1.66054*kg</mass> </code></b>,
+  it is more natural and easier for a researcher to qualify the content of the
+  data.  As another example, consider the expression
+  <b><code> <length>52.92 * Angstroms</length> </code></b>.
+  This can be similarly expressed, but better qualified by human eyes as
+  <b><code> <length>100 * a_0</length> </code></b>
+  where <code>a_0</code> is the Bohr radius.
+
+  <p>
+  By using a fully units-aware calculator to parse expressions, CHIMP allows, and
+  in fact requires, physical data to be stored in an unambiguous and units-safe
+  format.  Rather than simply storing coefficients of physical expressions based
+  in some unit system, CHIMP physical data is stored as arbitrarily complex,
+  units-capable, mathematical expressions.  Consider the expression:
+    <center><b><code>
+      <some-value> 0.00803772 * m </some-value>
+    </code></b>.</center>
+  As above, this value unambiguously represents some type of length and is
+  expressed here in units of meters.  This value could also have been expressed
+  as<br>
+    <center><b><code>
+      <some-value> 0.316446 * inches </some-value>
+    </code></b>,</center>
+    <center><b><code>
+      <some-value> 3.99553e-05 * furlong </some-value>
+    </code></b>,</center>
+  or even<br>
+    <center><b><code>
+      <some-value> 0.0268109*ns * c </some-value>
+    </code></b></center>
+  where <code>ns</code> and <code>c</code> mean nanoseconds and the speed of
+  light, respectively.  These various expressions demonstrate that CHIMP
+  provides the capability to enter data in any way that seems natural. 
+
+  Although the above representations of <b><code><some-value></code></b> indeed show
+  that the user can use various units as desired, we
+  can express <b><code><some-value></code></b> as<br>
+    <center><b><code>
+      <some-value> 1/( sqrt(2) * pi*(100*a_0)^2 * 1e12/cm^3 ) </some-value>
+    </code></b>.</center>
+  This expression of <b><code><some-value></code></b> implies other information to the
+  researcher.  First, it is clear that a mean free path is represented here.
+  Second, one can see that the interaction length could correspond to an S-wave
+  type collision for ultra-cold rubidium atoms.  Third, this expression relates
+  to number densities that are common in various ultra-cold atomic physics
+  experiments.
+
+  <p>
+  Not only are complicated
+  mathematical expressions possible, but dimensional analysis performed during
+  parsing ensures physical correctness of the expressions.  The dimensions of
+  the results are compared against expected dimensions for a given entry.  For
+  example, an expression that must result in length dimensions is checked for
+  dimensions of length.
+
+*/
+
+
+
+//-----------------------------------------------------------
+/** \page chimp_cap Capabilities
+\section chimp_cap_bg Background
+\section chimp_cap_cross_sections Cross-Section Models
+\section chimp_cap_interactions Interaction/Collision Models
+\section chimp_cap_table Smart Interaction Table
+*/
+
+
+
+//-----------------------------------------------------------
+/** \page chimp_interface User Interface
 */
 
 
@@ -212,24 +353,48 @@ documentation for each function, class, and namespace of the API.
 
   @todo Extend the python interfaces to provide the complete CHIMP interface to
     Python applications.
+
+
+  @todo Add interface to help automatically integrate cross-section data (just
+    differential cross-sections?).  This interface would be to benefit CFD type
+    simulations.  This is Tom Schwarzentruber's idea--talk to him for more
+    details.
 */
 
 
 
 //-----------------------------------------------------------
 /** \page chimp-collaboration Community and Collaboration
-The intent of the CHIMP pacakge is to benefit and provide collaboration for all
-members of the research community with interest in simulation of collision
-processes.  To accommodate researchers from various organizations with various
-institutional rules, the development and sharing of CHIMP software and data uses
-the distributed version control system <a target=_blank href="http://git-scm.org">git</a>.
-From the git web site:
+The intent of the CHIMP package is to benefit and facilitate collaboration for
+all members of the research community with interest in simulation of collision
+processes and collisional systems.  To accommodate researchers from various
+organizations with various institutional rules, the development and sharing of
+CHIMP software and data uses the freely-available distributed version control
+system <a target=_blank href="http://git-scm.org">git</a>.  From the git web
+site:
 \verbatim
 Git is a free & open source, distributed version control system designed to
 handle everything from small to very large projects with speed and efficiency.
 \endverbatim
-
+Using git allows developers to work within their own organizations and networks
+and exchange change-sets, patches, and improvements with developers external to
+their own organizations in either a disconnected or connected manner.
+The following diagram demonstrates the structure of the CHIMP collaboration:
 \image html  collaboration.png "CHIMP collaboration diagram"
 \image latex collaboration.eps "CHIMP collaboration diagram" width=10cm
+
+Distribution of CHIMP and collaboration between developers is facilitated by
+the hpcdev organization on
+<a target=_blank href="http://hpcdev.github.com">GitHub</a>.
+<a target=_blank href="http://github.com">GitHub</a>, currently the most popular
+git hosting site, provides a very clean web-interface with some social
+networking functionality focused on easing collaboration between developers.
+Projects can be easily forked by any new developer with an interest in improving
+a specific set of features.  After the developer has created new commits that
+benefit the project, a notice can be sent to the owners of the original
+repository from which was forked and non-conflicting changes can be reviewed,
+accepted, and applied easily, all via the web-interface.  The website for the
+hcpdev organization, where CHIMP related software is distributed is
+<a target=_blank href="http://hpcdev.github.com">http://hpcdev.github.com</a>.
 
 */
