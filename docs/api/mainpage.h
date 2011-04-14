@@ -22,10 +22,10 @@
 
 
 /** \file
- * The main documentation page for doxygen. 
+ * The main documentation page for doxygen.
  */
 
-/** \mainpage
+/** \mainpage CHIMP Documentation
 <hr>
 
 <center>
@@ -50,16 +50,21 @@ and associated model calculations in a consistent, simple yet flexible manner.
   -# \subpage chimp_intro
   -# \subpage chimp_format
     -# \ref chimp_format_xml
-      -# \ref chimp_format_xml_particles
-      -# \ref chimp_format_xml_interactions
-      .
     -# \ref chimp_format_units
+    -# \ref chimp_format_examples
+      -# \ref chimp_format_examples_particles
+      -# \ref chimp_format_examples_interactions
+      .
     .
   -# \subpage chimp_cap
     -# \ref chimp_cap_cross_sections
     -# \ref chimp_cap_interactions
     -# \ref chimp_cap_table
+    .
   -# \subpage chimp_interface
+    -# \ref chimp_interface_cpp
+    -# \ref chimp_interface_python
+    .
   -# \subpage chimp-collaboration
   -# \subpage chimp_platforms
   -# \subpage chimp-impl-todos
@@ -81,8 +86,7 @@ and associated model calculations in a consistent, simple yet flexible manner.
 
 //-----------------------------------------------------------
 /** \page chimp_intro Introduction
-This is a brief introduction to CHIMP, the problems it intends to solve, and the
-scope of the solutioh.
+\n
 
 Currently, it is very common for different simulations to use slightly, if not
 drastically, different physical data for the same materials.  This creates both
@@ -98,7 +102,7 @@ necessarily wide, so as to create some uniformity of simulation results based on
 the same data.  All data to be added to any released version of the library will
 be required to be both publicly accessible and well documented as to its origin.
 The success of this work will rely on heavily on all collaborators contributing
-data in the correct format and helping thoroughly documenting this data. 
+data in the correct format and helping thoroughly documenting this data.
 
 This manual constitutes the technical reference or application programming
 interface (API) documentation for CHIMP.  This manual is automatically generated
@@ -111,13 +115,79 @@ documentation for each function, class, and namespace of the API.
 
 //-----------------------------------------------------------
 /** \page chimp_format Storage Format
+  \n
 
-\section chimp_format_bg Background
+  There are many codes in existence that use interaction data and related
+  information.  Methods for using this data take several forms which are often
+  specially developed for a particular application code.  Two common techniques
+  for inclusion of data into typical of modern interaction codes (both research
+  level codes as well as design level codes) are
+    -# direct inclusion of data within compiled source code files,
+    -# indirect inclusion of data within ASCII text files to be read into memory
+       at runtime.
+  Special formats often make sharing of data between separate codes cumbersome
+  and somewhat difficult.  The case of including data directly within
+  compiled source code files presents one of the more difficult data-sharing
+  platforms since different codes rarely use similar internal structures, let
+  alone similar base programming languages.  Direct inline inclusion also does
+  not lend itself well to review from other researchers.
+
+  Although ASCII text files do enable easier review and sharing of information,
+  typical formats are fragile in that the interpretation of the data relies on
+  implicit data structure definitions.  For example, the meaning of lines and
+  columns in table of data are often implied and must be interpreted by code.
+  In other words, the data is rarely easily decipherable by human review.
+  Furthermore, the units and unit systems are also often implicit and require
+  a specific code implementation to correctly interpret the information.
+
+  As a result of each of these issues, the work required to grow any one code's
+  set of interaction data is tedious and must be repeated for each code that
+  uses a separate format.  The goal of the CHIMP format is to provide a format
+  system that is 1) easily understood through human review and 2) less open to
+  interpretation.  In other words, the CHIMP format seeks to use explicit
+  representations of general data as well as explicit, flexible and natural
+  representation of physical data with associated units.
 
 <hr>
 \section chimp_format_xml eXtensible Markup Language (XML)
-  \subsection chimp_format_xml_particles Particles
-  \subsection chimp_format_xml_interactions Interactions
+  CHIMP uses the industry standard set of rules for encoding documents known as
+  the eXtensible Markup Language (XML) version 1.0.  As stated on
+  <a href="http://en.wikipedia.org/wiki/XML">Wikipedia</a>:
+  \verbatim
+    The design goals of XML emphasize simplicity, generality, and usability over
+    the Internet.
+  \endverbatim
+  Because of its generality and simplicity, XML is naturally a verbose,
+  self-documenting markup language used in various unrelated applications of
+  data storage.  A verbose markup language helps to minimize data ambiguity and
+  leaves little room for re-interpretation by any particular simulation code.
+  As a very simple example, consider the CHIMP specification for storing mass:
+  \verbatim
+    <mass> 39.948 * amu </mass>
+  \endverbatim
+  It is clear in this example that the value within the XML representation
+  pertains to mass rather than some other quantity type.
+
+  The XML standard has several associated industry standards that are
+  implemented by several XML libraries that also prove to be very useful for
+  CHIMP:
+    - First, XML::XInclude is a standard for including several independent XML
+      documents into the body of a single master document.  This technology is
+      helpful for aggregating various source XML files into one final data set.
+      In terms of CHIMP, this allows users to seamlessly integrate proprietary
+      or sensitive data with the data that is distributed with the CHIMP code.
+      Currently, CHIMP supports integration of multiple data sources both via
+      pre-runtime master file contents (where XML::XInclude instructions are
+      specifiec) as well as at runtime via the chimp::RuntimeDB::addXMLData
+      interface.
+    - Second, XML::XPath is a standard for querying an XML document using a very
+      expressive query language.  All data items pulled from the XML data
+      sources into memory by the CHIMP library are ultimately a result of an
+      XML::XPath query.  XML::XPath allows CHIMP to find interactions, find
+      particles, and further enables the virtual aggregation of data that comes
+      from different sources.
+    .
+
 
 <hr>
 \section chimp_format_units Units
@@ -163,7 +233,7 @@ documentation for each function, class, and namespace of the API.
       <some-value> 0.316446 * inches </some-value>
     </code></b>,</center>
     <center><b><code>
-      <some-value> 3.99553e-05 * furlong </some-value>
+      <some-value> 3.99553e-05 * furlongs </some-value>
     </code></b>,</center>
   or even<br>
     <center><b><code>
@@ -171,7 +241,7 @@ documentation for each function, class, and namespace of the API.
     </code></b></center>
   where <code>ns</code> and <code>c</code> mean nanoseconds and the speed of
   light, respectively.  These various expressions demonstrate that CHIMP
-  provides the capability to enter data in any way that seems natural. 
+  provides the capability to enter data in any way that seems natural.
 
   Although the above representations of <b><code><some-value></code></b> indeed show
   that the user can use various units as desired, we
@@ -194,6 +264,106 @@ documentation for each function, class, and namespace of the API.
   example, an expression that must result in length dimensions is checked for
   dimensions of length.
 
+
+<hr>
+\section chimp_format_examples Demonstration of CHIMP XML Format
+
+  \subsection chimp_format_examples_particles Particles
+  The CHIMP format for particles consists of a <b><code><Particle></code></b>
+  XML node with a <i><b>required</b></i> <code>name</code> attribute to specify
+  the name of the particle species.  Within the <b><code><Particle></code></b>
+  XML node, several <i>optional</i> properties that can be applied, such as:
+    - mass:  e.g. <b><code><mass> value </mass></code></b>
+      [Defaults to <code>0.0*kg</code> if missing].
+    - charge:  e.g. <b><code><charge> value </charge></code></b>
+      [Defaults to <code>0.0*C</code> if missing].
+    - polarizability:  e.g. <b><code><polarizability> value </polarizability></code></b>
+      [Defaults to <code>0.0*C*m^2/Volt</code> if missing].
+    .
+  In addition, the user is free to develop and use new properties as
+  demonstrated in the
+  \ref Properties/specify-properties/getProperties.cpp "specify-properties"
+  example.
+
+  The following example CHIMP particle species definitions are an excerpt from
+  the standard CHIMP distribution data:
+  \verbatim
+    <Particle name="Ar^+">
+      <mass> element::Ar::mass </mass>
+      <charge> e </charge>
+    </Particle>
+    <Particle name="Ar">
+      <mass>element::Ar::mass</mass>
+    </Particle>
+    <Particle name="e^-">
+      <mass>m_e</mass>
+      <charge>-e</charge>
+    </Particle>
+    <Particle name="e^+">
+      <mass>m_e</mass>
+      <charge>e</charge>
+    </Particle>
+  \endverbatim
+
+  <hr>
+  \subsection chimp_format_examples_interactions Interactions
+  Interactions in CHIMP are keyed based on a detailed balanced (except for
+  energy losses/gains) interaction equation.  The reactants as well as products
+  of any given interaction are denoted by a series of terms, where each term
+  consists of one or more particles of a given species.  Although it is
+  certainly possible for any person to enter these manually, new users are
+  recommended to use the \ref chimp_interface_python package to ensure correct
+  formatting of new entries.
+
+  Consider the following equations:
+  \verbatim
+    <Eq><In><T><P>A</P></T> + <T><P>B</P></T></In>  --&gt;  <Out><T><P>A</P></T> + <T><P>B</P></T></Out></Eq>
+    <Eq><In><T><n>2</n> <P>A</P></T></In>  --&gt;  <Out><T><n>2</n> <P>A</P></T></Out></Eq>
+    <Eq><In><T><P>e^-</P></T> + <T><P>A</P></T></In>  --&gt;  <Out><T><n>2</n> <P>e^-</P></T> + <T><P>A^+</P></T></Out></Eq>
+  \endverbatim
+
+  \verbatim
+    <Interaction>
+      <Eq><In><T><n>2</n> <P>Ar</P></T></In>  --&gt;  <Out><T><n>2</n> <P>Ar</P></T></Out></Eq>
+      <cross_section model="vhs">
+        <value>pi*(0.417*nm)^2</value>
+        <T_ref>273*K</T_ref>
+        <visc_T_law>0.81</visc_T_law>
+        <reference>
+          Appendix A from &lt;u&gt;Molecular Gas Dynamics and the Direct Simulation of Gas Flows&lt;/u&gt;, G. A. Bird, 2nd Ed., Clarendon Press, 1994.
+          <bibtex>
+            @Book{bird:mgd1994,
+                author =        {G.~A. Bird},
+                title =         {{M}olecular {G}as {D}ynamics and
+                                 the {D}irect {S}imulation of {G}as {F}lows},
+                publisher =     {Oxford University Press},
+                year =          {1994},
+                address =       {New York},
+            }
+          </bibtex>
+        </reference>
+      </cross_section>
+    </Interaction>
+
+    <Interaction>
+      <Eq><In><T><P>e^-</P></T> + <T><P>Hg</P></T></In>  --&gt;  <Out><T><P>e^-</P></T> + <T><P>Hg</P></T></Out></Eq>
+      <cross_section model="constant">
+        <reference>From Bolsig+ ELASTIC;</reference>
+        <value>0.6000E-19 * m^2</value>
+      </cross_section>
+    </Interaction>
+
+    <Interaction>
+      <Eq><In><T><P>e^-</P></T> + <T><P>CO2</P></T></In>  --&gt;  <Out><T><P>e^-</P></T> + <T><P>CO2(7.0eV)</P></T></Out></Eq>
+      <cross_section model="data" xscale="eV" yscale="m^2">
+        <reference>From Bolsig+ EXCITATION; Electronic Excitation</reference>
+        <val x="7.000" y="0.000"/>
+        <val x="8.000" y="0.6000E-20"/>
+        <val x="8.500" y="0.6000E-20"/>
+        <val x="11.00" y="0.000"/>
+      </cross_section>
+    </Interaction>
+  \endverbatim
 */
 
 
@@ -201,8 +371,14 @@ documentation for each function, class, and namespace of the API.
 //-----------------------------------------------------------
 /** \page chimp_cap Capabilities
 \section chimp_cap_bg Background
+
+<hr>
 \section chimp_cap_cross_sections Cross-Section Models
+
+<hr>
 \section chimp_cap_interactions Interaction/Collision Models
+
+<hr>
 \section chimp_cap_table Smart Interaction Table
 */
 
@@ -210,6 +386,26 @@ documentation for each function, class, and namespace of the API.
 
 //-----------------------------------------------------------
 /** \page chimp_interface User Interface
+\section chimp_interface_cpp CHIMP::C++
+  The core interface for CHIMP is implemented in the C++ programming language.
+  This interface provides various levels of access of the data and models
+  supported by CHIMP.  The reader is recommended to review the various
+  <a href="examples.html">examples</a> for a demonstration of the various levels
+  of access that CHIMP provides.  For the highest level, the reader is referred
+  to the \ref simtest/main.cpp example, while for the lowest level of access
+  (where direct XML querying is necessary), the reader is referred to the
+  \ref Properties/xpath-access/getProperties.cpp and
+  \ref CrossSection/xpath-access/testCrossSection.cpp examples.
+
+  Aside from the examples, the reader is referred to the rather extensive
+  automatically generated API documentation as shown on the
+  <a href="namespaces.html">Namespaces</a>,
+  <a href="annotated.html">Classes</a>,
+  and <a href="files.html">Files</a> tabs, as well as the related links.
+
+<hr>
+\section chimp_interface_python CHIMP::Python
+  \verbinclude python/README
 */
 
 
@@ -226,7 +422,7 @@ documentation for each function, class, and namespace of the API.
       (See the <a href="#lgpl">LGPL License</a> under which this package is
       released)
     </h2>
-    
+
     \verbinclude COPYING
 */
 
@@ -237,10 +433,6 @@ documentation for each function, class, and namespace of the API.
     \verbinclude README
 */
 
-//-----------------------------------------------------------
-/** \page chimp_python_readme CHIMP::Python
-    \verbinclude python/README
-*/
 
 
 //-----------------------------------------------------------
@@ -313,7 +505,7 @@ documentation for each function, class, and namespace of the API.
   Placing <code>\#warning</code> directives appears to alter the functionality
   of the preprocessor.  Although a judicious reordering of the
   <code>\#include</code> directives causes the builds to succeed, I would rather
-  not support a compiler that shows such a blatant bug.  
+  not support a compiler that shows such a blatant bug.
 */
 
 
@@ -351,8 +543,8 @@ documentation for each function, class, and namespace of the API.
     .
 
 
-  @todo Extend the python interfaces to provide the complete CHIMP interface to
-    Python applications.
+  @todo Extend the \ref chimp_interface_python interfaces to provide the
+  complete CHIMP interface to Python applications.
 
 
   @todo Add interface to help automatically integrate cross-section data (just
