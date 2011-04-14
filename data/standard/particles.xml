@@ -6,24 +6,12 @@
         </comment>
         <Particle name="87Rb">
             <mass>87*amu</mass>
-            <!--
-                The most accepted values:
-             diameter:       100*a_0,
-             cross_section:  8*pi*(100*a_0)^2,
-            -->
-            <!--
-                assuming that cross_sect == 8pi d^2,
-                using the cross-section data from PhysRev A 51, R2680, we get:
-            -->
-            <diameter>4.635*nm</diameter>
         </Particle>
         <Particle name="85Rb">
             <mass>85*amu</mass>
-            <diameter>100*a_0</diameter>
         </Particle>
         <Particle name="Ar">
             <mass>element::Ar::mass</mass>
-            <diameter>0.417*nm</diameter>
         </Particle>
         <Particle name="e^-">
             <mass>m_e</mass>
