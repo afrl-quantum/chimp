@@ -38,7 +38,17 @@ namespace chimp {
   namespace interaction {
     namespace filter {
 
-      /** Filters an Equation based on a set of Input/Output terms. */
+      /** Filters an Equation based on the contents of a XML "model=" attribute
+       * of the <code><Interaction></code> node.
+       *
+       * This filter can be used to, for example, select all Variable Soft
+       * Sphere models, where <code>model="vss_elastic"</code>.  In other words
+       * it would select all <b><code><Interaction></code></b> nodes that look
+       * like:
+       \verbatim
+         <Interaction model="vss_elastic">
+       \endverbatim
+       */
       struct Label : filter::Base {
         /* MEMBER FUNCTIONS */
         /** Default constructor does not initialize the xpath filter string. */

@@ -466,7 +466,8 @@ interaction follows this outline:
 
          <tr><td>
        - \ref chimp::interaction::filter::Label "Label"</td>
-         <td>Filters an Equation based on a set of Input/Output terms.</td></tr>
+         <td>Filters an Equation based on the contents of a XML "model=" attribute
+       * of the <code><Interaction></code> node.</td></tr>
 
          <tr><td>
        - \ref chimp::interaction::filter::Not "Not"</td>
