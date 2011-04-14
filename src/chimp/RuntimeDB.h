@@ -114,9 +114,10 @@ namespace chimp {
    *    Policy configuration changes the behavior of the RuntimeDB class.  This
    *    class sets, for instance, the set of particle properties that are loaded
    *    from the xml dataset.  <br>
-   *    [ Default:  make_options<>::type ]
+   *    [ Default:  \ref chimp::make_options::type "chimp::make_options<>::type" ]
    *
    * @see make_options
+   * @see make_options::type
    */
   template < typename _options = make_options<>::type >
   class RuntimeDB {

@@ -421,6 +421,112 @@ documentation for each function, class, and namespace of the API.
 
 //-----------------------------------------------------------
 /** \page chimp_interface User Interface
+\n
+
+Almost regardless of the level access desired from CHIMP, the initial user
+interaction follows this outline:
+  -# Specify the entire set of particle species desired to interact using
+     chimp::RuntimeDB::addParticleType.  Particle species can be added by
+     referring to their
+     \ref chimp::RuntimeDB::addParticleType(const std::string &) "name" as
+     found in the XML dataset.  Species can also be built at run-time and added
+     to CHIMP using an instantiated
+     \ref chimp::RuntimeDB::addParticleType(const Properties &)
+     "chimp::RuntimeDB::Properties" class.
+  -# Specify a filter to determine which interactions are
+     allowed/preferred/required by assigning chimp::RuntimeDB::filter.  If the
+     user fails to specify a special filter, all elastic interactions possible
+     and only elastic interactions will be allowed.
+     <br>
+     A filter actually represents an expression of logical operations.
+     An example filter can be represented by a tree of logical operations:
+     \image html  filters.png "Logical Interaction Filter Tree"
+     \image latex filters.eps "Logical Interaction Filter Tree" width=10cm
+     The result of applying the filter tree is to limit the set of all
+     interactions that pertain to the already loaded species to a smaller set
+     that will help describe the physics of interest for a particular
+     simulation.
+     <br>
+     The filters provided by \ref chimp::interaction::filter "CHIMP" are
+     currently:
+       <table border=0 cellpadding=0 cellspacing=0>
+
+         <tr><td>
+       - \ref chimp::interaction::filter::And "And"</td>
+         <td>Filter intersection operation.</td></tr>
+
+         <tr><td>
+       - \ref chimp::interaction::filter::Elastic "Elastic"</td>
+         <td>Filters out all inelastic interactions (only elastic interactions
+         make it through).</td></tr>
+
+         <tr><td>
+       - \ref chimp::interaction::filter::EqIO "EqIO"</td>
+         <td>Filters an Equation based on a set of Input/Output terms.</td></tr>
+
+         <tr><td>
+       - \ref chimp::interaction::filter::Label "Label"</td>
+         <td>Filters an Equation based on a set of Input/Output terms.</td></tr>
+
+         <tr><td>
+       - \ref chimp::interaction::filter::Not "Not"</td>
+         <td>Filters by performing a set difference (pos - neg).</td></tr>
+
+         <tr><td>
+       - \ref chimp::interaction::filter::Null "Null"</td>
+         <td>This filter is really a NO-OP since it does not perform any type of
+         filtering at all.</td></tr>
+
+         <tr><td>
+       - \ref chimp::interaction::filter::Or "Or"</td>
+         <td>Filter union operation.</td></tr>
+
+         <tr><td>
+       - \ref chimp::interaction::filter::Section "Section"</td>
+         <td>This filter sets an order of precedence on interactions coming from
+         different sections of the database.</td></tr>
+       </table>
+  .
+
+These two steps can also be pre-configured and loaded from XML by passing in the
+name of a pre-configured model to the chimp::RuntimeDB::addModel routine.  A
+model is defined within a section of the XML tree.  For instance, a user could
+create a file <code>myChimpData.xml</code> that uses the
+<b><code><myChimpData></code></b> XML section for the user's own data (the
+<b><code><standard></code></b> XML section is for data distributed with CHIMP).
+Models can then be placed within the <b><code><models></code></b> subsection.
+For example, the user could define a model named <code>"N2-bath"</code> defined
+in the <b><code><myChimpData></code></b> section as:
+\verbatim
+  <myChimpData>
+    <models>
+      <model name="N2-bath">
+        <particles>
+          <P>e^-</P>
+          <P>N2</P>
+        </particles>
+        <equation-filter>
+          <!-- this "Or" is redundant just for demonstration purposes -->
+          <Or>
+            <Elastic/>
+            <And>
+              <EqIO dir="In">
+                <T><P>e^-</P></T><T><P>N2</P></T>
+              </EqIO>
+              <EqIO dir="Out">
+                <T><P>e^-</P></T><T><P>N2</P></T>
+              </EqIO>
+            </And>
+          </Or>
+        </equation-filter>
+      </model>
+    </models>
+  </myChimpData>
+\endverbatim
+In this example, the <code>"N2-bath"</code> model describes elastic interactions
+between electrons and a nitrogen gas.
+
+
 \section chimp_interface_cpp CHIMP::C++
   The core interface for CHIMP is implemented in the C++ programming language.
   This interface provides various levels of access of the data and models
