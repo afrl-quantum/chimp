@@ -370,9 +370,8 @@ documentation for each function, class, and namespace of the API.
 
 //-----------------------------------------------------------
 /** \page chimp_cap Capabilities
-\section chimp_cap_bg Background
+\n
 
-<hr>
 \section chimp_cap_cross_sections Cross-Section Models
 
 <hr>
@@ -380,6 +379,42 @@ documentation for each function, class, and namespace of the API.
 
 <hr>
 \section chimp_cap_table Smart Interaction Table
+
+  CHIMP provides a mechanism to automatically select collision results based on
+  the values of the cross sections for the various possible interactions.  For
+  demonstration of this principle, consider interactions between the following
+  set of particle species:<br>
+    <center> <b>e<sup>-</sup></b>, <b>Hg</b>, <b>Hg[6-3P0]</b>, and
+    <b>Hg<sup>+</sup></b>.</center>
+  After being instructed as to the relevant particles, and type of interactions
+  requested, CHIMP builds a table representing all of the interactions that are
+  possible given the possible reactants.  The below figure represents the binary
+  interaction table that CHIMP builds internally, where the cells and rows
+  pertain to each of the reactants and the cells contain the set of all possible
+  product equations.
+
+  \image html  interactions/table.png "Binary Interaction Table"
+  \image latex interactions/table.eps "Binary Interaction Table" width=10cm
+
+  The cell marked in red, representing all the interactions between the
+  <b>e<sup>-</sup></b> and <b>Hg</b> species indicates that three different
+  product equations are possible.  Imagine that the relative probabilities of
+  the interactions are \f$20~\%\f$, \f$25~\%\f$, and \f$55~\%\f$ for
+  <b>e<sup>-</sup>+Hg</b>, <b>e<sup>-</sup>+Hg</b> respectively as indicated by
+  the following figure.
+
+  \image html  interactions/branches.png "Branching Interactions"
+  \image latex interactions/branches.eps "Branching Interactions" width=10cm
+
+  CHIMP automatically calculates the relative branching ratios between each of
+  the branches.  Thus, given a particular pair of particles from the
+  <b>e<sup>-</sup></b> and <b>Hg</b> species, CHIMP can be asked to evaluate
+  both the absolute and relative probabilities to determine the proper
+  interaction to perform.  The user can use this information concerning
+  the proper interaction path to take to perform the simulated physics.  The
+  user also has the option of just requesting CHIMP to perform the proper
+  particle interactions as defined by the \ref chimp_cap_interactions.
+
 */
 
 
