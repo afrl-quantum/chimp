@@ -70,10 +70,12 @@ set( ${PROJECT_NAME}_HEADERS
     src/chimp/interaction/selectRandomPair.h
     src/chimp/interaction/Particle.h
     src/chimp/interaction/cross_section/Constant.h
+    src/chimp/interaction/cross_section/Log.h
     src/chimp/interaction/cross_section/VHS.h
     src/chimp/interaction/cross_section/Lotz.h
     src/chimp/interaction/cross_section/AveragedDiameters.h
     src/chimp/interaction/cross_section/DATA.h
+    src/chimp/interaction/cross_section/detail/LogInfo.h
     src/chimp/interaction/cross_section/detail/VHSInfo.h
     src/chimp/interaction/cross_section/detail/LotzDetails.h
     src/chimp/interaction/cross_section/detail/AvgEasy.h
@@ -116,6 +118,7 @@ set( ${PROJECT_NAME}_SOURCES
     src/chimp/interaction/filter/Base.cpp
     src/chimp/interaction/cross_section/DATA.cpp
     src/chimp/interaction/cross_section/Constant.cpp
+    src/chimp/interaction/cross_section/detail/LogInfo.cpp
     src/chimp/interaction/cross_section/detail/VHSInfo.cpp
     src/chimp/interaction/cross_section/detail/LotzDetails.cpp
     src/chimp/interaction/model/detail/vss_helpers.cpp

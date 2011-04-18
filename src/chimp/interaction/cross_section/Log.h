@@ -65,10 +65,6 @@ namespace chimp {
         /** The log information for this particular interaction. */
         detail::LogInfo log;
 
-        /** The reduced mass. */
-        //ReducedMass mu;
-
-
 
 
         /* MEMBER FUNCTIONS */
@@ -78,12 +74,10 @@ namespace chimp {
          */
         Log() : cross_section::Base<options>() { }
 
-        /** Constructor with the reduced mass already specified. */
-        //Log( const xml::Context & x,
-        //     const ReducedMass & mu )
-        //: cross_section::Base<options>(),
-        //  log( detail::LogInfo::load(x) ),
-        //  mu( mu ) { }
+        /** Constructor with thing.. is this necesary?*/
+        Log( const xml::Context & x )
+        : cross_section::Base<options>(),
+          log( detail::LogInfo::load(x) ) { }
 
         /** Virtual NO-OP destructor. */
         virtual ~Log() {}
@@ -98,10 +92,9 @@ namespace chimp {
         inline virtual double operator() (const double & v_relative) const {
 	  using std::log10;
 
-          /* the collision cross-section is based on a the curve fit of ADD MORE.
+          /* the collision cross-section is based on a curve fit of ADD MORE.
            */
-          return 
-	    log.A - log.B * log10( v_relative );
+          return log.A - log.B * log10( v_relative );
         }
 
         virtual std::pair<double,double>

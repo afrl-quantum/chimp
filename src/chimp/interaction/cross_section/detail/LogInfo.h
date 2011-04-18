@@ -69,7 +69,7 @@ namespace chimp {
           /* MEMBER FUNCTIONS */
 
           std::ostream & print(std::ostream & out) const {
-            out << "{"A: " << A << ", "
+            out << "{A: " << A << ", "
                     "B: " << B << ", "
                 << '}';
             return out;
