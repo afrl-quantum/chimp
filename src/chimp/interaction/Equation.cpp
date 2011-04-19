@@ -83,7 +83,7 @@ namespace chimp {
 
       {
         SEIter i = in.begin();
-        int n = i->second;
+        int n = i->second.n;
 
         retval.A = Term(db.findParticleIndx( i->first->name::value ));
         if ( !(--n) )
@@ -96,7 +96,8 @@ namespace chimp {
 
       /* set the output. */
       for ( SEIter i = out.begin(), end = out.end(); i != end; ++i ) {
-        Term it( db.findParticleIndx(i->first->name::value), i->second );
+        Term it( db.findParticleIndx(i->first->name::value),
+                 i->second.from, i->second.ops, i->second.n );
 
         if (it.species == -1)
           throw xml::error(

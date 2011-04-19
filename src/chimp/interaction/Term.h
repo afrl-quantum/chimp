@@ -121,12 +121,36 @@ namespace chimp {
        * for the terms on both sides of the equation is '2'. */
       int n;
 
+      /** The source particle from which to copy (-1 means ignore, or resort to
+       * rules).  The length of this vector should equal Term::n. */
+      std::vector< int > from;
+
+      /** Operations to perform on products.  The length of this vector should
+       * equal Term::n. */
+      std::vector< std::string > product_ops;
+
 
 
       /* MEMBER FUNCTIONS */
+      Term( const int & species, const int & n )
+        : species(species), n(n),
+          from( std::vector<int>(n, -1) ),
+          product_ops( std::vector< std::string >(n, "") ) { }
+
       /** Term constructor. */
       Term( const int & species = 0,
-            const int & n = 1 ) : species(species), n(n) { }
+            const std::vector< int > & from
+                = std::vector<int>(1,-1),
+            const std::vector< std::string > & product_ops
+                = std::vector< std::string >( 1, "" ),
+            const int & n = 1 )
+        : species(species), n(n), from(from), product_ops(product_ops) {
+        if ( n != static_cast<int>(from.size()) ||
+             n != static_cast<int>(product_ops.size()) )
+          throw std::runtime_error(
+            "chimp::interaction::Term:  "
+            "incorrect number of 'from' or 'ops' items" );
+      }
 
       /** Term stream printer. */
       template <class RnDB>
@@ -158,7 +182,9 @@ namespace chimp {
 
     /** Equals operation for interaction::Term.  */
     inline bool operator== ( const Term & lhs, const Term & rhs ) {
-      return lhs.species == rhs.species && lhs.n == rhs.n;
+      return lhs.species == rhs.species &&
+             lhs.n == rhs.n             &&
+             lhs.from == rhs.from       ;
     }
 
     /** Less than operation for interaction::Term orders by species and then by
@@ -169,7 +195,9 @@ namespace chimp {
 
     /** Equals operation for interaction::Term.  */
     inline bool operator!= ( const Term & lhs, const Term & rhs ) {
-      return lhs.species != rhs.species || lhs.n != rhs.n;
+      return lhs.species != rhs.species ||
+             lhs.n != rhs.n             ||
+             lhs.from != rhs.from       ;
     }
 
   }/* namespace chimp::interaction */

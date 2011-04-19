@@ -46,11 +46,26 @@ namespace chimp {
       };
 
 
+      struct TermInfo {
+        int n;
+        std::vector<int> from;
+        std::vector< std::string > ops;
+
+        TermInfo( const int & n ) : n(n) { }
+      };
+
+      inline bool operator== ( const TermInfo & lhs, const TermInfo & rhs ) {
+        return lhs.n == rhs.n &&
+               lhs.from == rhs.from &&
+               lhs.ops == rhs.ops;
+      }
+
+
       template < typename RnDB >
       struct makeSortedTermMap {
         typedef std::map<
           const typename RnDB::Properties *,
-          int,
+          TermInfo,
           PropertyPtrComparator
         > type;
       };
@@ -72,17 +87,33 @@ namespace chimp {
           std::string particle_name = i->query<std::string>("P");
           int n = i->query<int>("n",1);
 
+          int from = i->query<int>("@from", -1);
+          std::string ops = i->query< std::string >("@ops", "");
+
           n_particles += n;
 
           const typename RnDB::Properties * p = &( db[particle_name] );
 
           /* This ensures that "A + A" turns into "2 A" */
           PIter j = el.find(p);
-          if ( j != el.end() )
-            j->second += n;
-          else
-            el.insert( std::make_pair(p, n) );
+          if ( j != el.end() ) {
+            j->second.n += n;
+          } else {
+            j = el.insert( std::make_pair(p, TermInfo(n)) ).first;
+          }
+
+          /* now add the "from" and "ops" entries. */
+          j->second.from.insert( j->second.from.end(), n, from );
+          j->second.ops .insert( j->second.ops .end(), n, ops );
         }
+
+        /* Now just some dummy checks. */
+        for ( PIter i = el.begin(), end = el.end(); i != end; ++i )
+          if ( i->second.n != static_cast<int>(i->second.from.size())  ||
+               i->second.n != static_cast<int>(i->second.ops.size()) )
+            throw std::runtime_error(
+              "chimp::interaction::detail::loadAndSortTerms:  "
+              "incorrect number of 'from' or 'ops' items" );
 
         return n_particles;
       }
