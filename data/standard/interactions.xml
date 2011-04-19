@@ -15,8 +15,21 @@
             2.  Their lexigraphically compared names.
         </comment>
 
+        <!--
+          Example of how to explicitly set the source particles and optional
+          operations to perform for an inelastic interaction.
+
+          <Out><T from="0" ops="setPosition(.5*P(0,X)+.5*P(0,CHARGE)/P(1,CHARGE)*P(0,X), P(0,Y), P(0,Z))" ><n>2</n> <P>87Rb</P></T></Out>
+
+          from=   The index of the source particle.
+          If <n/> > 1, then  from= and ops= apply to all 'n' output particles.
+          If you want from= to apply differently to all 'n' particles of a
+          single term, then split the term up.
+
+        -->
+
         <Interaction>
-            <Eq><In><T><n>2</n> <P>87Rb</P></T></In>  --&gt;  <Out><T CopyFrom="0" ops="setPosition(.5*T('0','x')+.5*T('0','charge')/T('1','charge')*T('0','x'),T('0','y'),T('0','z'))" ><n>2</n> <P>87Rb</P></T></Out></Eq>
+            <Eq><In><T><n>2</n> <P>87Rb</P></T></In>  --&gt;  <Out><T><n>2</n> <P>87Rb</P></T></Out></Eq>
             <cross_section model="vhs">
                 <value uncertainty="130 * nm^2">540 * nm^2</value>
                 <T_ref>25*uK</T_ref>
