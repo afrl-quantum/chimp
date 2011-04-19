@@ -109,7 +109,12 @@ namespace chimp {
               pow( 2 + massChargeIn.size(), massChargeOut.size() - i - 1u)
             );
             for ( unsigned int j = 0u; j < candidates.size(); ++j ) {
-              const unsigned int src_indx = j % i_period;
+              /* take care when from= was explicitly set.  This will result in
+               * some duplicate candidates, but oh well... */
+              const unsigned int src_indx = massChargeOut[i].from >= 0
+                                          ? massChargeOut[i].from
+                                          : j % i_period;
+
               cm_cq[j].first  += massChargeOut[i].mass   * r[ src_indx ];
               cm_cq[j].second += massChargeOut[i].charge * r[ src_indx ];
 
