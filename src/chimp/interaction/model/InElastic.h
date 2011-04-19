@@ -27,7 +27,9 @@
 #ifndef chimp_interaction_model_InElastic_h
 #define chimp_interaction_model_InElastic_h
 
+#include <chimp/property/charge.h>
 #include <chimp/interaction/Equation.h>
+#include <chimp/interaction/ReducedMass.h>
 #include <chimp/interaction/model/Base.h>
 #include <chimp/interaction/model/InElastic_2X2.h>
 #include <chimp/interaction/model/detail/inelastic_helpers.h>
@@ -51,8 +53,38 @@ namespace chimp {
         static const std::string label;
 
 
+        /* MEMBER STORAGE */
+        /** Reduced mass related ratios. */
+        ReducedMass mu;
+
+        /** Reduced charge related ratios. */
+        ReducedMass muQ;
+
+        /** Index of source particles for each of the (two) reactants. */
+        std::vector< detail::ParticleFactory > factories;
+
+        /** A list of lists of expressions for each output species. */
+        std::vector<
+          runtime::physical::calc::Driver::ExpressionVector
+        > expressions;
+
+
 
         /* MEMBER FUNCTIONS */
+        /** Default constructor sets bogus values--mostly useful for loading
+         * with InElastic::load. */
+        InElastic() { }
+
+        /** Constructor to set up factories and expressions. */
+        InElastic( const xml::Context & x,
+                   const interaction::Equation<options> & eq,
+                   const RuntimeDB<options> & db )
+          : mu( eq.reducedMass ),
+            muQ( db[eq.A.species].chimp::property::charge::value,
+                 db[eq.B.species].chimp::property::charge::value ) {
+          detail::setFactories( factories, expressions, x, eq, db );
+        }
+
         /** Virtual NO-OP destructor. */
         virtual ~InElastic() { }
 
@@ -82,7 +114,7 @@ namespace chimp {
           switch ( detail::countComponents( eq.products ) ) {
             case 2u : {
               if ( dE == 0.0 )
-                return new InElastic_2X2<options,false>( eq.reducedMass );
+                return new InElastic_2X2<options,false>( x, eq, db );
               else
                 /* dE comes to this point in SI units.
                  * dE/mu _MUST_ be in the same units as velocity as passed
@@ -90,7 +122,7 @@ namespace chimp {
                  * done in SI units.  At some time in the future, it may
                  * become desirable to use energy instead of velocity.
                  */
-                return new InElastic_2X2<options,true>( eq.reducedMass, dE );
+                return new InElastic_2X2<options,true>( x, eq, db, dE );
             }
 
             default :
@@ -98,7 +130,7 @@ namespace chimp {
           }/* switch */
 
           std::ostringstream ostr;
-          eq.print( ostr << "Inelastic collision not yet support: ", db );
+          eq.print( ostr << "InElastic collision not yet support: ", db );
           throw std::runtime_error( ostr.str() );
         }
       };

@@ -31,8 +31,8 @@
 #include <chimp/accessors.h>
 #include <chimp/interaction/Equation.h>
 #include <chimp/interaction/model/Base.h>
-#include <chimp/interaction/ReducedMass.h>
 #include <chimp/interaction/model/InElastic.h>
+#include <chimp/interaction/model/detail/inelastic_helpers.h>
 
 #include <xylose/power.h>
 #include <xylose/Vector.h>
@@ -88,8 +88,10 @@ namespace chimp {
 
 
         /* MEMBER STORAGE */
-        /** Reduced mass related ratios. */
-        ReducedMass mu;
+        using typename InElastic<options>::mu;
+        using typename InElastic<options>::muQ;
+        using typename InElastic<options>::factories;
+        using typename InElastic<options>::expressions;
 
         /** Change in relative velocity due to inelastic collision energy
          * change. */
@@ -99,13 +101,28 @@ namespace chimp {
 
         /* MEMBER FUNCTIONS */
         /** Default constructor sets mu to invalid values. */
-        InElastic_2X2() : mu(), dV2rel(0.0) { }
+        InElastic_2X2() : dV2rel(0.0) { }
 
         /** Constructor that specifies the reduced mass explicitly. */
-        InElastic_2X2( const ReducedMass & mu, const double & dE = 0.0 )
-          : mu( mu ), dV2rel( dE / ( 0.5 * mu.value ) ) {
+        template < typename Eq,
+                   typename DB >
+        InElastic_2X2( const xml::Context & x,
+                       const Eq & eq,
+                       const DB & db,
+                       const double & dE = 0.0 )
+          : InElastic<options>( x, eq, db ),
+            dV2rel( dE / ( 0.5 * eq.reducedMass.value ) ) {
           if ( hasEnergyChange && dE == 0.0 )
             throw std::runtime_error("dE == 0.0 for hasEnergyChange == true ");
+
+          // Check the values of factories and expressions.size()
+          if ( factories.size() != 2u || expressions.size() > 2u )
+            throw std::runtime_error(
+              "InElastic (2X2):  more than two output terms?" );
+          for ( unsigned int i = 0u; i < factories.size(); ++i )
+            if ( factories[i].src_indx > 1u )
+              throw std::runtime_error(
+                "InElastic (2X2):  source particle out of range" );
         }
 
         /** Virtual NO-OP destructor. */
@@ -150,18 +167,22 @@ namespace chimp {
                 A * std::cos(C) * SpeedRel,
                 A * std::sin(C) * SpeedRel );
 
-          /* Take care of creating output particles and copying things over
-           * appropriately such as position.  This should also set the species
-           * for each output particle appropriately. */
-          detail::add_product( products, part1, part2, 0u );
+          /* Create products based on reactants. */
+          detail::ParticleFactory::Scratch scratch( factories,
+                                                    part1, part2,
+                                                    mu, muQ );
+          factories[0].create( products, part1, part2, scratch );
           Particle & r1 = products.back();
-
-          detail::add_product( products, part1, part2, 1u );
+          factories[1].create( products, part1, part2, scratch );
           Particle & r2 = products.back();
 
           // VelRelPost is the post-collision relative v.
           setVelocity(r1, VelCM + ( mu.over_m1 * VelRelPost ) );
           setVelocity(r2, VelCM - ( mu.over_m2 * VelRelPost ) );
+
+          /* now process any specialized commands inside expression parser. */
+          detail::process( expressions[0], r1, part1, part2 );
+          detail::process( expressions[1], r2, part1, part2 );
         }
       };
 
