@@ -64,6 +64,7 @@ set( ${PROJECT_NAME}_HEADERS
     src/chimp/interaction/model/Elastic.h
     src/chimp/interaction/model/InElastic.h
     src/chimp/interaction/model/detail/vss_helpers.h
+    src/chimp/interaction/model/detail/inelastic_helpers.h
     src/chimp/interaction/model/test/diagnostics.h
     src/chimp/interaction/model/Base.h
     src/chimp/interaction/model/VSSElastic.h
@@ -120,6 +121,7 @@ set( ${PROJECT_NAME}_SOURCES
     src/chimp/interaction/cross_section/detail/VHSInfo.cpp
     src/chimp/interaction/cross_section/detail/LotzDetails.cpp
     src/chimp/interaction/model/detail/vss_helpers.cpp
+    src/chimp/interaction/model/detail/inelastic_helpers.cpp
 )
 
 add_definitions(

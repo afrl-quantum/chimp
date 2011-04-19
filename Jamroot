@@ -94,6 +94,7 @@ lib particledb :
       src/chimp/interaction/cross_section/detail/VHSInfo.cpp
       src/chimp/interaction/cross_section/detail/LotzDetails.cpp
       src/chimp/interaction/model/detail/vss_helpers.cpp
+      src/chimp/interaction/model/detail/inelastic_helpers.cpp
     : <link>static # build requirements
       <library>/physical//calc
     : # no default build

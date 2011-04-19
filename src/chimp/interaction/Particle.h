@@ -103,6 +103,8 @@ namespace chimp {
              lhs.weight  == rhs.weight;
     }
 
+    using namespace chimp::accessors::particle;
+
   }/* namespace chimp::interaction */
 }/* namespace chimp */
 

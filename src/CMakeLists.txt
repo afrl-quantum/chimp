@@ -3,6 +3,7 @@ if( BUILD_TESTING )
   add_subdirectory( chimp/property/detail/test )
   add_subdirectory( chimp/property/test )
 
+  add_subdirectory( chimp/interaction/model/detail/test )
   add_subdirectory( chimp/interaction/model/test )
   add_subdirectory( chimp/interaction/cross_section/test )
   add_subdirectory( chimp/interaction/filter/test )
