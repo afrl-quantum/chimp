@@ -71,7 +71,10 @@ BOOST_AUTO_TEST_SUITE( inelastic_helpers_tests ); // {
     typedef cimd::ParticleFactory PF;
     typedef cimd::MassChargeTuple MCT;
 
-    { /* A + e^-  -->  A(^+) + 2 e^-, where A(^+) is really an A species */
+    { BOOST_MESSAGE(
+        "A + e^-  -->  A(^+) + 2 e^-, where A(^+) is really an A species"
+      );
+
       std::vector< PF > factories;
       std::vector< MCT > in, out;
 
@@ -97,7 +100,7 @@ BOOST_AUTO_TEST_SUITE( inelastic_helpers_tests ); // {
       );
     }
 
-    { /* A + e^-  -->  A^- + 2 e^- */
+    { BOOST_MESSAGE( "A + e^-  -->  A^- + 2 e^-");
       std::vector< PF > factories;
       std::vector< MCT > in, out;
 
@@ -123,7 +126,7 @@ BOOST_AUTO_TEST_SUITE( inelastic_helpers_tests ); // {
       );
     }
 
-    { /* AB + e^-  -->  A^- + B */
+    { BOOST_MESSAGE( "AB + e^-  -->  A^- + B (dissociative attachment)" );
       std::vector< PF > factories;
       std::vector< MCT > in, out;
 
@@ -152,7 +155,7 @@ BOOST_AUTO_TEST_SUITE( inelastic_helpers_tests ); // {
       );
     }
 
-    { /* A^+ + e^-  -->  A */
+    { BOOST_MESSAGE( "A^+ + e^-  -->  A" );
       std::vector< PF > factories;
       std::vector< MCT > in, out;
 
@@ -174,7 +177,29 @@ BOOST_AUTO_TEST_SUITE( inelastic_helpers_tests ); // {
       );
     }
 
-    { /* A + B*  -->  A + B + K.E. */
+    { BOOST_MESSAGE( "e^- + A  -->  A^-" );
+      std::vector< PF > factories;
+      std::vector< MCT > in, out;
+
+      in.push_back( MCT( 0.1, -1.0, 0 ) );
+      in.push_back( MCT( 1.0,  0.0, 1 ) );
+
+      out.push_back( MCT( 1.0, -1.0, 2 ) );
+
+      double score = cimd::setParticleFactories( factories, in, out );
+      std::ostringstream ostr;
+      copy( factories.begin(), factories.end(),
+            std::ostream_iterator<PF>(ostr,"\n") );
+
+      BOOST_CHECK_CLOSE( score, 1.81818181, 1e-6 );
+
+      BOOST_CHECK_EQUAL(
+        ostr.str(),
+        "0\t2\tNOOP\n"
+      );
+    }
+
+    { BOOST_MESSAGE( "A + B*  -->  A + B + K.E." );
       std::vector< PF > factories;
       std::vector< MCT > in, out;
 
@@ -198,7 +223,7 @@ BOOST_AUTO_TEST_SUITE( inelastic_helpers_tests ); // {
       );
     }
 
-    { /* A^- + A  -->  A + A^- (charge exchange) */
+    { BOOST_MESSAGE( "A^- + A  -->  A + A^- (charge exchange)" );
       std::vector< PF > factories;
       std::vector< MCT > in, out;
 
@@ -219,6 +244,56 @@ BOOST_AUTO_TEST_SUITE( inelastic_helpers_tests ); // {
         ostr.str(),
         "1\t1\tNOOP\n"
         "0\t0\tNOOP\n"
+      );
+    }
+
+    { BOOST_MESSAGE( "e^- + A  -->  e^- + A*" );
+      std::vector< PF > factories;
+      std::vector< MCT > in, out;
+
+      in.push_back( MCT( 0.1, -1.0, 0 ) );
+      in.push_back( MCT( 1.0,  0.0, 1 ) );
+
+      out.push_back( MCT( 0.1, -1.0, 0 ) );
+      out.push_back( MCT( 1.0,  0.0, 2 ) );
+
+      double score = cimd::setParticleFactories( factories, in, out );
+      std::ostringstream ostr;
+      copy( factories.begin(), factories.end(),
+            std::ostream_iterator<PF>(ostr,"\n") );
+
+      BOOST_CHECK_EQUAL( score, 0.0 );
+
+      BOOST_CHECK_EQUAL(
+        ostr.str(),
+        "0\t0\tNOOP\n"
+        "1\t2\tNOOP\n"
+      );
+    }
+
+    { BOOST_MESSAGE( "e^- + A2  -->  e^- + A + A*" );
+      std::vector< PF > factories;
+      std::vector< MCT > in, out;
+
+      in.push_back( MCT( 0.1, -1.0, 0 ) );
+      in.push_back( MCT( 2.0,  0.0, 1 ) );
+
+      out.push_back( MCT( 0.1, -1.0, 0 ) );
+      out.push_back( MCT( 1.0,  0.0, 2 ) );
+      out.push_back( MCT( 1.0,  0.0, 3 ) );
+
+      double score = cimd::setParticleFactories( factories, in, out );
+      std::ostringstream ostr;
+      copy( factories.begin(), factories.end(),
+            std::ostream_iterator<PF>(ostr,"\n") );
+
+      BOOST_CHECK_EQUAL( score, 0.0 );
+
+      BOOST_CHECK_EQUAL(
+        ostr.str(),
+        "0\t0\tNOOP\n"
+        "1\t2\tNOOP\n"
+        "1\t3\tNOOP\n"
       );
     }
   }
