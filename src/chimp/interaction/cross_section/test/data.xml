@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<DATATest>
+  <calc-commands>
+      <command>from physical::constant import *</command>
+      <command>from physical::unit import *</command>
+      <command>from physical import 'unit::pi'</command>
+      <command>from physical import 'element::.*'</command>
+  </calc-commands>
+
+  <endothermic model="data" xscale="eV" yscale="m^2">
+    <val x="0.2000E-01" y="0.000"/>
+    <val x="0.3000E-01" y="0.2500E-21"/>
+    <val x="0.8000" y="0.2500E-21"/>
+    <val x="1.600" y="0.8600E-21"/>
+    <val x="1.800" y="0.2350E-20"/>
+    <val x="2.000" y="0.1900E-19"/>
+    <val x="2.200" y="0.2770E-19"/>
+    <val x="2.400" y="0.2190E-19"/>
+    <val x="2.600" y="0.2170E-19"/>
+    <val x="2.800" y="0.1380E-19"/>
+    <val x="3.000" y="0.1030E-19"/>
+    <val x="3.200" y="0.6900E-20"/>
+    <val x="3.600" y="0.1700E-20"/>
+    <val x="20.00" y="0.000"/>
+  </endothermic>
+
+  <nothreshold model="data" xscale="eV" yscale="m^2">
+    <val x="0.0" y="0.0"/>
+    <val x="0.3000E-01" y="0.2500E-21"/>
+    <val x="0.8000" y="0.2500E-21"/>
+    <val x="1.600" y="0.8600E-21"/>
+    <val x="1.800" y="0.2350E-20"/>
+    <val x="2.000" y="0.1900E-19"/>
+    <val x="2.200" y="0.2770E-19"/>
+    <val x="2.400" y="0.2190E-19"/>
+    <val x="2.600" y="0.2170E-19"/>
+    <val x="2.800" y="0.1380E-19"/>
+    <val x="3.000" y="0.1030E-19"/>
+    <val x="3.200" y="0.6900E-20"/>
+    <val x="3.600" y="0.1700E-20"/>
+    <val x="20.00" y="0.000"/>
+  </nothreshold>
+
+</DATATest>
