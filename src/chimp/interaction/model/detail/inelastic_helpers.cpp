@@ -108,8 +108,8 @@ namespace chimp {
           std::vector< std::vector< ParticleFactory > > candidates;
           std::vector< std::pair< double, double > > cm_cq;
           candidates.resize(
-            static_cast<int>(pow( 2 + massChargeIn.size(),
-                                  massChargeOut.size() ) ) );
+            static_cast<int>(pow( 2.0 + massChargeIn.size(),
+                                  static_cast<int>(massChargeOut.size()) ) ) );
           cm_cq.resize( candidates.size(), std::make_pair(0.0, 0.0) );
 
           mass_total = charge_total = 0.0;
@@ -119,7 +119,8 @@ namespace chimp {
             charge_total += massChargeOut[i].charge;
 
             unsigned int i_period = static_cast<unsigned int>(
-              pow( 2 + massChargeIn.size(), massChargeOut.size() - i - 1u)
+              pow( 2.0 + massChargeIn.size(),
+                   static_cast<int>( massChargeOut.size() - i - 1u ) )
             );
             for ( unsigned int j = 0u; j < candidates.size(); ++j ) {
               /* take care when from= was explicitly set.  This will result in
