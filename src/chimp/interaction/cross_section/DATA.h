@@ -312,7 +312,10 @@ namespace chimp {
 
           if      (i==table.begin()) {
             /* Assume that the data begins at a threshold value */
-            return 0;
+            if ( i->first == v_relative )
+              return i->second;
+            else
+              return 0.0;
           } else if (i==table.end()) {
             --i;
             if ( i->second == 0.0 )
