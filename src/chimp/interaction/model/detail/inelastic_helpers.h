@@ -95,12 +95,14 @@ namespace chimp {
               if ( yes_cm ) {
                 cm = mu.over_m2 * position(p1)
                    + mu.over_m1 * position(p2);
-              }
+              } else
+                cm = 0.0;
 
               if ( yes_cq ) {
                 cq = muQ.over_m2 * position(p1)
                    + muQ.over_m1 * position(p2);
-              }
+              } else
+                cq = 0.0;
             }
           };
 
