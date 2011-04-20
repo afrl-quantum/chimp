@@ -34,6 +34,8 @@
 #include <chimp/interaction/model/InElastic_2X2.h>
 #include <chimp/interaction/model/detail/inelastic_helpers.h>
 
+#include <xylose/logger.h>
+
 #include <string>
 #include <stdexcept>
 
@@ -131,7 +133,8 @@ namespace chimp {
 
           std::ostringstream ostr;
           eq.print( ostr << "InElastic collision not yet support: ", db );
-          throw std::runtime_error( ostr.str() );
+          xylose::logger::log_severe( ostr.str().c_str() );
+          return new InElastic;
         }
       };
 
