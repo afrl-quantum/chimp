@@ -31,6 +31,10 @@
 
 #include <physical/runtime.h>
 
+#include <limits>
+#include <cassert>
+#include <stdexcept>
+
 namespace chimp {
   namespace interaction {
     namespace model {
@@ -53,13 +57,14 @@ namespace chimp {
         }
 
 
-        void setParticleFactories( std::vector< ParticleFactory > & factories,
-                                   const std::vector< MassChargeTuple >
-                                         & massChargeIn,
-                                   const std::vector< MassChargeTuple >
-                                         & massChargeOut ) {
+        double setParticleFactories( std::vector< ParticleFactory > & factories,
+                                     const std::vector< MassChargeTuple >
+                                           & massChargeIn,
+                                     const std::vector< MassChargeTuple >
+                                           & massChargeOut ) {
           using std::pow;
           typedef std::vector< MassChargeTuple >::iterator MCIter;
+          const double inf = std::numeric_limits<double>::infinity();
           double CM = 0.0;
           double mass_total = 0.0;
           double CQ = 0.0;
@@ -77,16 +82,24 @@ namespace chimp {
           for ( int i = 0,
                     ri = 1 - static_cast<int>(massChargeIn.size());
                 i < static_cast<int>( massChargeIn.size() ); ++i, ri+=2 ) {
-            CM = ri * massChargeIn[i].mass;
-            CQ = ri * massChargeIn[i].charge;
+            CM += ri * massChargeIn[i].mass;
+            CQ += ri * massChargeIn[i].charge;
             r.push_back( ri );
 
             mass_total   += massChargeIn[i].mass;
             charge_total += massChargeIn[i].charge;
           }
 
-          CM /= mass_total;
-          CQ /= charge_total;
+          if ( mass_total == 0.0 )
+            CM = inf;
+          else
+            CM /= mass_total;
+
+          if ( charge_total == 0.0 )
+            CQ = inf;
+          else
+            CQ /= charge_total;
+
           r.push_back( CM );
           r.push_back( CQ );
 
@@ -113,7 +126,9 @@ namespace chimp {
                * some duplicate candidates, but oh well... */
               const unsigned int src_indx = massChargeOut[i].from >= 0
                                           ? massChargeOut[i].from
-                                          : j % i_period;
+                                          : (j / i_period) % r.size();
+
+              assert( src_indx < r.size() );
 
               cm_cq[j].first  += massChargeOut[i].mass   * r[ src_indx ];
               cm_cq[j].second += massChargeOut[i].charge * r[ src_indx ];
@@ -121,13 +136,40 @@ namespace chimp {
               candidates[j].push_back(
                 ParticleFactory(src_indx, massChargeOut[i].species )
               );
-              if        ( src_indx == massChargeIn.size() ) {
-                candidates[j].back().src_indx = 0u;
-                candidates[j].back().op = ParticleFactory::CM;
-              } else if ( src_indx > massChargeIn.size() ) {
-                candidates[j].back().src_indx = 0u;
-                candidates[j].back().op = ParticleFactory::CQ;
-              }
+
+              if ( src_indx >= massChargeIn.size() ) {
+                /* just for kicks, we'll try and copy from a particle of similar
+                 * species, even though the position and species will be
+                 * explicitly set later. */
+                int same_species = 0u;
+
+                /* first try by just matching mass */
+                for ( unsigned int k = 0u; k < massChargeIn.size(); ++k ) {
+                  if ( massChargeOut[i].mass == massChargeIn[k].mass )
+                    same_species = k;
+                }
+
+                /* first try by just matching mass AND charge */
+                for ( unsigned int k = 0u; k < massChargeIn.size(); ++k ) {
+                  if ( massChargeOut[i].mass == massChargeIn[k].mass &&
+                       massChargeIn[i].charge == massChargeIn[k].charge )
+                    same_species = k;
+                }
+
+                /* finally, if species matches, use that outright */
+                for ( unsigned int k = 0u; k < massChargeIn.size(); ++k ) {
+                  if ( massChargeOut[i].species == massChargeIn[k].species )
+                    same_species = k;
+                }
+
+                if        ( src_indx == massChargeIn.size() ) {
+                  candidates[j].back().src_indx = same_species;
+                  candidates[j].back().op = ParticleFactory::CM;
+                } else if ( src_indx > massChargeIn.size() ) {
+                  candidates[j].back().src_indx = same_species;
+                  candidates[j].back().op = ParticleFactory::CQ;
+                }
+              }//if
             }
           }
 
@@ -135,14 +177,51 @@ namespace chimp {
           /* finish the results by dividing by {mass|charge}_total,
            * calculating a score, then inserting the results into the score
            * keeper. */
-          std::map< double, std::vector< ParticleFactory > > scores;
+          typedef std::map< double, std::vector< ParticleFactory > > ScoreMap;
+          ScoreMap scores;
           for ( unsigned int i = 0u; i < candidates.size(); ++i ) {
-            cm_cq[i].first  /=   mass_total;
-            cm_cq[i].second /= charge_total;
 
-            double score_i = std::abs( cm_cq[i].first  - CM )
-                           + std::abs( cm_cq[i].second - CQ );
+            double score_i = 0.0;
 
+            if ( mass_total == 0.0 ) {
+              if ( CM != inf )
+                throw std::runtime_error(
+                  "chimp::interaction::model::detail::setParticleFactories:  "
+                  "mass vanished into thin air!" );
+
+              cm_cq[i].first = inf;
+            } else {
+              if ( CM == inf )
+                throw std::runtime_error(
+                  "chimp::interaction::model::detail::setParticleFactories:  "
+                  "mass created out of thin air!" );
+
+              cm_cq[i].first /= mass_total;
+              score_i += std::abs( cm_cq[i].first  - CM );
+            }
+
+            if ( charge_total == 0.0 ) {
+              if ( CQ != inf )
+                throw std::runtime_error(
+                  "chimp::interaction::model::detail::setParticleFactories:  "
+                  "charge vanished into thin air!" );
+
+              cm_cq[i].second = inf;
+            } else {
+              if ( CQ == inf )
+                throw std::runtime_error(
+                  "chimp::interaction::model::detail::setParticleFactories:  "
+                  "charge created out of thin air!" );
+
+              cm_cq[i].second /= charge_total;
+              score_i += std::abs( cm_cq[i].second - CQ );
+            }
+
+            /* Generally, we want to give preference to using locations of
+             * particles rather than using CM or CQ.  By using map::insert, and
+             * since CM and CQ are added last to r[i], the preference is almost
+             * taken care of automatically.  This might be done more thoroughly.
+             */
             scores.insert( std::make_pair( score_i, candidates[i] ) );
           }
 
@@ -150,7 +229,9 @@ namespace chimp {
            * sorted the results by score, we need only to return the best
            * scoring candidate.  (note that low score is better!)*/
 
-          factories = scores.begin()->second;
+          ScoreMap::iterator b = scores.begin();
+          factories = b->second;
+          return b->first;
         }
 
       } /* namespace chimp::interaction::model::detail */

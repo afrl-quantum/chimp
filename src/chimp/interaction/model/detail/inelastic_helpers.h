@@ -104,6 +104,7 @@ namespace chimp {
             }
           };
 
+
           /* MEMBER STORAGE */
           unsigned int src_indx;
           unsigned int target_species;
@@ -112,7 +113,7 @@ namespace chimp {
 
           /* MEMBER FUNCTIONS */
           ParticleFactory( const unsigned int & src_indx,
-                           const unsigned int & targe_species,
+                           const unsigned int & target_species,
                            const Op & op = NOOP )
             : src_indx(src_indx),
               target_species(target_species),
@@ -142,14 +143,14 @@ namespace chimp {
         struct MassChargeTuple {
           double mass;
           double charge;
-          int from;
           int species;
+          int from;
 
           MassChargeTuple( const double & mass,
                            const double & charge,
-                           const int & from = -1,
-                           const int & species = 0 )
-            : mass(mass), charge(charge), from(from), species(species) { }
+                           const int & species,
+                           const int & from = -1 )
+            : mass(mass), charge(charge), species(species), from(from) { }
         };
 
         /** Tests (by brute force) comparison all sorts of possible source
@@ -164,11 +165,11 @@ namespace chimp {
          *  - how much the spelling differs in source and sink particles names.
          *  .
          */
-        void setParticleFactories( std::vector< ParticleFactory > & factories,
-                                   const std::vector< MassChargeTuple >
-                                         & massChargeIn,
-                                   const std::vector< MassChargeTuple >
-                                         & massChargeOut );
+        double setParticleFactories( std::vector< ParticleFactory > & factories,
+                                     const std::vector< MassChargeTuple >
+                                           & massChargeIn,
+                                     const std::vector< MassChargeTuple >
+                                           & massChargeOut );
 
 
 
@@ -192,16 +193,18 @@ namespace chimp {
               massChargeOut.push_back(
                 MassChargeTuple( db[i->species].mass::value,
                                  db[i->species].charge::value,
-                                 i->from[ni],
-                                 i->species ) );
+                                 i->species,
+                                 i->from[ni] ) );
           /* now create an array of all mass-charge tuples of inputs. */
           std::vector< MassChargeTuple > massChargeIn;
           massChargeIn.push_back(
             MassChargeTuple( db[eq.A.species].mass::value,
-                             db[eq.A.species].mass::value ) );
+                             db[eq.A.species].mass::value,
+                             eq.A.species ) );
           massChargeIn.push_back(
             MassChargeTuple( db[eq.B.species].mass::value,
-                             db[eq.B.species].mass::value ) );
+                             db[eq.B.species].mass::value,
+                             eq.B.species ) );
 
           /* call the real worker to set the factories array */
           setParticleFactories( factories, massChargeIn, massChargeOut );
