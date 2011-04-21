@@ -49,14 +49,15 @@ namespace chimp {
         std::string name;
 
         /** The multiplicity of this term.
-         * \f$ n < 0 \f$ is treated like a wildcard for multiplicity. 
+         * \f$ n < 0 \f$ is treated like a wildcard for multiplicity (this is
+         * the default).
          */
         int n;
 
-        EqTerm( const std::string & name = "", const int & n = 1 )
+        EqTerm( const std::string & name = "", const int & n = -1 )
           : name(name), n(n) { }
 
-        EqTerm( const char * name, const int & n = 1 )
+        EqTerm( const char * name, const int & n = -1 )
           : name(name), n(n) { }
       };
 

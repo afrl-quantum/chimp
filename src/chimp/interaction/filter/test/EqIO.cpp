@@ -38,16 +38,33 @@ BOOST_AUTO_TEST_SUITE( EqIO_tests ); // {
 
   BOOST_AUTO_TEST_CASE( query_generation ) {
     using chimp::interaction::filter::EqIO;
+    using chimp::interaction::filter::EqTerm;
     EqIO f(EqIO::IN, "e^-", "Hg");
 
     BOOST_CHECK_EQUAL( getXpathQuery("In",f.terms),
+      "Eq[count(In/T) = 2]/In"
+      "/T[string(P)='Hg']/.."
+      "/T[string(P)='e^-']/.."
+      "/../.."
+    );
+
+    BOOST_CHECK_EQUAL( getXpathQuery("Out",f.terms),
+      "Eq[count(Out/T) = 2]/Out"
+      "/T[string(P)='Hg']/.."
+      "/T[string(P)='e^-']/.."
+      "/../.."
+    );
+
+    EqIO f2(EqIO::IN, EqTerm("e^-",1), EqTerm("Hg",1));
+
+    BOOST_CHECK_EQUAL( getXpathQuery("In",f2.terms),
       "Eq[count(In/T) = 2]/In"
       "/T[string(P)='Hg' and (number(n)=1 or string(n)='')]/.."
       "/T[string(P)='e^-' and (number(n)=1 or string(n)='')]/.."
       "/../.."
     );
 
-    BOOST_CHECK_EQUAL( getXpathQuery("Out",f.terms),
+    BOOST_CHECK_EQUAL( getXpathQuery("Out",f2.terms),
       "Eq[count(Out/T) = 2]/Out"
       "/T[string(P)='Hg' and (number(n)=1 or string(n)='')]/.."
       "/T[string(P)='e^-' and (number(n)=1 or string(n)='')]/.."
