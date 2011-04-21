@@ -103,7 +103,18 @@ namespace chimp {
              lhs.weight  == rhs.weight;
     }
 
-    using namespace chimp::accessors::particle;
+    /* not sure why using
+     *    using namespace chimp::accessors::particle;
+     * did not seem to work with gcc 4.4.3 on Ubuntu
+     */
+    using chimp::accessors::particle::velocity;
+    using chimp::accessors::particle::setVelocity;
+    using chimp::accessors::particle::position;
+    using chimp::accessors::particle::setPosition;
+    using chimp::accessors::particle::species;
+    using chimp::accessors::particle::setSpecies;
+    using chimp::accessors::particle::weight;
+    using chimp::accessors::particle::setWeight;
 
   }/* namespace chimp::interaction */
 }/* namespace chimp */
