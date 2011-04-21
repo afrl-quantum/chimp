@@ -1,1 +1,2 @@
 unit-test Elastic : Elastic.cpp ;
+unit-test InElastic : InElastic.cpp ;

@@ -171,6 +171,9 @@ namespace chimp {
           detail::ParticleFactory::Scratch scratch( factories,
                                                     part1, part2,
                                                     mu, muQ );
+          /* ensure that there is enough room for both so that products.back()
+           * doesn't become invalid after adding another. */
+          products.reserve( products.size() + 2u );
           factories[0].create( products, part1, part2, scratch );
           Particle & r1 = products.back();
           factories[1].create( products, part1, part2, scratch );

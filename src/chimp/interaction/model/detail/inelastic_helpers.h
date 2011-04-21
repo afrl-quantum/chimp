@@ -201,11 +201,11 @@ namespace chimp {
           std::vector< MassChargeTuple > massChargeIn;
           massChargeIn.push_back(
             MassChargeTuple( db[eq.A.species].mass::value,
-                             db[eq.A.species].mass::value,
+                             db[eq.A.species].charge::value,
                              eq.A.species ) );
           massChargeIn.push_back(
             MassChargeTuple( db[eq.B.species].mass::value,
-                             db[eq.B.species].mass::value,
+                             db[eq.B.species].charge::value,
                              eq.B.species ) );
 
           /* call the real worker to set the factories array */
