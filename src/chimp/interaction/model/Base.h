@@ -78,7 +78,16 @@ namespace chimp {
         /** Obtain the label of the model. */
         virtual std::string getLabel() const = 0;
 
-        /** Two-body collision interface. */
+        /** Two-body collision interface.
+         * Implementing classes must take care that the products array may not
+         * necessarily be initially empty.  This means that implementors might
+         * take the following approach:
+         *   -# use products.push_back to add the particles
+         *   -# AFTER push_back has been done (resizes might happen during
+         *      push_back), obtain and references of the just-added particles by
+         *      making use of *products.rbegin(), *(products.rbegin() + 1), etc.
+         *   .
+         */
         virtual void interact( ParticleArgRef part1,
                                ParticleArgRef part2,
                                std::vector< Particle > & products,
@@ -89,7 +98,9 @@ namespace chimp {
           );
         }
 
-        /** Three-body collision interface. */
+        /** Three-body collision interface.
+         * @see notes in Base::interact( ParticleArgRef, ParticleArgRef, std;:vector< Particle > &, typename options::RNG & )
+         */
         virtual void interact( ParticleArgRef part1,
                                ParticleArgRef part2,
                                ParticleArgRef part3,
