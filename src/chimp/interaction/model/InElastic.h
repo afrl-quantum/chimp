@@ -113,7 +113,8 @@ namespace chimp {
           // TODO:  When chimp reactants are stored in a list someday, then we
           //        will need to count the number of reactants as well.
 
-          switch ( detail::countComponents( eq.products ) ) {
+          const unsigned int n_products = detail::countComponents(eq.products);
+          switch ( n_products ) {
             case 2u : {
               if ( dE == 0.0 )
                 return new InElastic_2X2<options,false>( x, eq, db );
@@ -132,7 +133,11 @@ namespace chimp {
           }/* switch */
 
           std::ostringstream ostr;
-          eq.print( ostr << "InElastic collision not yet support: ", db );
+          eq.print(
+            ostr << "InElastic (2X" << n_products << ") "
+                    "collision not yet support: ",
+            db
+          );
           xylose::logger::log_severe( ostr.str().c_str() );
           return new InElastic;
         }
