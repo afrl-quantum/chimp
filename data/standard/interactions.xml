@@ -422,10 +422,10 @@
         </Interaction>
 
         <Interaction old_model_label="excitation">
+            <KineticEnergyChange>0.2910*eV</KineticEnergyChange>
             <Eq><In><T><P>e^-</P></T> + <T><P>N2</P></T></In>  --&gt;  <Out><T><P>e^-</P></T> + <T><P>N2(v1)</P></T></Out></Eq>
             <cross_section model="data" xscale="eV" yscale="m^2">
                 <reference>From Bolsig+ EXCITATION; N2 VIBRATIONAL (V=1), input as two separate tables</reference>
-                <val x="0.2910" y="0.000"/>
                 <val x="1.600" y="0.000"/>
                 <val x="1.650" y="0.2700E-20"/>
                 <val x="1.700" y="0.3150E-20"/>
@@ -456,10 +456,10 @@
         </Interaction>
 
         <Interaction old_model_label="excitation">
+            <KineticEnergyChange>0.5900*eV</KineticEnergyChange>
             <Eq><In><T><P>e^-</P></T> + <T><P>N2</P></T></In>  --&gt;  <Out><T><P>e^-</P></T> + <T><P>N2(v2)</P></T></Out></Eq>
             <cross_section model="data" xscale="eV" yscale="m^2">
                 <reference>From Bolsig+ EXCITATION; N2 VIBRATIONAL (V=2)</reference>
-                <val x="0.5900" y="0.000"/>
                 <val x="1.700" y="0.000"/>
                 <val x="1.800" y="0.1500E-21"/>
                 <val x="1.900" y="0.6300E-20"/>
@@ -486,10 +486,10 @@
         </Interaction>
 
         <Interaction old_model_label="excitation">
+            <KineticEnergyChange>0.8800*eV</KineticEnergyChange>
             <Eq><In><T><P>e^-</P></T> + <T><P>N2</P></T></In>  --&gt;  <Out><T><P>e^-</P></T> + <T><P>N2(v3)</P></T></Out></Eq>
             <cross_section model="data" xscale="eV" yscale="m^2">
                 <reference>From Bolsig+ EXCITATION; N2 VIBRATIONAL (V=3)</reference>
-                <val x="0.8800" y="0.000"/>
                 <val x="1.900" y="0.000"/>
                 <val x="2.000" y="0.9600E-20"/>
                 <val x="2.100" y="0.2055E-19"/>
@@ -512,10 +512,10 @@
         </Interaction>
 
         <Interaction old_model_label="excitation">
+            <KineticEnergyChange>1.170*eV</KineticEnergyChange>
             <Eq><In><T><P>e^-</P></T> + <T><P>N2</P></T></In>  --&gt;  <Out><T><P>e^-</P></T> + <T><P>N2(v4)</P></T></Out></Eq>
             <cross_section model="data" xscale="eV" yscale="m^2">
                 <reference>From Bolsig+ EXCITATION; N2 VIBRATIONAL (V=4)</reference>
-                <val x="1.170" y="0.000"/>
                 <val x="2.000" y="0.000"/>
                 <val x="2.100" y="0.2025E-20"/>
                 <val x="2.200" y="0.1515E-19"/>
@@ -536,10 +536,10 @@
         </Interaction>
 
         <Interaction old_model_label="excitation">
+            <KineticEnergyChange>1.470*eV</KineticEnergyChange>
             <Eq><In><T><P>e^-</P></T> + <T><P>N2</P></T></In>  --&gt;  <Out><T><P>e^-</P></T> + <T><P>N2(v5)</P></T></Out></Eq>
             <cross_section model="data" xscale="eV" yscale="m^2">
                 <reference>From Bolsig+ EXCITATION; N2 VIBRATIONAL (V=5)</reference>
-                <val x="1.470" y="0.000"/>
                 <val x="2.100" y="0.000"/>
                 <val x="2.200" y="0.8250E-20"/>
                 <val x="2.300" y="0.1230E-19"/>
@@ -560,10 +560,10 @@
         </Interaction>
 
         <Interaction old_model_label="excitation">
+            <KineticEnergyChange>1.760*eV</KineticEnergyChange>
             <Eq><In><T><P>e^-</P></T> + <T><P>N2</P></T></In>  --&gt;  <Out><T><P>e^-</P></T> + <T><P>N2(v6)</P></T></Out></Eq>
             <cross_section model="data" xscale="eV" yscale="m^2">
                 <reference>From Bolsig+ EXCITATION; N2 VIBRATIONAL (V=6)</reference>
-                <val x="1.760" y="0.000"/>
                 <val x="2.200" y="0.000"/>
                 <val x="2.300" y="0.6300E-22"/>
                 <val x="2.400" y="0.1125E-19"/>
@@ -582,10 +582,10 @@
         </Interaction>
 
         <Interaction old_model_label="excitation">
+            <KineticEnergyChange>2.060*eV</KineticEnergyChange>
             <Eq><In><T><P>e^-</P></T> + <T><P>N2</P></T></In>  --&gt;  <Out><T><P>e^-</P></T> + <T><P>N2(v7)</P></T></Out></Eq>
             <cross_section model="data" xscale="eV" yscale="m^2">
                 <reference>From Bolsig+ EXCITATION; N2 VIBRATIONAL (V=7)</reference>
-                <val x="2.060" y="0.000"/>
                 <val x="2.300" y="0.000"/>
                 <val x="2.400" y="0.1260E-21"/>
                 <val x="2.500" y="0.3900E-20"/>
@@ -606,10 +606,10 @@
         </Interaction>
 
         <Interaction old_model_label="excitation">
+            <KineticEnergyChange>2.350*eV</KineticEnergyChange>
             <Eq><In><T><P>e^-</P></T> + <T><P>N2</P></T></In>  --&gt;  <Out><T><P>e^-</P></T> + <T><P>N2(v8)</P></T></Out></Eq>
             <cross_section model="data" xscale="eV" yscale="m^2">
                 <reference>From Bolsig+ EXCITATION; N2 VIBRATIONAL (V=8)</reference>
-                <val x="2.350" y="0.000"/>
                 <val x="2.500" y="0.000"/>
                 <val x="2.600" y="0.1890E-21"/>
                 <val x="2.700" y="0.3600E-20"/>
