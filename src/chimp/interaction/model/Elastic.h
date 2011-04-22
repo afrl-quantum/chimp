@@ -87,7 +87,7 @@ namespace chimp {
         virtual void interact( const Particle & part1,
                                const Particle & part2,
                                std::vector< Particle > & products,
-                               typename options::RNG & rng )  {
+                               typename options::RNG & rng ) const {
           products.reserve( products.size() + 2u );
           products.push_back( part1 );
           products.push_back( part2 );
@@ -101,13 +101,13 @@ namespace chimp {
         virtual void interact( Particle & part1,
                                Particle & part2,
                                std::vector< Particle > & products,
-                               typename options::RNG & rng )  {
+                               typename options::RNG & rng ) const {
           interact( part1, part2, rng );
         }
 
         /** Binary elastic collision. */
         void interact( Particle & part1, Particle & part2,
-                       typename options::RNG & rng ) {
+                       typename options::RNG & rng ) const {
           using xylose::SQR;
           using xylose::fast_pow;
           using xylose::Vector;
