@@ -46,10 +46,42 @@ namespace chimp {
     namespace model {
       namespace detail {
 
+        using xylose::SQR;
+
         typedef runtime::physical::calc::Driver::ExpressionVector ExpressionVector;
 
         /** load a new instance of the Interaction. */
         bool loadKineticEnergyChange( const xml::Context & x, double & val );
+
+
+        /** Used for alternatively calculating the reflative velocity with
+         * optionally adding the energy change due to an inelastic interaction.
+         * */
+        template < bool >
+        struct CalculateVRelImpl;
+
+        template<>
+        struct CalculateVRelImpl<false> {
+          template < typename V >
+          double operator() ( const V & v1,
+                              const V & v2,
+                              const double & dV2 ) const {
+            return (v1 - v2).abs();
+          }
+        };
+
+
+        template<>
+        struct CalculateVRelImpl<true> {
+          template < typename V >
+          double operator() ( const V & v1,
+                              const V & v2,
+                              const double & dV2 ) const {
+            return std::sqrt( SQR(v1 - v2) + dV2 );
+          }
+        };
+
+
 
         struct SumComponents {
           unsigned int s;
@@ -59,8 +91,27 @@ namespace chimp {
           }
         };
 
+        /** Count the number of components in the products (including
+         * multiplicity of terms). */
         inline unsigned int countComponents( const std::vector<Term> & terms ) {
           return std::for_each( terms.begin(), terms.end(), SumComponents() ).s;
+        }
+
+
+        struct HasExpr {
+          bool value;
+          HasExpr() : value(false) { }
+          void operator() ( const Term & t ) {
+            typedef std::vector< std::string >::const_iterator Iter;
+            for ( Iter i = t.product_ops.begin(), e = t.product_ops.end();
+                      i != e; ++i )
+            value |= ( i->size() > 0u );
+          }
+        };
+
+        /** Find whether a set of terms has post-collision expressions. */
+        inline bool hasExpressions( const std::vector<Term> & terms ) {
+          return std::for_each( terms.begin(), terms.end(), HasExpr() ).value;
         }
 
 
@@ -125,7 +176,7 @@ namespace chimp {
           void create( std::vector< Particle > & products,
                        const Particle & p0,
                        const Particle & p1,
-                       const Scratch & scratch ) {
+                       const Scratch & scratch ) const {
             products.push_back( src_indx == 0u ? p0 : p1 );
             Particle & p = products.back();
             setSpecies(p, target_species);
@@ -261,24 +312,41 @@ namespace chimp {
         };
 
 
-        template < typename Particle >
-        inline void process( ExpressionVector & expr,
-                             Particle & r1,
-                             const Particle & part1,
-                             const Particle & part2 ) {
+        /** Process all post-collision expressions--if they exist. */
+        template < bool >
+        struct Process;
 
-          /* Set the global Particle info. */
-          typedef InElasticExpressions< Particle > Stuff;
-          Stuff & stuff = Stuff::instance();
-          stuff.target = & r1;
-          stuff.p0 = & part1;
-          stuff.p1 = & part2;
+        template<>
+        struct Process<true> {
+          template < typename Particle >
+          inline void operator() ( const ExpressionVector & expr,
+                                   Particle & r1,
+                                   const Particle & part1,
+                                   const Particle & part2 ) const {
 
-          for ( ExpressionVector::iterator i = expr.begin(),
-                                         end = expr.end(); i != end; ++i ) {
-            (*i)->evaluate();
+            /* Set the global Particle info. */
+            typedef InElasticExpressions< Particle > Stuff;
+            Stuff & stuff = Stuff::instance();
+            stuff.target = & r1;
+            stuff.p0 = & part1;
+            stuff.p1 = & part2;
+
+            for ( ExpressionVector::const_iterator i = expr.begin(),
+                                                 end = expr.end();
+                                                  i != end; ++i ) {
+              (*i)->evaluate();
+            }
           }
-        }
+        };
+
+        template<>
+        struct Process<false> {
+          template < typename Particle >
+          inline void operator() ( const ExpressionVector & expr,
+                                   Particle & r1,
+                                   const Particle & part1,
+                                   const Particle & part2 ) const { }
+        };
 
       } /* namespace chimp::interaction::model::detail */
     } /* namespace chimp::interaction::model */

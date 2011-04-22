@@ -22,11 +22,11 @@
 
 
 /** \file
- * Declaration of interaction::model::InElastic_2X2 class.
+ * Declaration of interaction::model::InElastic_2X3 class.
  */
 
-#ifndef chimp_interaction_model_InElastic_2X2_h
-#define chimp_interaction_model_InElastic_2X2_h
+#ifndef chimp_interaction_model_InElastic_2X3_h
+#define chimp_interaction_model_InElastic_2X3_h
 
 #include <chimp/accessors.h>
 #include <chimp/property/mass.h>
@@ -59,7 +59,7 @@ namespace chimp {
        *    expressions exist.
        */
       template < typename options, bool hasEnergyChange, bool hasExpressions >
-      struct InElastic_2X2 : InElastic<options> {
+      struct InElastic_2X3 : InElastic<options> {
         /* TYPEDEFS */
         typedef Base<options> base;
         typedef typename options::Particle Particle;
@@ -74,12 +74,19 @@ namespace chimp {
         using typename InElastic<options>::factories;
         using typename InElastic<options>::expressions;
 
-        /** Reduced mass of product particles. */
+        /** Reduced mass of product particles p1 and (p2+p3). */
         ReducedMass mu_1;
 
+        /** Reduced mass of product particles p2 and p3. */
+        ReducedMass mu_2;
+
         /** sqrt( mu.value / mu_1.value ) to scale vr_f from vr_i for when
-         * mass is redistributed among product particles. */
+         * mass is redistributed among product particles p1 and (p2+p3). */
         double mu_1_scale;
+
+        /** sqrt( mu.value / mu_2.value ) to scale vr_f from vr_i for when
+         * mass is redistributed among product particles p2 and p3. */
+        double mu_2_scale;
 
         /** Change in relative velocity due to inelastic collision energy
          * change. */
@@ -89,54 +96,59 @@ namespace chimp {
 
         /* MEMBER FUNCTIONS */
         /** Default constructor sets mu to invalid values. */
-        InElastic_2X2() : dV2rel(0.0) { }
+        InElastic_2X3() : dV2rel(0.0) { }
 
         /** Constructor that specifies the reduced mass explicitly. */
         template < typename Eq,
                    typename DB >
-        InElastic_2X2( const xml::Context & x,
+        InElastic_2X3( const xml::Context & x,
                        const Eq & eq,
                        const DB & db,
                        const double & dE = 0.0 )
           : InElastic<options>( x, eq, db ),
             mu_1_scale(0.0),
+            mu_2_scale(0.0),
             dV2rel( dE / ( 0.5 * eq.reducedMass.value ) ) {
 
           if ( hasEnergyChange && dE == 0.0 )
             throw std::runtime_error("dE == 0.0 for hasEnergyChange == true ");
 
           // Check the values of factories and expressions.size()
-          if ( eq.products.size() != 2u ||
-               factories.size() != 2u ||
-               expressions.size() != 2u )
+          if ( eq.products.size() != 3u ||
+               factories.size() != 3u ||
+               expressions.size() != 3u )
             throw std::runtime_error(
-              "InElastic (2X2):  more than two output terms?" );
+              "InElastic (2X3):  more than two output terms?" );
 
           bool expr_found = false;
           for ( unsigned int i = 0u; i < expressions.size(); ++i )
             expr_found |= ( expressions[i].size() > 0u );
           if ( hasExpressions != expr_found )
             throw std::runtime_error(
-              "InElastic (2X2):  expressions expected "
+              "InElastic (2X3):  expressions expected "
               "for hasExpressions == true" );
 
           for ( unsigned int i = 0u; i < factories.size(); ++i )
-            if ( factories[i].src_indx > 1u )
+            if ( factories[i].src_indx > 2u )
               throw std::runtime_error(
-                "InElastic (2X2):  source particle out of range" );
+                "InElastic (2X3):  source particle out of range" );
 
           {
             using property::mass;
-            mu_1 = ReducedMass( db[eq.products[0].species].mass::value,
-                                db[eq.products[1].species].mass::value );
+            const double m0 = db[eq.products[0].species].mass::value,
+                         m1 = db[eq.products[1].species].mass::value,
+                         m2 = db[eq.products[2].species].mass::value;
+            mu_1 = ReducedMass( m0, m1+m2 );
+            mu_2 = ReducedMass( m1, m2 );
           }
 
           mu_1_scale = std::sqrt( mu.value / mu_1.value );
+          mu_2_scale = std::sqrt( mu.value / mu_2.value );
 
         }
 
         /** Virtual NO-OP destructor. */
-        virtual ~InElastic_2X2() { }
+        virtual ~InElastic_2X3() { }
 
         /** Two-body collision interface. */
         virtual void interact( typename base::ParticleArgRef part1,
@@ -149,11 +161,13 @@ namespace chimp {
                                                     mu, muQ );
           /* ensure that there is enough room for both so that products.back()
            * doesn't become invalid after adding another. */
-          products.reserve( products.size() + 2u );
+          products.reserve( products.size() + 3u );
           factories[0].create( products, part1, part2, scratch );
           Particle & r1 = products.back();
           factories[1].create( products, part1, part2, scratch );
           Particle & r2 = products.back();
+          factories[2].create( products, part1, part2, scratch );
+          Particle & r3 = products.back();
 
 
           using xylose::SQR;
@@ -175,6 +189,15 @@ namespace chimp {
 
           /* relative velocity prior to collision */
           double SpeedRel = CalculateVRel()(v1, v2, dV2rel);
+          double SpeedRel2 = SpeedRel;
+          {
+            double r = rng.rand();
+            SpeedRel  *= r;
+            SpeedRel2 *= (1.0 -r);
+          }
+
+          /* first we split up particles p1 and (p2+p3) using a random fraction
+           * of the total energy. */
 
           // B is the cosine of a random elevation angle
           // A is the sine of the same elevation angle
@@ -199,14 +222,34 @@ namespace chimp {
            *    vr_f = sqrt(mu_i/mu_f) * vr_i
            * This means that we must scale vr_i so that energy is conserved even
            * when mass is redistributed among the product particles.
-           * Let mu_1_scale == sqrt(mu_i/mu_f)
+           * Let mu_scale == sqrt(mu_i/mu_f)
            */
           setVelocity(r1, VelCM + ( mu_1.over_m1 * mu_1_scale * VelRelPost ) );
-          setVelocity(r2, VelCM - ( mu_1.over_m2 * mu_1_scale * VelRelPost ) );
+                          VelCM -=( mu_1.over_m2 * mu_1_scale * VelRelPost );
+
+
+          /* Now split up particles p2 and p3 using the remaining energy */
+
+          // B is the cosine of a random elevation angle
+          // A is the sine of the same elevation angle
+          B = 2.0 * rng.rand() - 1.0;
+          A = std::sqrt( 1.0 - SQR(B) );
+          // C is a random azimuth angle
+          C = 2.0 * M_PI * rng.rand();
+
+          /* relative velocity after collision */
+          VelRelPost =
+            V3( B * SpeedRel2,
+                A * std::cos(C) * SpeedRel2,
+                A * std::sin(C) * SpeedRel2 );
+
+          setVelocity(r2, VelCM + ( mu_2.over_m1 * mu_2_scale * VelRelPost ) );
+          setVelocity(r3, VelCM - ( mu_2.over_m2 * mu_2_scale * VelRelPost ) );
 
           /* now process any specialized commands inside expression parser. */
           Process()( expressions[0], r1, part1, part2 );
           Process()( expressions[1], r2, part1, part2 );
+          Process()( expressions[2], r3, part1, part2 );
         }
       };
 
@@ -214,4 +257,4 @@ namespace chimp {
   } /* namespace chimp::interaction */
 } /* namespace chimp */
 
-#endif // chimp_interaction_model_InElastic_2X2_h
+#endif // chimp_interaction_model_InElastic_2X3_

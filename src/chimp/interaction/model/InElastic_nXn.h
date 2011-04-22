@@ -112,7 +112,7 @@ namespace chimp {
         virtual void interact( typename base::ParticleArgRef part1,
                                typename base::ParticleArgRef part2,
                                std::vector< Particle > & products,
-                               typename options::RNG & rng ) {
+                               typename options::RNG & rng ) const {
           using xylose::SQR;
           using xylose::fast_pow;
           using xylose::Vector;
@@ -165,7 +165,7 @@ namespace chimp {
         /** Two-body collision interface. */
         virtual void interact( const Particle & part1,
                                const Particle & part2,
-                               std::vector< ParticleParam > & products ) {
+                               std::vector< ParticleParam > & products ) const {
 
           /* create all of the products first. */
           createProducts( eq, reactants, products );

@@ -32,6 +32,7 @@
 #include <chimp/interaction/ReducedMass.h>
 #include <chimp/interaction/model/Base.h>
 #include <chimp/interaction/model/InElastic_2X2.h>
+#include <chimp/interaction/model/InElastic_2X3.h>
 #include <chimp/interaction/model/detail/inelastic_helpers.h>
 
 #include <xylose/logger.h>
@@ -56,10 +57,10 @@ namespace chimp {
 
 
         /* MEMBER STORAGE */
-        /** Reduced mass related ratios. */
+        /** Reduced mass related ratios for INPUT particles (reactants). */
         ReducedMass mu;
 
-        /** Reduced charge related ratios. */
+        /** Reduced charge related ratios for INPUT particles (reactants). */
         ReducedMass muQ;
 
         /** Index of source particles for each of the (two) reactants. */
@@ -114,18 +115,46 @@ namespace chimp {
           //        will need to count the number of reactants as well.
 
           const unsigned int n_products = detail::countComponents(eq.products);
+          const bool has_expressions = detail::hasExpressions(eq.products);
           switch ( n_products ) {
             case 2u : {
-              if ( dE == 0.0 )
-                return new InElastic_2X2<options,false>( x, eq, db );
-              else
+              if ( dE == 0.0 ) {
+                if ( has_expressions )
+                  return new InElastic_2X2<options,false,true>( x, eq, db );
+                else
+                  return new InElastic_2X2<options,false,false>( x, eq, db );
+              } else {
                 /* dE comes to this point in SI units.
                  * dE/mu _MUST_ be in the same units as velocity as passed
                  * into model::interact(...).  For now, everything in chimp is
                  * done in SI units.  At some time in the future, it may
                  * become desirable to use energy instead of velocity.
                  */
-                return new InElastic_2X2<options,true>( x, eq, db, dE );
+                if ( has_expressions )
+                  return new InElastic_2X2<options,true,true>( x, eq, db, dE );
+                else
+                  return new InElastic_2X2<options,true,false>( x, eq, db, dE );
+              }
+            }
+
+            case 3u : {
+              if ( dE == 0.0 ) {
+                if ( has_expressions )
+                  return new InElastic_2X3<options,false,true>( x, eq, db );
+                else
+                  return new InElastic_2X3<options,false,false>( x, eq, db );
+              } else {
+                /* dE comes to this point in SI units.
+                 * dE/mu _MUST_ be in the same units as velocity as passed
+                 * into model::interact(...).  For now, everything in chimp is
+                 * done in SI units.  At some time in the future, it may
+                 * become desirable to use energy instead of velocity.
+                 */
+                if ( has_expressions )
+                  return new InElastic_2X3<options,true,true>( x, eq, db, dE );
+                else
+                  return new InElastic_2X3<options,true,false>( x, eq, db, dE );
+              }
             }
 
             default :
