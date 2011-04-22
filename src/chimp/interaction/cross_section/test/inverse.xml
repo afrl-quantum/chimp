@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<InverseTest>
+  <calc-commands>
+      <command>from physical::constant import *</command>
+      <command>from physical::unit import *</command>
+      <command>from physical import 'unit::pi'</command>
+      <command>from physical import 'element::.*'</command>
+  </calc-commands>
+
+  <!-- Currently only good for xenon. Must expand. 
+  -->
+
+  <good>
+    <InverseParams>
+      <InverseInfo><value>2.12e-18</value><g>1000</g><sigma>2.12e-21 * m^2</sigma></InverseInfo>
+    </InverseParams>
+  </good>
+
+  <bad>
+    <sigma>
+      <InverseParams>
+        <InverseInfo><value>2.12e-18</value><g>1000</g><sigma>2.12e-18 * m^2</sigma></InverseInfo>
+      </InverseParams>
+    </sigma>
+  </bad>
+
+</InverseTest>
