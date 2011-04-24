@@ -54,17 +54,17 @@ namespace chimp {
        * @tparam hasEnergyChange
        *    Template parameter to enable optimized code when no energy change is
        *    required.
-       * @tparam hasExpressions
+       * @tparam useExpressions
        *    Template parameter to enable optimized code when no post-collision
        *    expressions exist.
        */
-      template < typename options, bool hasEnergyChange, bool hasExpressions >
+      template < typename options, bool hasEnergyChange, bool useExpressions >
       struct InElastic_2X3 : InElastic<options> {
         /* TYPEDEFS */
         typedef Base<options> base;
         typedef typename options::Particle Particle;
         typedef detail::CalculateVRelImpl< hasEnergyChange > CalculateVRel;
-        typedef detail::Process< hasExpressions > Process;
+        typedef detail::Process< useExpressions > Process;
 
 
 
@@ -114,19 +114,19 @@ namespace chimp {
             throw std::runtime_error("dE == 0.0 for hasEnergyChange == true ");
 
           // Check the values of factories and expressions.size()
-          if ( eq.products.size() != 3u ||
+          if ( eq.numberProducts() != 3u ||
                factories.size() != 3u ||
                expressions.size() != 3u )
             throw std::runtime_error(
-              "InElastic (2X3):  more than two output terms?" );
+              "InElastic (2X3):  need three output terms" );
 
           bool expr_found = false;
           for ( unsigned int i = 0u; i < expressions.size(); ++i )
             expr_found |= ( expressions[i].size() > 0u );
-          if ( hasExpressions != expr_found )
+          if ( useExpressions != expr_found )
             throw std::runtime_error(
               "InElastic (2X3):  expressions expected "
-              "for hasExpressions == true" );
+              "for useExpressions == true" );
 
           for ( unsigned int i = 0u; i < factories.size(); ++i )
             if ( factories[i].src_indx > 2u )
@@ -135,9 +135,9 @@ namespace chimp {
 
           {
             using property::mass;
-            const double m0 = db[eq.products[0].species].mass::value,
-                         m1 = db[eq.products[1].species].mass::value,
-                         m2 = db[eq.products[2].species].mass::value;
+            const double m0 = db[eq.getTermForProduct(0).species].mass::value,
+                         m1 = db[eq.getTermForProduct(1).species].mass::value,
+                         m2 = db[eq.getTermForProduct(2).species].mass::value;
             mu_1 = ReducedMass( m0, m1+m2 );
             mu_2 = ReducedMass( m1, m2 );
           }

@@ -114,8 +114,8 @@ namespace chimp {
           // TODO:  When chimp reactants are stored in a list someday, then we
           //        will need to count the number of reactants as well.
 
-          const unsigned int n_products = detail::countComponents(eq.products);
-          const bool has_expressions = detail::hasExpressions(eq.products);
+          const unsigned int n_products = eq.numberProducts();
+          const bool has_expressions = hasExpressions( eq.products );
           switch ( n_products ) {
             case 2u : {
               if ( dE == 0.0 ) {

@@ -54,17 +54,17 @@ namespace chimp {
        * @tparam hasEnergyChange
        *    Template parameter to enable optimized code when no energy change is
        *    required.
-       * @tparam hasExpressions
+       * @tparam useExpressions
        *    Template parameter to enable optimized code when no post-collision
        *    expressions exist.
        */
-      template < typename options, bool hasEnergyChange, bool hasExpressions >
+      template < typename options, bool hasEnergyChange, bool useExpressions >
       struct InElastic_2X2 : InElastic<options> {
         /* TYPEDEFS */
         typedef Base<options> base;
         typedef typename options::Particle Particle;
         typedef detail::CalculateVRelImpl< hasEnergyChange > CalculateVRel;
-        typedef detail::Process< hasExpressions > Process;
+        typedef detail::Process< useExpressions > Process;
 
 
 
@@ -106,7 +106,7 @@ namespace chimp {
             throw std::runtime_error("dE == 0.0 for hasEnergyChange == true ");
 
           // Check the values of factories and expressions.size()
-          if ( eq.products.size() != 2u ||
+          if ( eq.numberProducts() != 2u ||
                factories.size() != 2u ||
                expressions.size() != 2u )
             throw std::runtime_error(
@@ -115,10 +115,10 @@ namespace chimp {
           bool expr_found = false;
           for ( unsigned int i = 0u; i < expressions.size(); ++i )
             expr_found |= ( expressions[i].size() > 0u );
-          if ( hasExpressions != expr_found )
+          if ( useExpressions != expr_found )
             throw std::runtime_error(
               "InElastic (2X2):  expressions expected "
-              "for hasExpressions == true" );
+              "for useExpressions == true" );
 
           for ( unsigned int i = 0u; i < factories.size(); ++i )
             if ( factories[i].src_indx > 1u )
@@ -127,8 +127,10 @@ namespace chimp {
 
           {
             using property::mass;
-            mu_1 = ReducedMass( db[eq.products[0].species].mass::value,
-                                db[eq.products[1].species].mass::value );
+            mu_1 = ReducedMass(
+                db[eq.getTermForProduct(0).species].mass::value,
+                db[eq.getTermForProduct(1).species].mass::value
+            );
           }
 
           mu_1_scale = std::sqrt( mu.value / mu_1.value );
