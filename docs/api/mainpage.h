@@ -373,6 +373,149 @@ documentation for each function, class, and namespace of the API.
 \n
 
 \section chimp_cap_cross_sections Cross-Section Models
+  The intent of the cross-section interfaces is to provide access to all sorts
+  of cross-section models and data in a consistent and abstract manner.
+  Generally, a user does not need to know the type of cross-section model in
+  order to use either parameterized analytic models or empirical data.
+
+  Cross-Section models currently implemented in the standard CHIMP distribution:
+    - chimp::interaction::cross_section::AveragedDiameters <br>
+      Allows missing elastic cross-sections for cross-species interactions to be
+      easily created if the single species elastic cross-section exists in the
+      database.  For some pairs of cross-section types, generating of missing
+      inter-species cross-sections is automatic.  This is because some
+      cross-section types are monotonically increasing in the product
+      \f$( \sigma(v) v )\f$, where \f$ \sigma(v) \f$ and \f$ v \f$ are the
+      cross-section and velocity respectively.  Such cross-sections can easily
+      be aggregated into a single parameterized representation.  Automatic
+      generation happens for pairs of cross-sections of the following types:
+        - \ref cap_Constant "Constant"
+        - \ref cap_VHS      "VHS"
+        .
+      For all other types of cross-section pairs, it is necessary for the user
+      to specify a
+      \ref chimp::RuntimeDB::default_ElasticCreator_vmax "velocity range"
+      and
+      \ref chimp::RuntimeDB::default_ElasticCreator_dv "discretization".
+      See 
+      \ref chimp::RuntimeDB::default_ElasticCreator_vmax
+      and
+      \ref chimp::RuntimeDB::default_ElasticCreator_dv
+      for more information.
+    - chimp::interaction::cross_section::Constant \anchor cap_Constant <br>
+      A constant value over the entire energy range of interaction pairs.  An
+      optional threshold value can be given via <code><threshold></code> XML
+      child node.  The following is an example XML representation of the
+      chimp::interaction::cross_section::Constant information:
+      \verbatim
+      <cross_section model="constant">
+        <threshold> 0.5*eV </threshold> <!-- threshold is optional -->
+        <reference>Information for why this data is here...</reference>
+        <value> pi * (0.417*nm)^2 </value>
+      </cross_section>
+      \endverbatim
+    - chimp::interaction::cross_section::DATA <br>
+      Empirical cross-section data representing any arbitrary data source such
+      as experimental measurement as well as numerical calculation.  The data is
+      (currently only) linearly interpolated between data points and
+      extrapolated beyond the end of the data set according to a
+      <code>ln(E)/E</code> law.  Extrapolations are provided <b>only</b> if the
+      last three data elements can be fitted with a parameterized
+      <code>ln(E)/E</code> type decrease.
+      <br>
+      The value of the x-axis data is a result of
+      multiplying each x data item with the <code>xscale=</code> attribute of
+      the <code><cross_section></code> XML node.  The resultant x-axis data
+      <b>must</b> be in units of [energy] <b>or</b> [velocity].
+      <br>
+      The y-axis data is calculated in the same fashion and <b>must</b> be in
+      units of [length]^2.
+      <br>
+      The first data element in the set (the one with the lowest
+      energy/velocity) has special meaning in that a threshold value is implied
+      by this data element.  For data sets where the first element is with
+      <code>x > 0</code> the value of <code>x</code> is used as the threshold
+      energy/velocity.  By default, this implied threshold energy is used to by the
+      chimp::interaction::model::InElastic classes as the amount of kinetic
+      energy that must be removed from the system during an inelastic collision.
+      If the desired energy change for interactions is not the implied threshold
+      energy as described here, the XML node <code><KineticEnergyChange></code>
+      of the <code><Interaction></code> section must be used.
+      <br>
+      Example:
+      \verbatim
+      <cross_section model="data" xscale="eV" yscale="nm^2">
+        <reference>W. Peabody, Something Rev. A 210, 243 (1932).</reference>
+        <val x="10.50" y="0.0"/>
+        <val x="12.00" y="0.69"/>
+        <val x="12.70" y="0.73"/>
+        <val x="13.50" y="0.78"/>
+        <val x="15.00" y="0.88"/>
+        <val x="17.00" y="1.04"/>
+        <val x="20.00" y="1.24"/>
+        <val x="40.00" y="3.60"/>
+        <val x="100.0" y="6.30"/>
+      </cross_section>
+      \endverbatim
+    - chimp::interaction::cross_section::Lotz <br>
+      Implementation of the W. Lotz model for Electron-impact ionization cross
+      sections.
+      <br>
+      For further information pertaining to this model, see <br>
+        - Wolfgang Lotz, Z. Physik 216, 241 (1968)
+        - Wolfgang Lotz, Z. Physik 220, 466--472 (1969)
+        .
+      <br>
+      Example:
+      \verbatim
+      <cross_section model="lotz">
+        <reference>
+          Electron-impact of copper, from
+          Wolfgang Lotz, Z. Physik 220, 466--472 (1969)
+        </reference>
+        <LotzParameters>
+          <P>7.73*eV</P>
+          <q>1</q>
+          <a>4*nm^2*eV^2</a>
+          <b>0</b>
+          <c>0</c>
+        </LotzParameters>
+        <LotzParameters>
+          <P>10.4*eV</P>
+          <q>10</q>
+          <a>2.2*nm^2*eV^2</a>
+          <b>0.95</b>
+          <c>0.16</c>
+        </LotzParameters>
+        <LotzParameters>
+          <P>80*eV</P>
+          <q>6</q>
+          <a>4*nm^2*eV^2</a>
+          <b>0.6</b>
+          <c>0.4</c>
+        </LotzParameters>
+      </cross_section>
+      \endverbatim
+    - chimp::interaction::cross_section::VHS \anchor cap_VHS <br>
+      The Variable Hard Sphere model commonly used in Direct Simulation Monte
+      Carlo (DSMC) codes.
+      <br>
+      Example:
+      \verbatim
+      <cross_section model="vhs">
+        <value uncertainty="130 * nm^2">540 * nm^2</value>
+        <T_ref>25*uK</T_ref>
+        <visc_T_law>3.0/4.0</visc_T_law>
+        <reference>
+          Newbury, Myatt, Wieman Phys. Rev. A 51, R2680 (1995).
+          This reference was used in determining a cross-section value and
+          reference temperature.  The viscosity-temperature law is just
+          pulled out of a hat.
+        </reference>
+      </cross_section>
+      \endverbatim
+    .
+
 
 <hr>
 \section chimp_cap_interactions Interaction/Collision Models
