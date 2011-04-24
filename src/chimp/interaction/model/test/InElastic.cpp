@@ -70,11 +70,11 @@ namespace {
     p.x[0] = dx[0] * ( global_rng.rand() - .5 );
     p.x[1] = dx[1] * ( global_rng.rand() - .5 );
     p.x[2] = dx[2] * ( global_rng.rand() - .5 );
-  
+
     p.v[0] = dv[0] * ( global_rng.rand() - .5 );
     p.v[1] = dv[1] * ( global_rng.rand() - .5 );
     p.v[2] = dv[2] * ( global_rng.rand() - .5 );
-  
+
     return p;
   }
 
@@ -107,71 +107,198 @@ BOOST_AUTO_TEST_SUITE( Inelastic_2X2 ); // {
     db.initBinaryInteractions();
   }
 
-  BOOST_AUTO_TEST_CASE( not_sure_yet ) {
+  BOOST_AUTO_TEST_CASE( interact ) {
     DB db;
     load_2X2(db);
-    BOOST_CHECK_EQUAL( db("e^-", "N2").rhs.size(), 1u );
     DB::Set & eq_set = db("e^-", "N2");
-    BOOST_CHECK_EQUAL( eq_set.rhs[0].cs->getLabel(), "data" );
-    BOOST_CHECK_EQUAL( eq_set.rhs[0].interaction->getLabel(), "inelastic" );
+    BOOST_REQUIRE_EQUAL( eq_set.rhs.size(), 1u );
+    BOOST_REQUIRE_EQUAL( eq_set.rhs[0].cs->getLabel(), "data" );
+    BOOST_REQUIRE_EQUAL( eq_set.rhs[0].interaction->getLabel(), "inelastic" );
 
-    const int part_e   = db.findParticleIndx("e^-"); 
-    const int part_N2  = db.findParticleIndx("N2"); 
-    const int part_N2r = db.findParticleIndx("N2(rot)"); 
+    const int part_e   = db.findParticleIndx("e^-");
+    const int part_N2  = db.findParticleIndx("N2");
+    const int part_N2r = db.findParticleIndx("N2(rot)");
 
+    const double m_e   = db[part_e  ].mass::value;
+    const double m_N2  = db[part_N2 ].mass::value;
+    const double m_N2r = db[part_N2r].mass::value;
+
+    const chimp::interaction::ReducedMass & mu = eq_set.rhs[0].reducedMass;
     const double eps = std::numeric_limits<double>::epsilon();
-    {
-      /* this first test, we'll just test the output of one statically. */
+    const int N = 100000;
 
-      Particle
-        p0( V3(-35.8001,42.5569,6.90272 ), V3(-2.16e5,-7.87e4, 1.10e-5), part_e ),
-        p1( V3( 30.235,-33.4506,0.814032), V3( 2.07e5, 5.97e4, 8.89e4), part_N2 );
+    /* This should be accurate, unless someone changes the data... */
+    BOOST_CHECK_CLOSE( eq_set.rhs[0].cs->getThresholdEnergy(), 0.02*eV, 1e-8 );
+
+    const double E0 = eq_set.rhs[0].cs->getThresholdEnergy();
+
+    for (int i = 0; i < N; ++i ) {
+      Particle p0, p1;
+      randomize( p0, 100.0, 5e5 );
+      randomize( p1, 100.0, 5e5 );
+
+      Vector<double,3> vcmi = mu.over_m2*velocity(p0)
+                            + mu.over_m1*velocity(p1);
 
       Vector<double,3u> x0i       = position(p0),
                         x1i       = position(p1);
       double            energyi   = test::energy(p0, part_e,  db) +
-                                    test::energy(p1, part_N2, db);
+                                    test::energy(p1, part_N2, db),
+                        energyi_cm= 0.5 * ( m_e + m_N2 ) * SQR(vcmi);
+      if ( (energyi - energyi_cm) < E0 )
+        continue;
+
       Vector<double,3u> momentumi = test::momentum(p0, part_e,  db)
                                   + test::momentum(p1, part_N2, db);
 
       /* ** CREATE p_eps ** */
       double vrel = (velocity(p0) - velocity(p1)).abs();
-      chimp::interaction::ReducedMass & mu = eq_set.rhs[0].reducedMass;
-      Vector<double,3> vcm  = mu.over_m2*velocity(p0)
-                            + mu.over_m1*velocity(p1);
-      vcm.save_fabs();
 
       Vector<double,3> p_eps = 6*eps *
-        V3( std::max(vrel/vcm[0], vcm[0]/vrel),
-            std::max(vrel/vcm[1], vcm[1]/vrel),
-            std::max(vrel/vcm[2], vcm[2]/vrel) );
+        V3( std::max(vrel/std::abs(vcmi[0]), std::abs(vcmi[0])/vrel),
+            std::max(vrel/std::abs(vcmi[1]), std::abs(vcmi[1])/vrel),
+            std::max(vrel/std::abs(vcmi[2]), std::abs(vcmi[2])/vrel) );
       /* ** END CREATE p_eps ** */
 
       std::vector< Particle > products;
       eq_set.rhs[0].interaction->interact(p0,p1, products, global_rng);
 
       BOOST_REQUIRE_EQUAL( products.size(), 2u );
+      BOOST_REQUIRE_EQUAL( species(products[0]), part_e );
+      BOOST_REQUIRE_EQUAL( species(products[1]), part_N2r );
+
+      Vector<double,3> vcmf = mu.over_m2*velocity(products[0])
+                            + mu.over_m1*velocity(products[1]);
 
       Vector<double,3u> x0f       = position(products[0]),
                         x1f       = position(products[1]);
       double            energyf   = test::energy(products[0], part_e,  db) +
-                                    test::energy(products[1], part_N2, db);
+                                    test::energy(products[1], part_N2r, db),
+                        energyf_cm= 0.5 * ( m_e + m_N2r ) * SQR(vcmf);
       Vector<double,3u> momentumf = test::momentum(products[0], part_e,  db)
-                                  + test::momentum(products[1], part_N2, db);
+                                  + test::momentum(products[1], part_N2r, db);
 
 
-      BOOST_CHECK_EQUAL( species(products[0]), part_e );
-      BOOST_CHECK_EQUAL( species(products[1]), part_N2r );
-      BOOST_CHECK_CLOSE( eq_set.rhs[0].cs->getThresholdEnergy(), 0.02*eV, 1e-8 );
-      BOOST_CHECK_EQUAL( x0i, x0f );
-      BOOST_CHECK_EQUAL( x1i, x1f );
-      BOOST_CHECK_CLOSE( (energyf - energyi), -0.02*eV, 1e-8 );
-      BOOST_CHECK_EQUAL( momentumi, momentumf );
-      BOOST_CHECK_LT( std::abs(momentumf[0] - momentumi[0]), p_eps[0] );
-      BOOST_CHECK_LT( std::abs(momentumf[1] - momentumi[1]), p_eps[1] );
-      BOOST_CHECK_LT( std::abs(momentumf[2] - momentumi[2]), p_eps[2] );
+      BOOST_REQUIRE_EQUAL( x0i, x0f );
+      BOOST_REQUIRE_EQUAL( x1i, x1f );
+      BOOST_REQUIRE_CLOSE( vcmi[0], vcmf[0], 1e-6 );
+      BOOST_REQUIRE_CLOSE( vcmi[1], vcmf[1], 1e-6 );
+      BOOST_REQUIRE_CLOSE( vcmi[2], vcmf[2], 1e-6 );
+      BOOST_REQUIRE_CLOSE( energyi_cm, energyf_cm, 1e-6 );
+      BOOST_REQUIRE_CLOSE( (energyf - energyi), -E0, 1e-6 );
+      BOOST_REQUIRE_LT( std::abs(momentumf[0] - momentumi[0]), p_eps[0] );
+      BOOST_REQUIRE_LT( std::abs(momentumf[1] - momentumi[1]), p_eps[1] );
+      BOOST_REQUIRE_LT( std::abs(momentumf[2] - momentumi[2]), p_eps[2] );
     }
 
   }
-BOOST_AUTO_TEST_SUITE_END(); // }
+BOOST_AUTO_TEST_SUITE_END(); // } InElastic_2X2
 
+BOOST_AUTO_TEST_SUITE( Inelastic_2X3 ); // {
+  void load_2X2( DB & db ) {
+    db.addParticleType("e^-");
+    db.addParticleType("N2");
+    db.addParticleType("N2^+");
+
+    db.filter = /* Not Elastic */
+      make_shared<filter::Not>( /* pos - neg */
+        make_shared<filter::Null>(),   /* pos */
+        make_shared<filter::Elastic>() /* neg */
+      );
+
+    db.initBinaryInteractions();
+  }
+
+  BOOST_AUTO_TEST_CASE( interact ) {
+    DB db;
+    load_2X2(db);
+    DB::Set & eq_set = db("e^-", "N2");
+    BOOST_REQUIRE_EQUAL( eq_set.rhs.size(), 1u );
+    BOOST_REQUIRE_EQUAL( eq_set.rhs[0].cs->getLabel(), "data" );
+    BOOST_REQUIRE_EQUAL( eq_set.rhs[0].interaction->getLabel(), "inelastic" );
+
+    const int part_e   = db.findParticleIndx("e^-");
+    const int part_N2  = db.findParticleIndx("N2");
+    const int part_N2p = db.findParticleIndx("N2^+");
+
+    const double m_e   = db[part_e  ].mass::value;
+    const double m_N2  = db[part_N2 ].mass::value;
+    const double m_N2p = db[part_N2p].mass::value;
+
+    const chimp::interaction::ReducedMass & mu = eq_set.rhs[0].reducedMass;
+    const double eps = std::numeric_limits<double>::epsilon();
+    const int N = 100000;
+
+    /* This should be accurate, unless someone changes the data... */
+    BOOST_CHECK_CLOSE( eq_set.rhs[0].cs->getThresholdEnergy(), 15.6*eV, 1e-8 );
+
+    const double E0 = eq_set.rhs[0].cs->getThresholdEnergy();
+
+    for (int i = 0; i < N; ++i ) {
+      Particle p0, p1;
+      randomize( p0, 100.0, 1e7 );
+      randomize( p1, 100.0, 1e7 );
+
+      Vector<double,3> vcmi = mu.over_m2*velocity(p0)
+                            + mu.over_m1*velocity(p1);
+
+      Vector<double,3u> x0i       = position(p0),
+                        x1i       = position(p1);
+      double            energyi   = test::energy(p0, part_e,  db) +
+                                    test::energy(p1, part_N2, db),
+                        energyi_cm= 0.5 * ( m_e + m_N2 ) * SQR(vcmi);
+      if ( (energyi - energyi_cm) < E0 )
+        continue;
+
+      Vector<double,3u> momentumi = test::momentum(p0, part_e,  db)
+                                  + test::momentum(p1, part_N2, db);
+
+      /* ** CREATE p_eps ** */
+      double vrel = (velocity(p0) - velocity(p1)).abs();
+
+      Vector<double,3> p_eps = 6*eps *
+        V3( std::max(vrel/std::abs(vcmi[0]), std::abs(vcmi[0])/vrel),
+            std::max(vrel/std::abs(vcmi[1]), std::abs(vcmi[1])/vrel),
+            std::max(vrel/std::abs(vcmi[2]), std::abs(vcmi[2])/vrel) );
+      /* ** END CREATE p_eps ** */
+
+      std::vector< Particle > products;
+      eq_set.rhs[0].interaction->interact(p0,p1, products, global_rng);
+
+      BOOST_REQUIRE_EQUAL( products.size(), 3u );
+      BOOST_REQUIRE_EQUAL( species(products[0]), part_e );
+      BOOST_REQUIRE_EQUAL( species(products[1]), part_e );
+      BOOST_REQUIRE_EQUAL( species(products[2]), part_N2p );
+
+      Vector<double,3> vcmf = (   m_e   * velocity(products[0])
+                                + m_e   * velocity(products[1])
+                                + m_N2p * velocity(products[2]) )
+                            / ( 2*m_e + m_N2p );
+
+      Vector<double,3u> x0f       = position(products[0]),
+                        x1f       = position(products[1]),
+                        x2f       = position(products[2]);
+      double            energyf   = test::energy(products[0], part_e,   db)  +
+                                    test::energy(products[1], part_e,   db) +
+                                    test::energy(products[2], part_N2p, db),
+                        energyf_cm= 0.5 * ( 2*m_e + m_N2p ) * SQR(vcmf);
+      Vector<double,3u> momentumf = test::momentum(products[0], part_e,   db)
+                                  + test::momentum(products[1], part_e,   db)
+                                  + test::momentum(products[2], part_N2p, db);
+
+
+      BOOST_REQUIRE_EQUAL( x0i, x0f );
+      BOOST_REQUIRE_EQUAL( x1i, x1f );
+      BOOST_REQUIRE_EQUAL( x1i, x2f );
+      BOOST_REQUIRE_CLOSE( vcmi[0], vcmf[0], 1e-6 );
+      BOOST_REQUIRE_CLOSE( vcmi[1], vcmf[1], 1e-6 );
+      BOOST_REQUIRE_CLOSE( vcmi[2], vcmf[2], 1e-6 );
+      BOOST_REQUIRE_CLOSE( energyi_cm, energyf_cm, 1e-6 );
+      BOOST_REQUIRE_CLOSE( (energyf - energyi), -E0, 1e-6 );
+      BOOST_REQUIRE_LT( std::abs(momentumf[0] - momentumi[0]), p_eps[0] );
+      BOOST_REQUIRE_LT( std::abs(momentumf[1] - momentumi[1]), p_eps[1] );
+      BOOST_REQUIRE_LT( std::abs(momentumf[2] - momentumi[2]), p_eps[2] );
+    }
+
+  }
+BOOST_AUTO_TEST_SUITE_END(); // } InElastic_2X3

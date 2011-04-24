@@ -189,11 +189,11 @@ namespace chimp {
 
           /* relative velocity prior to collision */
           double SpeedRel = CalculateVRel()(v1, v2, dV2rel);
-          double SpeedRel2 = SpeedRel;
+          double SpeedRel_2 = SpeedRel;
           {
-            double r = rng.rand();
-            SpeedRel  *= r;
-            SpeedRel2 *= (1.0 -r);
+            double r    = rng.rand(); /* r is random fraction of _energy_ */
+            SpeedRel   *= std::sqrt(r);
+            SpeedRel_2 *= std::sqrt(1.0 - r);
           }
 
           /* first we split up particles p1 and (p2+p3) using a random fraction
@@ -239,9 +239,9 @@ namespace chimp {
 
           /* relative velocity after collision */
           VelRelPost =
-            V3( B * SpeedRel2,
-                A * std::cos(C) * SpeedRel2,
-                A * std::sin(C) * SpeedRel2 );
+            V3( B * SpeedRel_2,
+                A * std::cos(C) * SpeedRel_2,
+                A * std::sin(C) * SpeedRel_2 );
 
           setVelocity(r2, VelCM + ( mu_2.over_m1 * mu_2_scale * VelRelPost ) );
           setVelocity(r3, VelCM - ( mu_2.over_m2 * mu_2_scale * VelRelPost ) );
