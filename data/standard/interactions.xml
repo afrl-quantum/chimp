@@ -137,7 +137,7 @@
         </Interaction>
 
         <Interaction old_model_label="ionization">
-            <Eq><In><T><P>e^-</P></T> + <T><P>O3P</P></T></In>  --&gt;  <Out><T><n>2</n> <P>e^-</P></T> + <T><P>O3P+</P></T></Out></Eq>
+            <Eq><In><T><P>e^-</P></T> + <T><P>O3P</P></T></In>  --&gt;  <Out><T><n>2</n> <P>e^-</P></T> + <T><P>O3P^+</P></T></Out></Eq>
             <cross_section model="data" xscale="eV" yscale="1.0e-20*m*m">
                 <val x="13.610000" y="0.000000"/>
                 <val x="14.000000" y="0.026000"/>

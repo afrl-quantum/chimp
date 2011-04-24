@@ -3,6 +3,12 @@
         <comment>
         This sub-tree contains a list of all particles and their associated
         data for the various models needed.
+
+        Pertaining to masses of molecules and ions:
+        The masses indicated here do not necessarily take into account binding
+        energies.  For ionized molecules (and mono-atomic species), the mass of
+        an electron (m_e) is added/subtracted just so that mass is conserved for
+        the interaction equation.
         </comment>
         <Particle name="87Rb">
             <mass>87*amu</mass>
@@ -27,7 +33,7 @@
             <charge>e</charge>
         </Particle>
         <Particle name="Ar^+">
-            <mass>element::Ar::mass</mass>
+            <mass>element::Ar::mass - m_e</mass>
             <charge>e</charge>
         </Particle>
 
@@ -35,7 +41,7 @@
             <mass>element::C::mass + 2*element::F::mass</mass>
         </Particle>
         <Particle name="CF2^-">
-            <mass>element::C::mass + 2*element::F::mass</mass>
+            <mass>element::C::mass + 2*element::F::mass + m_e</mass>
             <charge>-e</charge>
         </Particle>
 
@@ -43,7 +49,7 @@
             <mass>element::C::mass + 4*element::F::mass</mass>
         </Particle>
         <Particle name="CF4^+">
-            <mass>element::C::mass + 4*element::F::mass</mass>
+            <mass>element::C::mass + 4*element::F::mass - m_e</mass>
             <charge>e</charge>
         </Particle>
         <Particle name="CF4(0.08eV)">
@@ -60,7 +66,7 @@
             <mass>element::Cl::mass</mass>
         </Particle>
         <Particle name="Cl^-">
-            <mass>element::Cl::mass</mass>
+            <mass>element::Cl::mass + m_e</mass>
             <charge>-e</charge>
         </Particle>
 
@@ -68,7 +74,7 @@
             <mass>2*element::Cl::mass</mass>
         </Particle>
         <Particle name="Cl2^+">
-            <mass>2*element::Cl::mass</mass>
+            <mass>2*element::Cl::mass - m_e</mass>
             <charge>e</charge>
         </Particle>
         <Particle name="Cl2(b1-c2)">
@@ -92,7 +98,7 @@
             <mass>element::C::mass + 2*element::O::mass</mass>
         </Particle>
         <Particle name="CO2^+">
-            <mass>element::C::mass + 2*element::O::mass</mass>
+            <mass>element::C::mass + 2*element::O::mass - m_e</mass>
             <charge>e</charge>
         </Particle>
         <Particle name="CO2(0.083eV)">
@@ -130,14 +136,15 @@
             <mass>element::Cu::mass</mass>
         </Particle>
         <Particle name="Cu^+">
-            <mass>element::Cu::mass</mass>
+            <mass>element::Cu::mass - m_e</mass>
+            <charge>e</charge>
         </Particle>
 
         <Particle name="F">
-            <mass>2*element::F::mass</mass>
+            <mass>element::F::mass</mass>
         </Particle>
         <Particle name="F^-">
-            <mass>2*element::F::mass</mass>
+            <mass>element::F::mass + m_e</mass>
             <charge>-e</charge>
         </Particle>
 
@@ -145,7 +152,7 @@
             <mass>2*element::F::mass</mass>
         </Particle>
         <Particle name="F2^+">
-            <mass>2*element::F::mass</mass>
+            <mass>2*element::F::mass - m_e</mass>
             <charge>e</charge>
         </Particle>
         <Particle name="F2(A1)">
@@ -177,7 +184,7 @@
             <mass>element::H::mass</mass>
         </Particle>
         <Particle name="H^-">
-            <mass>element::H::mass</mass>
+            <mass>element::H::mass + m_e</mass>
             <charge>-e</charge>
         </Particle>
         <Particle name="H(n=2)">
@@ -191,7 +198,7 @@
             <mass>2*element::H::mass</mass>
         </Particle>
         <Particle name="H2^+">
-            <mass>2*element::H::mass</mass>
+            <mass>2*element::H::mass - m_e</mass>
             <charge>e</charge>
         </Particle>
         <Particle name="H2(a3)">
@@ -235,7 +242,7 @@
             <mass>element::H::mass + element::Cl::mass</mass>
         </Particle>
         <Particle name="HCl^+">
-            <mass>element::H::mass + element::Cl::mass</mass>
+            <mass>element::H::mass + element::Cl::mass - m_e</mass>
             <charge>e</charge>
         </Particle>
         <Particle name="HCl(A1)">
@@ -255,7 +262,7 @@
             <mass>element::He::mass</mass>
         </Particle>
         <Particle name="He^+">
-            <mass>element::He::mass</mass>
+            <mass>element::He::mass - m_e</mass>
             <charge>e</charge>
         </Particle>
         <Particle name="He(19.82eV)">
@@ -266,7 +273,7 @@
             <mass>element::Hg::mass</mass>
         </Particle>
         <Particle name="Hg^+">
-            <mass>element::Hg::mass</mass>
+            <mass>element::Hg::mass - m_e</mass>
             <charge>e</charge>
         </Particle>
         <Particle name="Hg(6-3P0)">
@@ -286,7 +293,7 @@
             <mass>element::Kr::mass</mass>
         </Particle>
         <Particle name="Kr^+">
-            <mass>element::Kr::mass</mass>
+            <mass>element::Kr::mass - m_e</mass>
             <charge>e</charge>
         </Particle>
         <Particle name="Kr(11.0eV)">
@@ -309,7 +316,7 @@
             <mass>2*element::N::mass</mass>
         </Particle>
         <Particle name="N2^+">
-            <mass>2*element::N::mass</mass>
+            <mass>2*element::N::mass - m_e</mass>
             <charge>e</charge>
         </Particle>
         <Particle name="N2(a--1)">
@@ -386,7 +393,7 @@
             <mass>element::Ne::mass</mass>
         </Particle>
         <Particle name="Ne^+">
-            <mass>element::Ne::mass</mass>
+            <mass>element::Ne::mass - m_e</mass>
             <charge>e</charge>
         </Particle>
         <Particle name="Ne(1P1)">
@@ -412,7 +419,7 @@
             <mass>element::O::mass</mass>
         </Particle>
         <Particle name="O^-">
-            <mass>element::O::mass</mass>
+            <mass>element::O::mass + m_e</mass>
             <charge>-e</charge>
         </Particle>
 
@@ -420,11 +427,11 @@
             <mass>2*element::O::mass</mass>
         </Particle>
         <Particle name="O2^-">
-            <mass>2*element::O::mass</mass>
+            <mass>2*element::O::mass + m_e</mass>
             <charge>-e</charge>
         </Particle>
         <Particle name="O2^+">
-            <mass>2*element::O::mass</mass>
+            <mass>2*element::O::mass - m_e</mass>
             <charge>e</charge>
         </Particle>
         <Particle name="O2(4.5eV)">
@@ -468,20 +475,21 @@
         </Particle>
 
         <Particle name="O3P">
-            <mass>element::O::mass</mass>
+            <mass>3*element::O::mass + element::P::mass</mass>
         </Particle>
-        <Particle name="O3P+">
-            <mass>element::O::mass</mass>
+        <Particle name="O3P^+">
+            <mass>3*element::O::mass + element::P::mass - m_e</mass>
             <charge>e</charge>
         </Particle>
         <Particle name="photon+"/>
 
         <Particle name="SF4^-">
-            <mass>element::S::mass + 4*element::F::mass</mass>
+            <mass>element::S::mass + 4*element::F::mass + m_e</mass>
             <charge>-e</charge>
         </Particle>
+
         <Particle name="SF5^-">
-            <mass>element::S::mass + 5*element::F::mass</mass>
+            <mass>element::S::mass + 5*element::F::mass + m_e</mass>
             <charge>-e</charge>
         </Particle>
 
@@ -489,11 +497,11 @@
             <mass>element::S::mass + 6*element::F::mass</mass>
         </Particle>
         <Particle name="SF6^-">
-            <mass>element::S::mass + 6*element::F::mass</mass>
+            <mass>element::S::mass + 6*element::F::mass + m_e</mass>
             <charge>-e</charge>
         </Particle>
         <Particle name="SF6^+">
-            <mass>element::S::mass + 6*element::F::mass</mass>
+            <mass>element::S::mass + 6*element::F::mass - m_e</mass>
             <charge>e</charge>
         </Particle>
         <Particle name="SF6(0.095eV)">
@@ -510,7 +518,7 @@
         </Particle>
 
         <Particle name="SiH2^-">
-            <mass>element::Si::mass + 2*element::H::mass</mass>
+            <mass>element::Si::mass + 2*element::H::mass + m_e</mass>
             <charge>-e</charge>
         </Particle>
 
@@ -518,7 +526,7 @@
             <mass>element::Si::mass + 4*element::H::mass</mass>
         </Particle>
         <Particle name="SiH4^+">
-            <mass>element::Si::mass + 4*element::H::mass</mass>
+            <mass>element::Si::mass + 4*element::H::mass - m_e</mass>
             <charge>e</charge>
         </Particle>
         <Particle name="SiH4(0.113eV)">
@@ -538,7 +546,7 @@
             <mass>element::Xe::mass</mass>
         </Particle>
         <Particle name="Xe^+">
-            <mass>element::Xe::mass</mass>
+            <mass>element::Xe::mass - m_e</mass>
             <charge>e</charge>
         </Particle>
         <Particle name="Xe(11.7eV)">
