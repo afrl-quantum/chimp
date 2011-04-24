@@ -20,6 +20,7 @@
  *                                                                             *
  -----------------------------------------------------------------------------*/
 
+/** \cond CHIMP_DO_NOT_DOCUMENT */
 
 /** \file
  * Declaration of interaction::model::InElastic_nXn class.
@@ -219,5 +220,7 @@ namespace chimp {
     } /* namespace chimp::interaction::model */
   } /* namespace chimp::interaction */
 } /* namespace chimp */
+
+/** \endcond */
 
 #endif // chimp_interaction_model_InElastic_nXn_h
