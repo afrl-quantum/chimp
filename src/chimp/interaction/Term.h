@@ -200,6 +200,60 @@ namespace chimp {
              lhs.from != rhs.from       ;
     }
 
+
+    /** \cond CHIMP_DETAIL_DOC */
+    namespace detail {
+      struct SumComponents {
+        unsigned int s;
+        SumComponents() : s(0u) { }
+        void operator() ( const Term & t ) {
+          s += t.n;
+        }
+      };
+
+      struct HasExpr {
+        bool value;
+        HasExpr() : value(false) { }
+        void operator() ( const Term & t ) {
+          typedef std::vector< std::string >::const_iterator Iter;
+          for ( Iter i = t.product_ops.begin(), e = t.product_ops.end();
+                    i != e; ++i )
+          value |= ( i->size() > 0u );
+        }
+      };
+    }
+    /** \endcond */
+
+    /** Count the number of components in the products (including
+     * multiplicity of terms). */
+    template < typename TermIterator >
+    inline unsigned int countComponents( const TermIterator & tbegin,
+                                         const TermIterator & tend ) {
+      return std::for_each( tbegin, tend, detail::SumComponents() ).s;
+    }
+
+    /** Count the number of components in the products (including
+     * multiplicity of terms). */
+    template < typename TermContainer >
+    inline unsigned int countComponents( const TermContainer & t ) {
+      return std::for_each( t.begin(), t.end(), detail::SumComponents() ).s;
+    }
+
+
+    /** Find whether a set of terms has post-collision expressions. */
+    template < typename TermIterator >
+    inline bool hasExpressions( const TermIterator & tbegin,
+                                const TermIterator & tend ) {
+      return std::for_each( tbegin, tend, detail::HasExpr() ).value;
+    }
+
+    /** Find whether a set of terms has post-collision expressions. */
+    template < typename TermContainer >
+    inline bool hasExpressions( const TermContainer & t ) {
+      return std::for_each( t.begin(), t.end(), detail::HasExpr() ).value;
+    }
+
+
   }/* namespace chimp::interaction */
 }/* namespace chimp */
 #endif // chimp_interaction_Term_h

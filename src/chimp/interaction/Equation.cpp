@@ -166,6 +166,42 @@ namespace chimp {
 
 
     template < typename options >
+    inline const Term & Equation<options>::
+    getTermForProduct( const unsigned int & i ) const {
+      unsigned int total_terms = 0;
+      for ( std::vector<Term>::const_iterator j = products.begin(),
+                                              e = products.end();
+                                             j != e; ++j ) {
+        total_terms += j->n;
+        if ( i < total_terms )
+          return *j;
+      }
+
+      throw std::runtime_error(
+        "chimp::interaction::Equation::getTermForProduct:  "
+        "product particle index out of bounds. " );
+    }
+
+
+    template < typename options >
+    inline Term & Equation<options>::
+    getTermForProduct( const unsigned int & i ) {
+      unsigned int total_terms = 0;
+      for ( std::vector<Term>::iterator j = products.begin(),
+                                        e = products.end();
+                                       j != e; ++j ) {
+        total_terms += j->n;
+        if ( i < total_terms )
+          return *j;
+      }
+
+      throw std::runtime_error(
+        "chimp::interaction::Equation::getTermForProduct:  "
+        "product particle index out of bounds. " );
+    }
+
+
+    template < typename options >
     inline bool Equation<options>::isElastic() const {
       std::set<Term> iterms, oterms;
 

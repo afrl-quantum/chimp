@@ -83,39 +83,6 @@ namespace chimp {
 
 
 
-        struct SumComponents {
-          unsigned int s;
-          SumComponents() : s(0u) { }
-          void operator() ( const Term & t ) {
-            s += t.n;
-          }
-        };
-
-        /** Count the number of components in the products (including
-         * multiplicity of terms). */
-        inline unsigned int countComponents( const std::vector<Term> & terms ) {
-          return std::for_each( terms.begin(), terms.end(), SumComponents() ).s;
-        }
-
-
-        struct HasExpr {
-          bool value;
-          HasExpr() : value(false) { }
-          void operator() ( const Term & t ) {
-            typedef std::vector< std::string >::const_iterator Iter;
-            for ( Iter i = t.product_ops.begin(), e = t.product_ops.end();
-                      i != e; ++i )
-            value |= ( i->size() > 0u );
-          }
-        };
-
-        /** Find whether a set of terms has post-collision expressions. */
-        inline bool hasExpressions( const std::vector<Term> & terms ) {
-          return std::for_each( terms.begin(), terms.end(), HasExpr() ).value;
-        }
-
-
-
         struct ParticleFactory {
           /* TYPEDEFS */
           enum Op {
@@ -288,7 +255,7 @@ namespace chimp {
 
 
           /* finish up with some dummy checks... */
-          const unsigned int n_products = countComponents( eq.products );
+          const unsigned int n_products = eq.numberProducts();
           if ( factories.size() != n_products ||
                expressions.size() != n_products )
             throw std::runtime_error(

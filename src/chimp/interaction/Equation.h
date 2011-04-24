@@ -77,6 +77,17 @@ namespace chimp {
 
 
       /* MEMBER FUNCTIONS */
+      /** Return the number of particles represented by the products. */
+      unsigned int numberProducts() const {
+        return countComponents( products );
+      }
+
+      /** Return the Term corresponding to the ith product. */
+      inline const Term & getTermForProduct( const unsigned int & i ) const;
+
+      /** Return the Term corresponding to the ith product. */
+      inline Term & getTermForProduct( const unsigned int & i );
+
       /** Print the full equation. */
       template < typename RnDB >
       inline std::ostream & print( std::ostream & out, const RnDB & db ) const;
