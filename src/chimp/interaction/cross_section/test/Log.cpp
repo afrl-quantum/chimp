@@ -49,45 +49,43 @@
 namespace {
   namespace xml = xylose::xml;
 
-  using chimp::interaction::cross_section::detail::LogInfo;
+  using chimp::interaction::cross_section::detail::LogParameters;
   typedef chimp::interaction::cross_section::Log<
     chimp::make_options<>::type > Log;
 
   using physical::unit::Angstrom;
-  //using physical::constant::si::m_e;
-
   using std::log10;
 }
 
-BOOST_AUTO_TEST_SUITE( LogInfo_test ); // {
+BOOST_AUTO_TEST_SUITE( LogParameters_test ); // {
 
   BOOST_AUTO_TEST_CASE( loading ) {
     xml::Doc doc(XSTR(XML_FILENAME));
     chimp::prepareCalculator(doc);
 
     {
-      xml::Context x = doc.find("//good/LogParams");
+      xml::Context x = doc.find("//good/LogVector");
 
-      Log::ParametersSet v = x.parse<Log::ParametersSet>();
+      Log::ParametersVector v = x.parse<Log::ParametersVector>();
       
       /* Only need one set for the Log test... */
       BOOST_CHECK_EQUAL( v.size(), 1u );
       BOOST_CHECK_EQUAL( v[0].A, 171.23 * Angstrom*Angstrom );
       BOOST_CHECK_EQUAL( v[0].B, 27.2 * Angstrom*Angstrom );
-      BOOST_CHECK_CLOSE( v[0].g, 1000 /*m/s*/ );
-      BOOST_CHECK_CLOSE( v[0].sigma, 89.63 * Angstrom*Angstrom );
+      BOOST_CHECK_EQUAL( v[0].g, 1000 /*m/s*/ );
+      BOOST_CHECK_CLOSE( v[0].sigma, 89.63 * Angstrom*Angstrom, 0.1 );
     }
 
     {
-      xml::Context x = doc.find("//bad/sigma/LogParams");
+      xml::Context x = doc.find("//bad/sigma/LogVector");
       /* not sure why telling it to catch xml::error did not work. Perhaps they
        * already catch it and the precedence caused problems...*/
       BOOST_CHECK_THROW(
-        (void)x.parse<Log::ParametersSet>(), std::runtime_error );
+        (void)x.parse<Log::ParametersVector>(), std::runtime_error );
     }
   }
 
-BOOST_AUTO_TEST_SUITE_END(); // }  LogInfo
+BOOST_AUTO_TEST_SUITE_END(); // }  LogParameters
 
 BOOST_AUTO_TEST_SUITE( Log_test ); // {
   BOOST_AUTO_TEST_CASE( loading ) {
@@ -95,7 +93,7 @@ BOOST_AUTO_TEST_SUITE( Log_test ); // {
     chimp::prepareCalculator(doc);
 
     {
-      xml::Context x = doc.find("//good/LogParams");
+      xml::Context x = doc.find("//good/LogVector");
 
       Log log(x);
 
@@ -103,27 +101,11 @@ BOOST_AUTO_TEST_SUITE( Log_test ); // {
       BOOST_CHECK_EQUAL( log.parameters.size(), 1u );
       BOOST_CHECK_EQUAL( log.parameters[0].A, 171.23 * Angstrom*Angstrom );
       BOOST_CHECK_EQUAL( log.parameters[0].B, 27.2 * Angstrom*Angstrom );
-      BOOST_CHECK_CLOSE( log.parameters[0].g, 1000 /*m/s*/ );
-      BOOST_CHECK_CLOSE( log.parameters[0].sigma, 89.63 * Angstrom*Angstrom );
+      BOOST_CHECK_EQUAL( log.parameters[0].g, 1000 /*m/s*/ );
+      BOOST_CHECK_CLOSE( log.parameters[0].sigma, 89.63 * Angstrom*Angstrom, 0.1 );
 
       /* check calculated values. */
-      BOOST_CHECK_CLOSE( log.parameters[0].sigma, 171.23 - 27.2*log10(1000) * Angstrom^2, 0.1 );
-      
-      /* Do I need these for a simple Log cross section?? */
-      /*
-      #ifdef WRITE_FILES
-      {
-        chimp::interaction::cross_section::detail::DSigmaVFunctor<Lotz> dsv(lotz);
-        std::ofstream f("sigma.dat");
-        double dv = (lotz.sigmaV_max_vrel - lotz.threshold)/100.0;
-        double dmax = 1000 * dv + lotz.threshold;
-        for ( double v = lotz.threshold - 10*dv ; v < dmax; v+=dv ) {
-          f << v << '\t' << lotz(v) << '\t' << dsv(v) << '\n';
-        }
-        f.close();
-      }
-      #endif
-      */
+      BOOST_CHECK_CLOSE( log.parameters[0].sigma, 171.23 - 27.2*log10(1000) * Angstrom*Angstrom, 0.1 );
     }
 
   }

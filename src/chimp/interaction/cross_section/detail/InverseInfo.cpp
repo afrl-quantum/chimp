@@ -30,15 +30,17 @@ namespace chimp {
     namespace cross_section {
       namespace detail {
 
-        void parse_item( InverseInfo & out, const xml::Context & x ) {
+        void parse_item( InverseParameters & out, const xml::Context & x ) {
           using runtime::physical::Quantity;
-          // using runtime::physical::unit::Angstrom; // Keep unitless for now, though m^3/s
+	  using runtime::physical::unit::m;
+          /** Keep unit-less for now, though value == m^3/s and g == m/s **/
           x.query<Quantity>("value").assertUnitless().getCoeff(out.value);
+          x.query<Quantity>("g").assertUnitless().getCoeff(out.g);
+          x.query<Quantity>("sigma").assertMatch(m*m).getCoeff(out.sigma);
         }
 
-        /* Is the following necessary? */
-	InverseInfo InverseInfo::load(const xml::Context & x) {
-          return x.parse<InverseInfo>();
+	InverseParameters InverseParameters::load(const xml::Context & x) {
+          return x.parse<InverseParameters>();
         }
 
       } /* namespace chimp::interaction::cross_section::detail */

@@ -23,8 +23,8 @@
 
 /** \file
  * Cross section definition using the logarithmic curve fit of Miller et al.
- * ADD PAPER REFERENCE.
- * Useful for both MEX and CEX
+ * "Xenon charge exchange cross sections for electrostatic thruster models", 2002
+ * Useful for both MEX and CEX for Xe, Xe+, and Xe++. 
  * Added by Paul Giuliano, pgiulian@umich.edu
  * */
 
@@ -57,14 +57,29 @@ namespace chimp {
        */
       template < typename options >
       struct Log : cross_section::Base<options> {
+        /* TYPEDEFS */
+        /** The parameters required by the Lotz model. */
+        typedef detail::LogParameters Parameters;
+
+        /** Type of list/vector of Lotz parameters. */
+        typedef std::vector< Parameters > ParametersVector;
+
         /* STATIC STORAGE */
         static const std::string label;
 
 
         /* MEMBER STORAGE */
         /** The log information for this particular interaction. */
-        detail::LogInfo log;
+        detail::LogParameters log;
 
+	/** Table of cross-section data. */
+        ParametersVector parameters;
+
+	/** Relative velocity **/
+	double g;
+
+	/** Resulting cross-section **/
+	double sigma;
 
 
         /* MEMBER FUNCTIONS */
@@ -77,7 +92,7 @@ namespace chimp {
         /** Constructor with thing.. is this necesary?*/
         Log( const xml::Context & x )
         : cross_section::Base<options>(),
-          log( detail::LogInfo::load(x) ) { }
+          log( detail::LogParameters::load(x) ) { }
 
         /** Virtual NO-OP destructor. */
         virtual ~Log() {}

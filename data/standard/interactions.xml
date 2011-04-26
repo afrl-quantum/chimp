@@ -5500,7 +5500,15 @@ publisher = {Springer}
 
 <!-- Additions by Paul Giuliano, pgiulian@umich.edu -->
 
+<!-- "log" and "inverse" are initially elastic cross-section models. 
+     "log" may be expanded to CEX cross-sections in the future. Also, "log"
+     can work for Xe-Xe+ and Xe-Xe++ using different curve-fit variables.
+     In addition, these models are only for Xe interactions though
+     the constants may be changed for different species/charges via the
+     literature. -->
+
         <Interaction>
+	    <!-- Xenon Neutral-Single CEX/MEX cross-section -->
             <Eq><In> <T><P>Xe^+</P></T> + <T><P>Xe</P></T> </In>  --&gt;  <Out> <T><P>Xe^+</P></T> + <T><P>Xe</P></T> </Out></Eq>
             <cross_section model="log">
 	        <A>171.23 Angstrom^2</A>
@@ -5521,6 +5529,27 @@ publisher = {Springer}
 				vehicles; plasma devices; aerospace engines; ion engines},
 			  publisher = {AIP},
 			  url = {http://link.aip.org/link/?JAP/91/984/1}
+			}
+		    </bibtex>
+		</reference>
+	    </cross_section>
+	</Interaction>
+
+        <Interaction>
+	    <!-- Xenon Neutral-Single MEX cross-section -->
+            <Eq><In> <T><P>Xe^+</P></T> + <T><P>Xe</P></T> </In>  --&gt;  <Out> <T><P>Xe^+</P></T> + <T><P>Xe</P></T> </Out></Eq>
+            <cross_section model="inverse">
+	        <value> 2.12e-18 </value>
+		<reference>
+		    <bibtex>
+			@article{Dalgarno1958,
+			author = {Dalgarno, A. and McDowell, M. R. C. and Williams, A.},
+			journal = {Philosophical Transactions of the Royal Society of London,},
+			number = {Series A},
+			pages = {411--425},
+			title = {{The Mobilities of Ions in Unlike Gases}},
+			volume = {250},
+			year = {1958}
 			}
 		    </bibtex>
 		</reference>

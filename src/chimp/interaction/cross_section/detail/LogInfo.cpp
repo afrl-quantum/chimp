@@ -30,16 +30,17 @@ namespace chimp {
     namespace cross_section {
       namespace detail {
 
-        void parse_item( LogInfo & out, const xml::Context & x ) {
+        void parse_item( LogParameters & out, const xml::Context & x ) {
           using runtime::physical::Quantity;
           using runtime::physical::unit::Angstrom;
           x.query<Quantity>("A").assertMatch(Angstrom*Angstrom).getCoeff(out.A);
           x.query<Quantity>("B").assertMatch(Angstrom*Angstrom).getCoeff(out.B);
+          x.query<Quantity>("g").assertUnitless().getCoeff(out.g);
+          x.query<Quantity>("sigma").assertMatch(Angstrom*Angstrom).getCoeff(out.sigma);
         }
 
-        /* Is the following necessary? */
-	LogInfo LogInfo::load(const xml::Context & x) {
-          return x.parse<LogInfo>();
+	LogParameters LogParameters::load(const xml::Context & x) {
+          return x.parse<LogParameters>();
         }
 
       } /* namespace chimp::interaction::cross_section::detail */

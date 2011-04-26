@@ -23,8 +23,8 @@
 
 /** \file
  * Cross section definition using the inverse model of Dalgarno et al.
- * ADD PAPER REFERENCE.
- * Useful for MEX
+ * "The Mobilities of Ions in Unlike Gases", 1958
+ * Useful for MEX between neutral and charged species.
  * Added by Paul Giuliano, pgiulian@umich.edu
  * */
 
@@ -57,14 +57,28 @@ namespace chimp {
        */
       template < typename options >
       struct Inverse : cross_section::Base<options> {
+        /* TYPEDEFS */
+        /** The parameters required by the Lotz model. */
+        typedef detail::InverseParameters Parameters;
+
+        /** Type of list/vector of Lotz parameters. */
+        typedef std::vector< Parameters > ParametersVector;
+        
         /* STATIC STORAGE */
         static const std::string label;
 
-
         /* MEMBER STORAGE */
         /** The inverse information for this particular interaction. */
-        detail::InverseInfo inverse;
+        detail::InverseParameters inverse;
 
+	/** Table of cross-section data. */
+        ParametersVector parameters;
+
+	/** Constant value in numerator of ratio. **/
+	double value;
+	
+	/** Resulting cross-section. **/
+	double sigma;
 
 
         /* MEMBER FUNCTIONS */
@@ -77,7 +91,7 @@ namespace chimp {
         /** Constructor with thing.. is this necesary?*/
         Inverse( const xml::Context & x )
         : cross_section::Base<options>(),
-          inverse( detail::InverseInfo::load(x) ) { }
+          inverse( detail::InverseParameters::load(x) ) { }
 
         /** Virtual NO-OP destructor. */
         virtual ~Inverse() {}

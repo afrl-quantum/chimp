@@ -53,38 +53,43 @@ namespace chimp {
     namespace cross_section {
       namespace detail {
 
-        struct LogInfo {
+        struct LogParameters {
           /* MEMBER STORAGE */
-          /** First variable in curve-fit.
-           * ADD PAPER INFO AGAIN
-           */
+          /** First variable in curve-fit, Miller et al. 2002 */
           double A;
 
-          /** Second variable in curve-fit.
-           */
+          /** Second variable in curve-fit. **/
           double B;
 
-
+	  /** Relative velocity **/
+          double g;
+	  
+	  /** Cross section **/
+          double sigma;
 
           /* MEMBER FUNCTIONS */
-
-          std::ostream & print(std::ostream & out) const {
+          LogParameters() : A(0), B(0), g(0), sigma(0) { }
+	 
+	  std::ostream & print(std::ostream & out) const {
             out << "{A: " << A << ", "
                     "B: " << B << ", "
+                    "g: " << g << ", "
+                    "sigma: " << sigma << ", "
                 << '}';
             return out;
           }
-
-
+	
 
           /* STATIC FUNCTIONS */
           /** Load the information into this properties node.
            *
            * @see DSMCInfo::load().
            * */
-	  /* Is the following necessary? */
-	  static LogInfo load(const xml::Context & x);
+	  static LogParameters load(const xml::Context & x);
         };
+
+        void parse_item( LogParameters & out, const xml::Context & x );
+
 
       } /* namespace chimp::interaction::cross_section::detail */
     } /* namespace chimp::interaction::cross_section */

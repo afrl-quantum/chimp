@@ -11,16 +11,16 @@
   -->
 
   <good>
-    <InverseParams>
-      <InverseInfo><value>2.12e-18</value><g>1000</g><sigma>2.12e-21 * m^2</sigma></InverseInfo>
-    </InverseParams>
+    <InverseVector>
+      <InverseParameters><value>2.12e-18</value><g>1000</g><sigma>2.12e-21 * m^2</sigma></InverseParameters>
+    </InverseVector>
   </good>
 
   <bad>
     <sigma>
-      <InverseParams>
-        <InverseInfo><value>2.12e-18</value><g>1000</g><sigma>2.12e-18 * m^2</sigma></InverseInfo>
-      </InverseParams>
+      <InverseVector>
+        <InverseParameters><value>2.12e-18</value><g>1000</g><sigma>2.12e-18 * m^2</sigma></InverseParameters>
+      </InverseVector>
     </sigma>
   </bad>
 

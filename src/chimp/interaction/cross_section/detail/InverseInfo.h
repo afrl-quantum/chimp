@@ -53,22 +53,27 @@ namespace chimp {
     namespace cross_section {
       namespace detail {
 
-        struct InverseInfo {
+        struct InverseParameters {
           /* MEMBER STORAGE */
-          /** Numerator in relationship.
-           * ADD PAPER INFO AGAIN
-           */
+          /** Numerator in relationship, Dalgarno et al. 1958 **/
           double value;
 
+	  /** Relative velocity **/
+	  double g;
+
+	  /** Cross-section **/
+          double sigma;
 
           /* MEMBER FUNCTIONS */
+          InverseParameters() : value(0), sigma(0) { }
 
           std::ostream & print(std::ostream & out) const {
             out << "{value: " << value << ", "
+                   "g: " << g << ", "
+                   "sigma: " << sigma << ", "
                 << '}';
             return out;
           }
-
 
 
           /* STATIC FUNCTIONS */
@@ -76,9 +81,10 @@ namespace chimp {
            *
            * @see DSMCInfo::load().
            * */
-	  /* Is the following necessary? */
-	  static InverseInfo load(const xml::Context & x);
+	  static InverseParameters load(const xml::Context & x);
         };
+        
+	void parse_item( InverseParameters & out, const xml::Context & x );
 
       } /* namespace chimp::interaction::cross_section::detail */
     } /* namespace chimp::interaction::cross_section */

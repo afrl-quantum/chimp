@@ -49,44 +49,41 @@
 namespace {
   namespace xml = xylose::xml;
 
-  using chimp::interaction::cross_section::detail::InverseInfo;
+  using chimp::interaction::cross_section::detail::InverseParameters;
   typedef chimp::interaction::cross_section::Inverse<
     chimp::make_options<>::type > Inverse;
 
   using physical::unit::m;
-  //using physical::constant::si::m_e;
-
-  //using std::log10;
 }
 
-BOOST_AUTO_TEST_SUITE( InverseInfo_test ); // {
+BOOST_AUTO_TEST_SUITE( InverseParameters_test ); // {
 
   BOOST_AUTO_TEST_CASE( loading ) {
     xml::Doc doc(XSTR(XML_FILENAME));
     chimp::prepareCalculator(doc);
 
     {
-      xml::Context x = doc.find("//good/InverseParams");
+      xml::Context x = doc.find("//good/InverseVector");
 
-      Inverse::ParametersSet v = x.parse<Inverse::ParametersSet>();
+      Inverse::ParametersVector v = x.parse<Inverse::ParametersVector>();
       
       /* Only need one set for the Inverse test... */
       BOOST_CHECK_EQUAL( v.size(), 1u );
       BOOST_CHECK_EQUAL( v[0].value, 2.12e-18 );
-      BOOST_CHECK_CLOSE( v[0].g, 1000 /*m/s*/ );
-      BOOST_CHECK_CLOSE( v[0].sigma, 2.12e-21 * m^2 );
+      BOOST_CHECK_EQUAL( v[0].g, 1000 /*m/s*/ );
+      BOOST_CHECK_CLOSE( v[0].sigma, 2.12e-21 * m*m, 0.1 );
     }
 
     {
-      xml::Context x = doc.find("//bad/sigma/InverseParams");
+      xml::Context x = doc.find("//bad/sigma/InverseVector");
       /* not sure why telling it to catch xml::error did not work. Perhaps they
        * already catch it and the precedence caused problems...*/
       BOOST_CHECK_THROW(
-        (void)x.parse<Inverse::ParametersSet>(), std::runtime_error );
+        (void)x.parse<Inverse::ParametersVector>(), std::runtime_error );
     }
   }
 
-BOOST_AUTO_TEST_SUITE_END(); // }  InverseInfo
+BOOST_AUTO_TEST_SUITE_END(); // }  InverseVector
 
 BOOST_AUTO_TEST_SUITE( Inverse_test ); // {
   BOOST_AUTO_TEST_CASE( loading ) {
@@ -94,34 +91,18 @@ BOOST_AUTO_TEST_SUITE( Inverse_test ); // {
     chimp::prepareCalculator(doc);
 
     {
-      xml::Context x = doc.find("//good/InverseParams");
+      xml::Context x = doc.find("//good/InverseVector");
 
       Inverse inverse(x);
 
       /* check the things that were read in... */
       BOOST_CHECK_EQUAL( inverse.parameters.size(), 1u );
       BOOST_CHECK_EQUAL( inverse.parameters[0].value, 2.12e-18 );
-      BOOST_CHECK_CLOSE( inverse.parameters[0].g, 1000 /*m/s*/ );
-      BOOST_CHECK_CLOSE( inverse.parameters[0].sigma, 2.12e-21 * m^2 );
+      BOOST_CHECK_EQUAL( inverse.parameters[0].g, 1000 /*m/s*/ );
+      BOOST_CHECK_CLOSE( inverse.parameters[0].sigma, 2.12e-21 * m*m, 0.1 );
 
       /* check calculated values. */
-      BOOST_CHECK_CLOSE( inverse.parameters[0].sigma, 2.12e-18 / 1000 * m^2, 0.1 );
-      
-      /* Do I need these for a simple Inverse cross section?? */
-      /*
-      #ifdef WRITE_FILES
-      {
-        chimp::interaction::cross_section::detail::DSigmaVFunctor<Lotz> dsv(lotz);
-        std::ofstream f("sigma.dat");
-        double dv = (lotz.sigmaV_max_vrel - lotz.threshold)/100.0;
-        double dmax = 1000 * dv + lotz.threshold;
-        for ( double v = lotz.threshold - 10*dv ; v < dmax; v+=dv ) {
-          f << v << '\t' << lotz(v) << '\t' << dsv(v) << '\n';
-        }
-        f.close();
-      }
-      #endif
-      */
+      BOOST_CHECK_CLOSE( inverse.parameters[0].sigma, 2.12e-18 / 1000 * m*m, 0.1 );
     }
 
   }
