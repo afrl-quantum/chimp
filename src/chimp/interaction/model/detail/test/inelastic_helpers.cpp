@@ -169,7 +169,7 @@ BOOST_AUTO_TEST_SUITE( inelastic_helpers_tests ); // {
       copy( factories.begin(), factories.end(),
             std::ostream_iterator<PF>(ostr,"\n") );
 
-      BOOST_CHECK_EQUAL( score, 0.0 );
+      BOOST_CHECK_SMALL( score, std::numeric_limits<double>::epsilon()*10 );
 
       BOOST_CHECK_EQUAL(
         ostr.str(),
@@ -214,7 +214,7 @@ BOOST_AUTO_TEST_SUITE( inelastic_helpers_tests ); // {
       copy( factories.begin(), factories.end(),
             std::ostream_iterator<PF>(ostr,"\n") );
 
-      BOOST_CHECK_EQUAL( score, 0.0 );
+      BOOST_CHECK_SMALL( score, std::numeric_limits<double>::epsilon()*10 );
 
       BOOST_CHECK_EQUAL(
         ostr.str(),
@@ -238,7 +238,7 @@ BOOST_AUTO_TEST_SUITE( inelastic_helpers_tests ); // {
       copy( factories.begin(), factories.end(),
             std::ostream_iterator<PF>(ostr,"\n") );
 
-      BOOST_CHECK_EQUAL( score, 0.0 );
+      BOOST_CHECK_SMALL( score, std::numeric_limits<double>::epsilon()*10 );
 
       BOOST_CHECK_EQUAL(
         ostr.str(),
@@ -262,7 +262,7 @@ BOOST_AUTO_TEST_SUITE( inelastic_helpers_tests ); // {
       copy( factories.begin(), factories.end(),
             std::ostream_iterator<PF>(ostr,"\n") );
 
-      BOOST_CHECK_EQUAL( score, 0.0 );
+      BOOST_CHECK_SMALL( score, std::numeric_limits<double>::epsilon()*10 );
 
       BOOST_CHECK_EQUAL(
         ostr.str(),
@@ -287,7 +287,7 @@ BOOST_AUTO_TEST_SUITE( inelastic_helpers_tests ); // {
       copy( factories.begin(), factories.end(),
             std::ostream_iterator<PF>(ostr,"\n") );
 
-      BOOST_CHECK_EQUAL( score, 0.0 );
+      BOOST_CHECK_SMALL( score, std::numeric_limits<double>::epsilon()*10 );
 
       BOOST_CHECK_EQUAL(
         ostr.str(),
