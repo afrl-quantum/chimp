@@ -142,6 +142,7 @@ namespace chimp {
           retval.insert( "vhs" );
           retval.insert( "log" );
           retval.insert( "constant" );
+          retval.insert( "inverse" );
           return retval;
         }
 
