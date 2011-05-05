@@ -33,6 +33,7 @@
 
 #include <chimp/interaction/cross_section/Base.h>
 #include <chimp/interaction/cross_section/detail/InverseInfo.h>
+#include <chimp/interaction/cross_section/detail/generic.h>
 #include <chimp/interaction/Equation.h>
 #include <chimp/interaction/ReducedMass.h>
 
@@ -56,32 +57,56 @@ namespace chimp {
        *    default options class).  
        */
       template < typename options >
-      struct Inverse : cross_section::Base<options> {
+      class Inverse : public cross_section::Base<options> {
         /* TYPEDEFS */
         /* STATIC STORAGE */
+      public:
         static const std::string label;
 
         /* MEMBER STORAGE */
-        /** The inverse information for this particular interaction. */
-        detail::InverseParameters inverse;
+      public:
+        /** The parameters for this particular interaction. */
+        detail::InverseParameters param;
 
+      private:
+        /** Threshold energy of the cross section (defaults to 0.0*eV). */
+        double threshold_E;
 
+        /** Threshold velocity. */
+        double threshold_v;
 
 
         /* MEMBER FUNCTIONS */
+      public:
         /** Default constructor creates a Inverse instance with invalid data.  This
          * is primarily useful for obtaining a class from which to call
          * Inverse::new_load. 
          */
-        Inverse() : cross_section::Base<options>() { }
+        Inverse()
+          : cross_section::Base<options>(),
+            threshold_E(0.0), threshold_v(0.0) { }
 
         /** Constructor with thing.. is this necesary?*/
-        Inverse( const xml::Context & x )
+        Inverse( const xml::Context & x,
+                 const ReducedMass & mu )
         : cross_section::Base<options>(),
-          inverse( detail::InverseParameters::load(x) ) { }
+          param( detail::InverseParameters::load(x) ) {
+          setThresholdEnergy( detail::loadThreshold(x, mu, 0.0), mu );
+        }
 
         /** Virtual NO-OP destructor. */
         virtual ~Inverse() {}
+
+        void setThresholdEnergy( const double & threshold,
+                                 const ReducedMass & mu ) {
+          if ( threshold < 0.0 )
+            throw std::runtime_error(
+              "VHS cross section threshold energy must >= 0!"
+            );
+
+          threshold_E = threshold;
+          threshold_v = std::sqrt( threshold / (0.5 * mu.value) );
+        }
 
         /** Compute the cross section.
          * This implements the inverse model as
@@ -91,25 +116,40 @@ namespace chimp {
          *     The relative velocity between two particles.
          * */
         inline virtual double operator() (const double & v_relative) const {
+          if ( v_relative < threshold_v )
+            return 0.0;
 
           /* the collision cross-section is a simple inverse relation to a constant,
            * species dependent.
            */
-          return inverse.value_vref / v_relative ;
+          return param.value_vref / v_relative ;
         }
+
+        /** Obtain the threshold energy for this cross section.  The units are
+         * such that (getThresholdEnergy() / mass ) has the units of [velocity]^2
+         * where [velocity] are the units as used in operator()(v_relative). */
+        virtual double getThresholdEnergy() const { return threshold_E; }
+
+        /** Obtain the threshold energy for this cross section.  The units are
+         * such that (getThresholdEnergy() / mass ) has the units of [velocity]^2
+         * where [velocity] are the units as used in operator()(v_relative). */
+        virtual double getThresholdVelocity() const { return threshold_v; }
 
         virtual std::pair<double,double>
         findMaxSigmaV(const double & v_rel_max) const {
-          /* just return param.value_vref since the product is constant.
-           * We'll return the threshold value as the reference point.
-           */
-          return std::make_pair( param.value_vref, 0.0 );
+          if ( v_rel_max >= threshold_v )
+            /* just return param.value_vref since the product is constant.
+             * We'll return the threshold value as the reference point.
+             */
+            return std::make_pair( param.value_vref, threshold_v);
+          else
+            return std::make_pair( 0.0, 0.0 );
         }
 
         virtual Inverse * new_load( const xml::Context & x,
                                 const interaction::Equation<options> & eq,
                                 const RuntimeDB<options> & db ) const {
-          return new Inverse( x );
+          return new Inverse( x, eq.reducedMass );
         }
 
         /** Obtain the label of the model. */
@@ -120,7 +160,9 @@ namespace chimp {
         /** Print the Inverse data cross section parameters. */
         std::ostream & print(std::ostream & out) const {
           out << "{inverse: ";
-          inverse.print(out) << '}';
+          param.print(out)
+              << "threshold: " << threshold_v << "(m/s)"
+              << '}';
           return out;
         }
       };

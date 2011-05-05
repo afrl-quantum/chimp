@@ -23,7 +23,8 @@
 
 /** \file
  * Cross section definition using the logarithmic curve fit of Miller et al.
- * "Xenon charge exchange cross sections for electrostatic thruster models", 2002
+ * "Xenon charge exchange cross sections for electrostatic thruster models",
+ * 2002.
  * Useful for both MEX and CEX for Xe, Xe+, and Xe++. 
  * Added by Paul Giuliano, pgiulian@umich.edu
  * */
@@ -33,6 +34,7 @@
 
 #include <chimp/interaction/cross_section/Base.h>
 #include <chimp/interaction/cross_section/detail/LogInfo.h>
+#include <chimp/interaction/cross_section/detail/generic.h>
 #include <chimp/interaction/Equation.h>
 #include <chimp/interaction/ReducedMass.h>
 
@@ -56,33 +58,56 @@ namespace chimp {
        *    default options class).  
        */
       template < typename options >
-      struct Log : cross_section::Base<options> {
+      class Log : public cross_section::Base<options> {
         /* TYPEDEFS */
         /* STATIC STORAGE */
+      public:
         static const std::string label;
 
 
         /* MEMBER STORAGE */
-        /** The log information for this particular interaction. */
-        detail::LogParameters log;
+      public:
+        /** The parameters for this particular interaction. */
+        detail::LogParameters param;
 
+      private:
+        /** Threshold energy of the cross section (defaults to 0.0*eV). */
+        double threshold_E;
 
+        /** Threshold velocity. */
+        double threshold_v;
 
 
         /* MEMBER FUNCTIONS */
+      public:
         /** Default constructor creates a Log instance with invalid data.  This
          * is primarily useful for obtaining a class from which to call
          * Log::new_load. 
          */
-        Log() : cross_section::Base<options>() { }
+        Log() : cross_section::Base<options>(),
+            threshold_E(0.0), threshold_v(0.0) { }
 
         /** Constructor with thing.. is this necesary?*/
-        Log( const xml::Context & x )
+        Log( const xml::Context & x,
+             const ReducedMass & mu )
         : cross_section::Base<options>(),
-          log( detail::LogParameters::load(x) ) { }
+          param( detail::LogParameters::load(x) ) {
+          setThresholdEnergy( detail::loadThreshold(x, mu, 0.0), mu );
+        }
 
         /** Virtual NO-OP destructor. */
         virtual ~Log() {}
+
+        void setThresholdEnergy( const double & threshold,
+                                 const ReducedMass & mu ) {
+          if ( threshold < 0.0 )
+            throw std::runtime_error(
+              "VHS cross section threshold energy must >= 0!"
+            );
+
+          threshold_E = threshold;
+          threshold_v = std::sqrt( threshold / (0.5 * mu.value) );
+        }
 
         /** Compute the cross section.
          * This implements the logarithmic curve-fit model as
@@ -92,24 +117,40 @@ namespace chimp {
          *     The relative velocity between two particles.
          * */
         inline virtual double operator() (const double & v_relative) const {
-	  using std::log10;
+          using std::log10;
+
+          if ( v_relative < threshold_v )
+            return 0.0;
 
           /* the collision cross-section is based on a curve fit of ADD MORE.
            */
-          return log.A - log.B * log10( v_relative );
+          return param.A - param.B * log10( v_relative );
         }
+
+        /** Obtain the threshold energy for this cross section.  The units are
+         * such that (getThresholdEnergy() / mass ) has the units of [velocity]^2
+         * where [velocity] are the units as used in operator()(v_relative). */
+        virtual double getThresholdEnergy() const { return threshold_E; }
+
+        /** Obtain the threshold energy for this cross section.  The units are
+         * such that (getThresholdEnergy() / mass ) has the units of [velocity]^2
+         * where [velocity] are the units as used in operator()(v_relative). */
+        virtual double getThresholdVelocity() const { return threshold_v; }
 
         virtual std::pair<double,double>
         findMaxSigmaV(const double & v_rel_max) const {
-          /* just return the product since the product is monotonically
-           * increasing. */
-          return std::make_pair(operator()(v_rel_max) * v_rel_max, v_rel_max);
+          if ( v_rel_max >= threshold_v )
+            /* just return the product since the product is monotonically
+             * increasing. */
+            return std::make_pair(operator()(v_rel_max) * v_rel_max, v_rel_max);
+          else
+            return std::make_pair( 0.0, 0.0 );
         }
 
         virtual Log * new_load( const xml::Context & x,
                                 const interaction::Equation<options> & eq,
                                 const RuntimeDB<options> & db ) const {
-          return new Log( x );
+          return new Log( x, eq.reducedMass );
         }
 
         /** Obtain the label of the model. */
@@ -120,7 +161,9 @@ namespace chimp {
         /** Print the Log data cross section parameters. */
         std::ostream & print(std::ostream & out) const {
           out << "{log: ";
-          log.print(out) << '}';
+          param.print(out)
+              << "threshold: " << threshold_v << "(m/s)"
+              << '}';
           return out;
         }
       };
