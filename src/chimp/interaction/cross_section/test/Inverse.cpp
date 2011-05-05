@@ -33,14 +33,10 @@
 
 #include <xylose/XSTR.h>
 #include <xylose/power.h>
-#include <xylose/xml/vector_parse.h>
 
 #include <physical/physical.h>
 
 #include <boost/test/unit_test.hpp>
-
-#include <vector>
-#include <fstream>
 
 #ifndef XML_FILENAME
 #  error The filename was supposed to already be defined on the command line
@@ -49,61 +45,39 @@
 namespace {
   namespace xml = xylose::xml;
 
-  using chimp::interaction::cross_section::detail::InverseParameters;
   typedef chimp::interaction::cross_section::Inverse<
     chimp::make_options<>::type > Inverse;
 
-  using physical::unit::m;
+  using physical::unit::nm;
+  using xylose::SQR;
+  using chimp::interaction::ReducedMass;
 }
-
-BOOST_AUTO_TEST_SUITE( InverseParameters_test ); // {
-
-  BOOST_AUTO_TEST_CASE( loading ) {
-    xml::Doc doc(XSTR(XML_FILENAME));
-    chimp::prepareCalculator(doc);
-
-    {
-      xml::Context x = doc.find("//good/InverseVector");
-
-      Inverse::ParametersVector v = x.parse<Inverse::ParametersVector>();
-      
-      /* Only need one set for the Inverse test... */
-      BOOST_CHECK_EQUAL( v.size(), 1u );
-      BOOST_CHECK_EQUAL( v[0].value, 2.12e-18 );
-      BOOST_CHECK_EQUAL( v[0].g, 1000 /*m/s*/ );
-      BOOST_CHECK_CLOSE( v[0].sigma, 2.12e-21 * m*m, 0.1 );
-    }
-
-    {
-      xml::Context x = doc.find("//bad/sigma/InverseVector");
-      /* not sure why telling it to catch xml::error did not work. Perhaps they
-       * already catch it and the precedence caused problems...*/
-      BOOST_CHECK_THROW(
-        (void)x.parse<Inverse::ParametersVector>(), std::runtime_error );
-    }
-  }
-
-BOOST_AUTO_TEST_SUITE_END(); // }  InverseVector
 
 BOOST_AUTO_TEST_SUITE( Inverse_test ); // {
   BOOST_AUTO_TEST_CASE( loading ) {
     xml::Doc doc(XSTR(XML_FILENAME));
     chimp::prepareCalculator(doc);
 
-    {
-      xml::Context x = doc.find("//good/InverseVector");
+    ReducedMass mu( physical::element::Xe::mass, physical::element::Xe::mass );
 
-      Inverse inverse(x);
+    {
+      xml::Context x = doc.find("//InverseTest//good");
+
+      Inverse inverse(x, mu);
 
       /* check the things that were read in... */
-      BOOST_CHECK_EQUAL( inverse.parameters.size(), 1u );
-      BOOST_CHECK_EQUAL( inverse.parameters[0].value, 2.12e-18 );
-      BOOST_CHECK_EQUAL( inverse.parameters[0].g, 1000 /*m/s*/ );
-      BOOST_CHECK_CLOSE( inverse.parameters[0].sigma, 2.12e-21 * m*m, 0.1 );
+      BOOST_CHECK_CLOSE( inverse.param.value_vref, 2.12e-18, 1e-6 );
 
       /* check calculated values. */
-      BOOST_CHECK_CLOSE( inverse.parameters[0].sigma, 2.12e-18 / 1000 * m*m, 0.1 );
+      BOOST_CHECK_CLOSE( inverse(1000.), 2.12*SQR(nm) / 1000., 1e-6 );
     }
+
+    /* not sure why telling it to catch xml::error did not work. Perhaps they
+     * already catch it and the precedence caused problems...*/
+    BOOST_CHECK_THROW(
+      (void)Inverse( doc.find("//InverseTest//bad/units"), mu ),
+      std::runtime_error
+    );
 
   }
 BOOST_AUTO_TEST_SUITE_END(); // }  Inverse

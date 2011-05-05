@@ -70,7 +70,7 @@ BOOST_AUTO_TEST_SUITE( threshold ); // {
     xml::Doc doc(XSTR(XML_FILENAME));
     chimp::prepareCalculator(doc);
 
-    xml::Context x = doc.find("//endothermic");
+    xml::Context x = doc.find("//DATATest//endothermic");
 
     DATA data(x, mu );
 
@@ -81,7 +81,7 @@ BOOST_AUTO_TEST_SUITE( threshold ); // {
     xml::Doc doc(XSTR(XML_FILENAME));
     chimp::prepareCalculator(doc);
 
-    xml::Context x = doc.find("//nothreshold");
+    xml::Context x = doc.find("//DATATest//nothreshold");
 
     DATA data(x, mu );
 

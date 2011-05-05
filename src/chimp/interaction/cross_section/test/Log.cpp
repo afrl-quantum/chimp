@@ -33,14 +33,10 @@
 
 #include <xylose/XSTR.h>
 #include <xylose/power.h>
-#include <xylose/xml/vector_parse.h>
 
 #include <physical/physical.h>
 
 #include <boost/test/unit_test.hpp>
-
-#include <vector>
-#include <fstream>
 
 #ifndef XML_FILENAME
 #  error The filename was supposed to already be defined on the command line
@@ -53,60 +49,45 @@ namespace {
   typedef chimp::interaction::cross_section::Log<
     chimp::make_options<>::type > Log;
 
+  using chimp::interaction::ReducedMass;
   using physical::unit::Angstrom;
+  using xylose::SQR;
   using std::log10;
 }
-
-BOOST_AUTO_TEST_SUITE( LogParameters_test ); // {
-
-  BOOST_AUTO_TEST_CASE( loading ) {
-    xml::Doc doc(XSTR(XML_FILENAME));
-    chimp::prepareCalculator(doc);
-
-    {
-      xml::Context x = doc.find("//good/LogVector");
-
-      Log::ParametersVector v = x.parse<Log::ParametersVector>();
-      
-      /* Only need one set for the Log test... */
-      BOOST_CHECK_EQUAL( v.size(), 1u );
-      BOOST_CHECK_EQUAL( v[0].A, 171.23 * Angstrom*Angstrom );
-      BOOST_CHECK_EQUAL( v[0].B, 27.2 * Angstrom*Angstrom );
-      BOOST_CHECK_EQUAL( v[0].g, 1000 /*m/s*/ );
-      BOOST_CHECK_CLOSE( v[0].sigma, 89.63 * Angstrom*Angstrom, 0.1 );
-    }
-
-    {
-      xml::Context x = doc.find("//bad/sigma/LogVector");
-      /* not sure why telling it to catch xml::error did not work. Perhaps they
-       * already catch it and the precedence caused problems...*/
-      BOOST_CHECK_THROW(
-        (void)x.parse<Log::ParametersVector>(), std::runtime_error );
-    }
-  }
-
-BOOST_AUTO_TEST_SUITE_END(); // }  LogParameters
 
 BOOST_AUTO_TEST_SUITE( Log_test ); // {
   BOOST_AUTO_TEST_CASE( loading ) {
     xml::Doc doc(XSTR(XML_FILENAME));
     chimp::prepareCalculator(doc);
 
-    {
-      xml::Context x = doc.find("//good/LogVector");
+    ReducedMass mu( physical::element::Xe::mass, physical::element::Xe::mass );
 
-      Log log(x);
+    {
+      xml::Context x = doc.find("//LogTest//good");
+
+      Log l( x, mu );
 
       /* check the things that were read in... */
-      BOOST_CHECK_EQUAL( log.parameters.size(), 1u );
-      BOOST_CHECK_EQUAL( log.parameters[0].A, 171.23 * Angstrom*Angstrom );
-      BOOST_CHECK_EQUAL( log.parameters[0].B, 27.2 * Angstrom*Angstrom );
-      BOOST_CHECK_EQUAL( log.parameters[0].g, 1000 /*m/s*/ );
-      BOOST_CHECK_CLOSE( log.parameters[0].sigma, 89.63 * Angstrom*Angstrom, 0.1 );
+      BOOST_CHECK_CLOSE( l.param.A, 171.23 * SQR(Angstrom), 1e-6 );
+      BOOST_CHECK_CLOSE( l.param.B, 27.2 * SQR(Angstrom), 1e-6 );
 
       /* check calculated values. */
-      BOOST_CHECK_CLOSE( log.parameters[0].sigma, 171.23 - 27.2*log10(1000) * Angstrom*Angstrom, 0.1 );
+      BOOST_CHECK_CLOSE(
+        l(1000.), (171.23 - 27.2*log10(1000.)) * SQR(Angstrom), 1e-6
+      );
     }
+
+    /* not sure why telling it to catch xml::error did not work. Perhaps they
+     * already catch it and the precedence caused problems...*/
+    BOOST_CHECK_THROW(
+      (void)Log( doc.find("//Log//bad/Aunits"), mu ),
+      std::runtime_error
+    );
+
+    BOOST_CHECK_THROW(
+      (void)Log( doc.find("//Log//bad/Bunits"), mu ),
+      std::runtime_error
+    );
 
   }
 BOOST_AUTO_TEST_SUITE_END(); // }  Log
