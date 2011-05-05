@@ -380,8 +380,6 @@
                 <val x="3.300" y="0.5000E-20"/>
                 <val x="3.600" y="0.1700E-20"/>
                 <val x="5.000" y="0.000"/>
-                <val x="20.00" y="0.000"/>
-                <val x="1000." y="0.000"/>
             </cross_section>
         </Interaction>
 
@@ -417,7 +415,6 @@
                 <val x="32.00" y="0.1500E-21"/>
                 <val x="50.00" y="0.1200E-21"/>
                 <val x="80.00" y="0.000"/>
-                <val x="1000." y="0.000"/>
             </cross_section>
         </Interaction>
 
@@ -450,8 +447,6 @@
                 <val x="3.500" y="0.5850E-20"/>
                 <val x="3.600" y="0.5700E-20"/>
                 <val x="4.000" y="0.000"/>
-                <val x="100.0" y="0.000"/>
-                <val x="1000." y="0.000"/>
             </cross_section>
         </Interaction>
 
@@ -481,7 +476,6 @@
                 <val x="3.400" y="0.3000E-20"/>
                 <val x="3.500" y="0.2130E-20"/>
                 <val x="3.600" y="0.000"/>
-                <val x="1000." y="0.000"/>
             </cross_section>
         </Interaction>
 
@@ -507,7 +501,6 @@
                 <val x="3.200" y="0.2910E-20"/>
                 <val x="3.300" y="0.6150E-21"/>
                 <val x="3.400" y="0.000"/>
-                <val x="1000." y="0.000"/>
             </cross_section>
         </Interaction>
 
@@ -531,7 +524,6 @@
                 <val x="3.100" y="0.3150E-20"/>
                 <val x="3.200" y="0.6000E-21"/>
                 <val x="3.300" y="0.000"/>
-                <val x="1000." y="0.000"/>
             </cross_section>
         </Interaction>
 
@@ -555,7 +547,6 @@
                 <val x="3.200" y="0.3150E-20"/>
                 <val x="3.300" y="0.1035E-20"/>
                 <val x="3.400" y="0.000"/>
-                <val x="1000." y="0.000"/>
             </cross_section>
         </Interaction>
 
@@ -576,8 +567,6 @@
                 <val x="3.000" y="0.4800E-20"/>
                 <val x="3.100" y="0.1635E-20"/>
                 <val x="3.200" y="0.000"/>
-                <val x="100.0" y="0.000"/>
-                <val x="1000." y="0.000"/>
             </cross_section>
         </Interaction>
 
@@ -600,8 +589,6 @@
                 <val x="3.300" y="0.7800E-21"/>
                 <val x="3.400" y="0.1890E-21"/>
                 <val x="3.500" y="0.000"/>
-                <val x="100.0" y="0.000"/>
-                <val x="1000." y="0.000"/>
             </cross_section>
         </Interaction>
 
@@ -622,8 +609,6 @@
                 <val x="3.300" y="0.1545E-20"/>
                 <val x="3.400" y="0.2520E-21"/>
                 <val x="3.500" y="0.000"/>
-                <val x="100.0" y="0.000"/>
-                <val x="1000." y="0.000"/>
             </cross_section>
         </Interaction>
 
@@ -654,8 +639,6 @@
                 <val x="50.00" y="0.3400E-22"/>
                 <val x="70.00" y="0.7000E-23"/>
                 <val x="150.0" y="0.000"/>
-                <val x="500.0" y="0.000"/>
-                <val x="1000." y="0.000"/>
             </cross_section>
         </Interaction>
 
@@ -686,8 +669,6 @@
                 <val x="50.00" y="0.1400E-21"/>
                 <val x="70.00" y="0.2900E-22"/>
                 <val x="150.0" y="0.000"/>
-                <val x="500.0" y="0.000"/>
-                <val x="1000." y="0.000"/>
             </cross_section>
         </Interaction>
 
@@ -716,8 +697,6 @@
                 <val x="50.00" y="0.2680E-21"/>
                 <val x="70.00" y="0.6700E-22"/>
                 <val x="150.0" y="0.000"/>
-                <val x="500.0" y="0.000"/>
-                <val x="1000." y="0.000"/>
             </cross_section>
         </Interaction>
 
@@ -748,8 +727,6 @@
                 <val x="70.00" y="0.1010E-21"/>
                 <val x="100.0" y="0.4700E-22"/>
                 <val x="150.0" y="0.000"/>
-                <val x="500.0" y="0.000"/>
-                <val x="1000." y="0.000"/>
             </cross_section>
         </Interaction>
 
@@ -780,8 +757,6 @@
                 <val x="50.00" y="0.1500E-21"/>
                 <val x="70.00" y="0.3000E-22"/>
                 <val x="150.0" y="0.000"/>
-                <val x="500.0" y="0.000"/>
-                <val x="1000." y="0.000"/>
             </cross_section>
         </Interaction>
 
@@ -810,8 +785,6 @@
                 <val x="50.00" y="0.1270E-21"/>
                 <val x="70.00" y="0.6700E-22"/>
                 <val x="150.0" y="0.000"/>
-                <val x="500.0" y="0.000"/>
-                <val x="1000." y="0.000"/>
             </cross_section>
         </Interaction>
 
@@ -837,7 +810,6 @@
                 <val x="70.00" y="0.1010E-21"/>
                 <val x="150.0" y="0.6700E-22"/>
                 <val x="500.0" y="0.000"/>
-                <val x="1000." y="0.000"/>
             </cross_section>
         </Interaction>
 
@@ -892,8 +864,6 @@
                 <val x="38.00" y="0.9400E-22"/>
                 <val x="50.00" y="0.4700E-22"/>
                 <val x="150.0" y="0.000"/>
-                <val x="500.0" y="0.000"/>
-                <val x="1000." y="0.000"/>
             </cross_section>
         </Interaction>
 
@@ -928,8 +898,6 @@
                 <val x="70.00" y="0.2250E-21"/>
                 <val x="100.0" y="0.2300E-22"/>
                 <val x="150.0" y="0.000"/>
-                <val x="500.0" y="0.000"/>
-                <val x="1000." y="0.000"/>
             </cross_section>
         </Interaction>
 
@@ -952,8 +920,6 @@
                 <val x="40.00" y="0.1200E-22"/>
                 <val x="50.00" y="0.5000E-23"/>
                 <val x="150.0" y="0.000"/>
-                <val x="500.0" y="0.000"/>
-                <val x="1000." y="0.000"/>
             </cross_section>
         </Interaction>
 
@@ -1162,8 +1128,6 @@
                 <val x="1.02000" y="0.00000"/>
                 <val x="1.03000" y="0.420000E-21"/>
                 <val x="1.05000" y="0.00000"/>
-                <val x="1.50000" y="0.00000"/>
-                <val x="10000.0" y="0.00000"/>
             </cross_section>
         </Interaction>
 
@@ -1558,8 +1522,6 @@
                 <val x="10.00" y="0.7000E-21"/>
                 <val x="12.00" y="0.4500E-21"/>
                 <val x="15.00" y="0.000"/>
-                <val x="50.00" y="0.000"/>
-                <val x="100.0" y="0.000"/>
             </cross_section>
         </Interaction>
 
@@ -1827,10 +1789,10 @@
 
 
         <Interaction old_model_label="excitation">
+            <KineticEnergyChange>1.*eV</KineticEnergyChange>
             <Eq><In><T><P>e^-</P></T> + <T><P>H2</P></T></In>  --&gt;  <Out><T><P>e^-</P></T> + <T><P>H2(v2)</P></T></Out></Eq>
             <cross_section model="data" xscale="eV" yscale="m^2">
                 <reference>From Bolsig+ EXCITATION; V=2 EHRHARDT ET AL 1968</reference>
-                <val x="1.000" y="0.000"/>
                 <val x="1.300" y="0.000"/>
                 <val x="1.500" y="0.3000E-22"/>
                 <val x="1.800" y="0.8000E-22"/>
@@ -1844,7 +1806,6 @@
                 <val x="9.000" y="0.1700E-21"/>
                 <val x="12.00" y="0.8000E-22"/>
                 <val x="16.00" y="0.000"/>
-                <val x="1000." y="0.000"/>
             </cross_section>
         </Interaction>
 
@@ -1868,7 +1829,6 @@
                 <val x="12.00" y="0.6000E-23"/>
                 <val x="14.00" y="0.1000E-23"/>
                 <val x="16.00" y="0.000"/>
-                <val x="1000." y="0.000"/>
             </cross_section>
         </Interaction>
 
@@ -1889,7 +1849,6 @@
                 <val x="60.00" y="0.1587E-21"/>
                 <val x="80.00" y="0.4025E-22"/>
                 <val x="100.0" y="0.000"/>
-                <val x="1000." y="0.000"/>
             </cross_section>
         </Interaction>
 
@@ -1939,7 +1898,6 @@
                 <val x="70.00" y="0.4000E-22"/>
                 <val x="100.0" y="0.1400E-22"/>
                 <val x="150.0" y="0.000"/>
-                <val x="1000." y="0.0"/>
             </cross_section>
         </Interaction>
 
@@ -1959,7 +1917,6 @@
                 <val x="30.00" y="0.3500E-21"/>
                 <val x="50.00" y="0.8000E-22"/>
                 <val x="70.00" y="0.000"/>
-                <val x="1000." y="0.0"/>
             </cross_section>
         </Interaction>
 
@@ -2003,16 +1960,15 @@
                 <val x="70.00" y="0.1000E-22"/>
                 <val x="100.0" y="0.4000E-23"/>
                 <val x="150.0" y="0.000"/>
-                <val x="1000." y="0.000"/>
             </cross_section>
         </Interaction>
 
 
         <Interaction old_model_label="excitation">
+            <KineticEnergyChange>15.*eV</KineticEnergyChange>
             <Eq><In><T><P>e^-</P></T> + <T><P>H2</P></T></In>  --&gt;  <Out><T><P>e^-</P></T> + <T><P>H</P></T> + <T><P>H(n=2)</P></T></Out></Eq>
             <cross_section model="data" xscale="eV" yscale="m^2">
                 <reference>From Bolsig+ EXCITATION; dissociative excitation of n=2 states</reference>
-                <val x="15.00" y="0.000"/>
                 <val x="17.00" y="0.000"/>
                 <val x="20.00" y="0.5000E-21"/>
                 <val x="25.00" y="0.7000E-21"/>
@@ -2034,10 +1990,10 @@
 
 
         <Interaction old_model_label="excitation">
+            <KineticEnergyChange>15.2*eV</KineticEnergyChange>
             <Eq><In><T><P>e^-</P></T> + <T><P>H2</P></T></In>  --&gt;  <Out><T><P>e^-</P></T> + <T><P>H2(SUM_OF_RYDBERG_STATES)</P></T></Out></Eq>
             <cross_section model="data" xscale="eV" yscale="m^2">
                 <reference>From Bolsig+ EXCITATION; sum of excitation to rydberg levels</reference>
-                <val x="15.20" y="0.000"/>
                 <val x="16.00" y="0.000"/>
                 <val x="17.00" y="0.1300E-21"/>
                 <val x="18.00" y="0.3000E-21"/>
@@ -2838,10 +2794,18 @@
 
 
         <Interaction old_model_label="attachment">
+            <comment>
+                It is unclear from the Bolsig+ data set whether 0.2010*eV is the
+                real threshold energy and hence the change in kinetic energy.
+                Following the format that the Bolsig+ authors have used before,
+                I am going to assume that it _is_ the threshold energy.  Someone
+                should really examine the original data set.
+                    --SEO
+            </comment>
+            <KineticEnergyChange>0.2010*eV</KineticEnergyChange>
             <Eq><In><T><P>e^-</P></T> + <T><P>HCl</P></T></In>  --&gt;  <Out><T><P>H</P></T> + <T><P>Cl^-</P></T></Out></Eq>
             <cross_section model="data" xscale="eV" yscale="m^2">
                 <reference>From Bolsig+ ATTACHMENT; attachment forming Cl-</reference>
-                <val x="0.2010" y="0.000"/>
                 <val x="0.4100" y="0.000"/>
                 <val x="0.4500" y="0.5000E-22"/>
                 <val x="0.5500" y="0.1000E-21"/>
@@ -2879,8 +2843,6 @@
                 <val x="1.600" y="0.1180E-21"/>
                 <val x="1.800" y="0.7300E-22"/>
                 <val x="2.000" y="0.000"/>
-                <val x="3.000" y="0.000"/>
-                <val x="100.0" y="0.000"/>
             </cross_section>
         </Interaction>
 
@@ -3581,7 +3543,6 @@
                 <val x="0.2000" y="0.4200E-19"/>
                 <val x="0.2500" y="0.1000E-19"/>
                 <val x="0.3000" y="0.000"/>
-                <val x="1000." y="0.000"/>
             </cross_section>
         </Interaction>
 
@@ -3602,8 +3563,6 @@
                 <val x="0.6000" y="0.1404E-19"/>
                 <val x="0.8000" y="0.6143E-20"/>
                 <val x="1.500" y="0.000"/>
-                <val x="10.00" y="0.000"/>
-                <val x="1000." y="0.000"/>
             </cross_section>
         </Interaction>
 
@@ -3637,8 +3596,6 @@
                 <val x="12.00" y="0.9750E-22"/>
                 <val x="13.00" y="0.4875E-22"/>
                 <val x="15.00" y="0.000"/>
-                <val x="100.0" y="0.000"/>
-                <val x="1000." y="0.000"/>
             </cross_section>
         </Interaction>
 
