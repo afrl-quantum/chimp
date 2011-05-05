@@ -136,15 +136,16 @@ namespace chimp {
       /* MEMBER FUNCTIONS */
       Term( const int & species, const int & n )
         : species(species), n(n),
-          from( std::vector<int>(n, -1) ),
-          product_ops( std::vector< std::string >(n, "") ) { }
+          from( std::vector<int>( static_cast<size_t>(n), -1) ),
+          product_ops( std::vector< std::string >( static_cast<size_t>(n), "") )
+        { }
 
       /** Term constructor. */
       Term( const int & species = 0,
             const std::vector< int > & from
-                = std::vector<int>(1,-1),
+                = std::vector<int>(1u,-1),
             const std::vector< std::string > & product_ops
-                = std::vector< std::string >( 1, "" ),
+                = std::vector< std::string >( 1u, "" ),
             const int & n = 1 )
         : species(species), n(n), from(from), product_ops(product_ops) {
         if ( n != static_cast<int>(from.size()) ||
