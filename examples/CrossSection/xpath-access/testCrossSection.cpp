@@ -27,9 +27,7 @@
  */
 
 #include <chimp/RuntimeDB.h>
-#include <chimp/interaction/ReducedMass.h>
-#include <chimp/interaction/cross_section/VHS.h>
-#include <chimp/interaction/cross_section/DATA.h>
+#include <chimp/interaction/Equation.h>
 
 #include <physical/physical.h>
 
@@ -40,9 +38,6 @@
 namespace xml = xylose::xml;
 using namespace physical::elements;
 namespace XS = chimp::interaction::cross_section;
-using physical::system::si;
-const double amu = physical::constant::amu<si>::value();
-const double m_e = physical::constant::m_e<si>::value();
 using physical::unit::m;
 using physical::unit::nm;
 using physical::unit::s;
@@ -82,8 +77,12 @@ const int N_points = 100;
 
 int main() {
     typedef chimp::RuntimeDB<> DB;
-    typedef chimp::interaction::ReducedMass Mu;
+    typedef DB::Set::Equation Equation;
     DB db;
+    {
+        xml::Context::list particles = chimp::getAllParticlesCtx( db.xmlDb );
+        db.addParticleType( particles.begin(), particles.end() );
+    }
 
     std::ofstream fvhs("vhs.dat");
     std::ofstream fdata("data.dat");
@@ -91,33 +90,27 @@ int main() {
     std::cout << "testing VHS..." << std::endl;
     xml::Context::list xl = db.xmlDb.eval("//Interaction[cross_section/@model='vhs']");
     for (xml::Context::list::iterator i = xl.begin(); i!=xl.end(); i++) {
-        std::string Eq = i->query<std::string>("Eq");
-        std::cout << "Eq:  " << Eq << std::endl;
-
-        xml::Context x = i->find("cross_section");
-        XS::VHS<DB::options> cs( x, Mu(87*amu, 87*amu) );
-        //cs.print(std::cout) << std::endl;
-
-        fvhs << "# Eq:  " << Eq << '\n';
-        print(fvhs, cs, v0, v1, N_points) << "\n\n";
+        try {
+            Equation eq = Equation::load( *i, db );
+            eq.print( std::cout << "# Eq: ", db ) << '\n';
+            eq.print(      fvhs << "# Eq: ", db ) << '\n';
+            print(fvhs, *eq.cs, v0, v1, N_points) << "\n\n";
+        } catch ( const std::exception & e) {
+            std::cout << e.what() << std::endl;
+        }
     }
 
 
     std::cout << "testing XS::DATA..." << std::endl;
     xl = db.xmlDb.eval("//Interaction[cross_section/@model='data']");
     for (xml::Context::list::iterator i = xl.begin(); i!=xl.end(); i++) {
-        std::string Eq = i->query<std::string>("Eq");
-        std::cout << "Eq:  " << Eq << std::endl;
-
-        xml::Context x = i->find("cross_section");
         try {
-            XS::DATA<DB::options> cs( x, Mu(m_e, Hg::mass) );
-            //cs.print(std::cout) << std::endl;
-
-            fdata << "# Eq:  " << Eq << '\n';
-            print(fdata, cs, v0, v1, N_points) << "\n\n";
+            Equation eq = Equation::load( *i, db );
+            eq.print( std::cout << "# Eq: ", db ) << '\n';
+            eq.print(     fdata << "# Eq: ", db ) << '\n';
+            print(fdata, *eq.cs, v0, v1, N_points) << "\n\n";
         } catch (const std::exception & e) {
-            std::cout << e.what();
+            std::cout << e.what() << std::endl;
         }
     }
 
