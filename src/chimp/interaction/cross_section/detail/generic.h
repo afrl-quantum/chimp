@@ -28,6 +28,8 @@
 #ifndef chimp_interaction_cross_section_detail_generic_h
 #define chimp_interaction_cross_section_detail_generic_h
 
+#include <chimp/interaction/ReducedMass.h>
+
 #include <xylose/xml/Doc.h>
 
 namespace chimp {
@@ -42,7 +44,9 @@ namespace chimp {
          * @param def
          *    The default threshold value in SI units (Joules).
          */
-        double loadThreshold( const xml::Context & x, const double & def =0.0 );
+        double loadThreshold( const xml::Context & x,
+                              const ReducedMass & mu,
+                              const double & def = 0.0 );
 
       } /* namespace chimp::interaction::cross_section::detail */
     } /* namespace chimp::interaction::cross_section */

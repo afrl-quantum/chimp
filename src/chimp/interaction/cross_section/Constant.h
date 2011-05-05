@@ -88,7 +88,7 @@ namespace chimp {
         /** Constructor to load from specific xml context. */
         Constant( const xml::Context & x, const ReducedMass & mu )
           : value( detail::loadConstantValue(x) ) {
-          setThresholdEnergy( detail::loadThreshold(x, 0.0), mu );
+          setThresholdEnergy( detail::loadThreshold(x, mu, 0.0), mu );
         }
 
         /** Constructor to initialize the cross section specifically. */

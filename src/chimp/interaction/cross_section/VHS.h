@@ -94,7 +94,7 @@ namespace chimp {
         : cross_section::Base<options>(),
           vhs( detail::VHSInfo::load(x) ),
           mu( mu ) {
-          setThresholdEnergy( detail::loadThreshold(x, 0.0), mu );
+          setThresholdEnergy( detail::loadThreshold(x, mu, 0.0), mu );
         }
 
         /** Virtual NO-OP destructor. */
