@@ -391,6 +391,8 @@ documentation for each function, class, and namespace of the API.
       generation happens for pairs of cross-sections of the following types:
         - \ref cap_Constant "Constant"
         - \ref cap_VHS      "VHS"
+        - \ref cap_Log      "Log"
+        - \ref cap_Inverse  "Inverse"
         .
       For all other types of cross-section pairs, it is necessary for the user
       to specify a
@@ -405,7 +407,8 @@ documentation for each function, class, and namespace of the API.
     - chimp::interaction::cross_section::Constant \anchor cap_Constant <br>
       A constant value over the entire energy range of interaction pairs.  An
       optional threshold value can be given via <code><threshold></code> XML
-      child node.  The following is an example XML representation of the
+      child node in units of either energy of velocity.  The following is an
+      example XML representation of the
       chimp::interaction::cross_section::Constant information:
       \verbatim
       <cross_section model="constant">
@@ -498,11 +501,14 @@ documentation for each function, class, and namespace of the API.
       \endverbatim
     - chimp::interaction::cross_section::VHS \anchor cap_VHS <br>
       The Variable Hard Sphere model commonly used in Direct Simulation Monte
-      Carlo (DSMC) codes.
+      Carlo (DSMC) codes.  An optional threshold value can be given via
+      <code><threshold></code> XML child node in units of either energy of
+      velocity.
       <br>
       Example:
       \verbatim
       <cross_section model="vhs">
+        <!-- threshold> 0.5*m/s </threshold --> <!-- threshold is optional -->
         <value uncertainty="130 * nm^2">540 * nm^2</value>
         <T_ref>25*uK</T_ref>
         <visc_T_law>3.0/4.0</visc_T_law>
@@ -511,6 +517,41 @@ documentation for each function, class, and namespace of the API.
           This reference was used in determining a cross-section value and
           reference temperature.  The viscosity-temperature law is just
           pulled out of a hat.
+        </reference>
+      </cross_section>
+      \endverbatim
+    - chimp::interaction::cross_section::Log \anchor cap_Log <br>
+      Logarithmic curve fit as done by Miller et al.  "Xenon charge exchange
+      cross sections for electrostatic thruster models", 2002.  An optional
+      threshold value can be given via
+      <code><threshold></code> XML child node in units of either energy of
+      velocity.
+      <br>
+      Example:
+      \verbatim
+      <cross_section model="log">
+        <!-- threshold> 0.5*m/s </threshold --> <!-- threshold is optional -->
+        <A>171.23 * Angstrom^2</A>
+        <B>27.2 * Angstrom^2</B>
+        <reference>
+          Miller et al.  "Xenon charge exchange cross sections for electrostatic
+          thruster models", 2002.
+        </reference>
+      </cross_section>
+      \endverbatim
+    - chimp::interaction::cross_section::Inverse \anchor cap_Inverse <br>
+      Cross section definition using the inverse model of Dalgarno et al., "The
+      Mobilities of Ions in Unlike Gases", 1958.  An optional threshold value
+      can be given via <code><threshold></code> XML child node in units of
+      either energy of velocity.
+      <br>
+      Example:
+      \verbatim
+      <cross_section model="inverse">
+        <!-- threshold> 0.5*m/s </threshold --> <!-- threshold is optional -->
+        <value_vref> 2.12 * nm^2 * m/s </value_vref>
+        <reference>
+          Dalgarno et al., "The Mobilities of Ions in Unlike Gases", 1958.
         </reference>
       </cross_section>
       \endverbatim
