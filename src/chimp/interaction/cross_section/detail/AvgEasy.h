@@ -140,6 +140,7 @@ namespace chimp {
         inline std::set< std::string > get_easy_sets() {
           std::set< std::string > retval;
           retval.insert( "vhs" );
+          retval.insert( "log" );
           retval.insert( "constant" );
           return retval;
         }

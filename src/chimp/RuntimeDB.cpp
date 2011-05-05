@@ -32,6 +32,7 @@
 #  include <chimp/interaction/filter/EqIO.h>
 #  include <chimp/interaction/filter/Elastic.h>
 #  include <chimp/interaction/cross_section/VHS.h>
+#  include <chimp/interaction/cross_section/Log.h>
 #  include <chimp/interaction/cross_section/DATA.h>
 #  include <chimp/interaction/cross_section/Lotz.h>
 #  include <chimp/interaction/cross_section/Constant.h>
@@ -66,10 +67,12 @@ namespace chimp {
 
     /* register the library-provided CrossSection functors. */
     typedef interaction::cross_section::VHS<options> VHS;
+    typedef interaction::cross_section::Log<options> Log;
     typedef interaction::cross_section::DATA<options> DATA;
     typedef interaction::cross_section::Lotz<options> Lotz;
     typedef interaction::cross_section::Constant<options> Constant;
     cross_section_registry[VHS::label ].reset(new VHS);
+    cross_section_registry[Log::label ].reset(new Log);
     cross_section_registry[DATA::label].reset(new DATA);
     cross_section_registry[Lotz::label].reset(new Lotz);
     cross_section_registry[Constant::label].reset(new Constant);
