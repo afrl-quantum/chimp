@@ -44,8 +44,8 @@
  *
  */
 
-#ifndef chimp_interaction_Particle_h
-#define chimp_interaction_Particle_h
+#ifndef chimp_test_Particle_h
+#define chimp_test_Particle_h
 
 #  include <chimp/accessors.h>
 
@@ -55,7 +55,7 @@
 
 
 namespace chimp {
-  namespace interaction {
+  namespace test {
     using xylose::Vector;
 
     /** Just some class to represent particles to sort. */
@@ -116,7 +116,7 @@ namespace chimp {
     using chimp::accessors::particle::weight;
     using chimp::accessors::particle::setWeight;
 
-  }/* namespace chimp::interaction */
+  }/* namespace chimp::test */
 }/* namespace chimp */
 
-#endif // chimp_interaction_Particle_h
+#endif // chimp_test_Particle_h

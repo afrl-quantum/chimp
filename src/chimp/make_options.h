@@ -28,7 +28,7 @@
 #ifndef chimp_make_options_h
 #define chimp_make_options_h
 
-#include <chimp/interaction/Particle.h>
+#include <chimp/test_Particle.h>
 #include <chimp/property/DefaultSet.h>
 
 #include <xylose/random/Kiss.hpp>
@@ -77,7 +77,7 @@ namespace chimp {
    *   chimp::interaction::position, chimp::interaction::species.
    *
    *   <br>
-   *   [Default:  chimp::interaction::Particle]<br>
+   *   [Default:  chimp::test::Particle]<br>
    *
    * @tparam _Properties
    *   Aggregate class of all particle properties that will be loaded from the
@@ -108,7 +108,7 @@ namespace chimp {
    *   [Default:  true]
    * */
   template <
-    typename _Particle          = chimp::interaction::Particle,
+    typename _Particle          = chimp::test::Particle,
     typename _Properties        = chimp::property::DefaultSet,
     bool _inplace_interactions  = true,
     bool _auto_create_missing_elastic = false,

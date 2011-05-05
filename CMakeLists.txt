@@ -69,7 +69,7 @@ set( ${PROJECT_NAME}_HEADERS
     src/chimp/interaction/model/Base.h
     src/chimp/interaction/model/VSSElastic.h
     src/chimp/interaction/selectRandomPair.h
-    src/chimp/interaction/Particle.h
+    src/chimp/test_Particle.h
     src/chimp/interaction/cross_section/Constant.h
     src/chimp/interaction/cross_section/Log.h
     src/chimp/interaction/cross_section/Inverse.h

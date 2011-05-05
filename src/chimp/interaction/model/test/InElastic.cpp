@@ -28,9 +28,9 @@
 
 
 #include <chimp/RuntimeDB.h>
+#include <chimp/test_Particle.h>
 #include <chimp/interaction/Term.h>
 #include <chimp/interaction/Input.h>
-#include <chimp/interaction/Particle.h>
 #include <chimp/interaction/ReducedMass.h>
 #include <chimp/interaction/filter/Not.h>
 #include <chimp/interaction/filter/Null.h>
@@ -51,7 +51,7 @@
 
 namespace {
   using boost::shared_ptr;
-  using chimp::interaction::Particle;
+  using chimp::test::Particle;
   using chimp::interaction::Term;
   namespace test = chimp::interaction::model::test;
   using xylose::V3;

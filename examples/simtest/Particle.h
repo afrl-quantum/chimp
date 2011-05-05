@@ -57,6 +57,11 @@ namespace simtest {
   };
 
   using chimp::accessors::particle::species; // import generic accessor for species
+  using chimp::accessors::particle::setSpecies; // import generic accessor for species
+  using chimp::accessors::particle::position; // import generic accessor for species
+  using chimp::accessors::particle::setPosition; // import generic accessor for species
+  using chimp::accessors::particle::velocity; // import generic accessor for species
+  using chimp::accessors::particle::setVelocity; // import generic accessor for species
 
   /** Particle weight is always 1.0. Const version must exist... */
   static inline float weight( const Particle & p ) {
