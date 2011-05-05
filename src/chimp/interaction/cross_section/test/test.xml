@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<CrossSectionTests>
+  <calc-commands>
+      <command>from physical::constant import *</command>
+      <command>from physical::unit import *</command>
+      <command>from physical import 'unit::pi'</command>
+      <command>from physical import 'element::.*'</command>
+  </calc-commands>
+
+  <DATATest>
+    <endothermic model="data" xscale="eV" yscale="m^2">
+      <val x="0.2000E-01" y="0.000"/>
+      <val x="0.3000E-01" y="0.2500E-21"/>
+      <val x="0.8000" y="0.2500E-21"/>
+      <val x="1.600" y="0.8600E-21"/>
+      <val x="1.800" y="0.2350E-20"/>
+      <val x="2.000" y="0.1900E-19"/>
+      <val x="2.200" y="0.2770E-19"/>
+      <val x="2.400" y="0.2190E-19"/>
+      <val x="2.600" y="0.2170E-19"/>
+      <val x="2.800" y="0.1380E-19"/>
+      <val x="3.000" y="0.1030E-19"/>
+      <val x="3.200" y="0.6900E-20"/>
+      <val x="3.600" y="0.1700E-20"/>
+      <val x="20.00" y="0.000"/>
+    </endothermic>
+
+    <nothreshold model="data" xscale="eV" yscale="m^2">
+      <val x="0.0" y="0.0"/>
+      <val x="0.3000E-01" y="0.2500E-21"/>
+      <val x="0.8000" y="0.2500E-21"/>
+      <val x="1.600" y="0.8600E-21"/>
+      <val x="1.800" y="0.2350E-20"/>
+      <val x="2.000" y="0.1900E-19"/>
+      <val x="2.200" y="0.2770E-19"/>
+      <val x="2.400" y="0.2190E-19"/>
+      <val x="2.600" y="0.2170E-19"/>
+      <val x="2.800" y="0.1380E-19"/>
+      <val x="3.000" y="0.1030E-19"/>
+      <val x="3.200" y="0.6900E-20"/>
+      <val x="3.600" y="0.1700E-20"/>
+      <val x="20.00" y="0.000"/>
+    </nothreshold>
+  </DATATest>
+
+  <InverseTest>
+    <!-- Currently only good for xenon. Must expand. 
+    -->
+
+    <good>
+      <value_vref>2.12 * nm^2 * m/s</value_vref>
+    </good>
+
+    <bad>
+      <units>
+        <value_vref>2.12e-18</value_vref>
+      </units>
+    </bad>
+
+  </InverseTest>
+
+  <LogTest>
+    <!-- Currently only good for xenon. Must expand. 
+    -->
+
+    <good>
+      <A>171.23 * Angstrom^2</A>
+      <B>27.2 * Angstrom^2</B>
+    </good>
+
+    <bad>
+      <Aunits>
+        <A>171.23 * Angstrom^2 / s</A>
+        <B>27.2 * Angstrom^2</B>
+      </Aunits>
+      <Bunits>
+        <A>171.23 * Angstrom^2 </A>
+        <B>27.2</B>
+      </Bunits>
+    </bad>
+
+  </LogTest>
+
+  <LotzTest>
+    <!-- this is a comment. 
+    -->
+
+    <good>
+      <LotzVector>
+        <LotzParameters><P>eV</P><q>1</q><a>nm^2*eV^2</a><b>0.5</b><c>0.5</c></LotzParameters>
+        <LotzParameters><P>1.2*eV</P><q>2</q><a>2*nm^2*eV^2</a><b>0.6</b><c>0.6</c></LotzParameters>
+      </LotzVector>
+    </good>
+
+    <bad>
+      <P>
+        <LotzVector>
+          <LotzParameters><P>m</P><q>1</q><a>nm^2 * eV^2</a><b>1</b><c>1</c></LotzParameters>
+          <LotzParameters><P>eV</P><q>2</q><a>nm^2 * eV^2</a><b>2</b><c>2</c></LotzParameters>
+        </LotzVector>
+      </P>
+
+      <a>
+        <LotzVector>
+          <LotzParameters><P>eV</P><q>1</q><a>nm^2 * eV^2</a><b>1</b><c>1</c></LotzParameters>
+          <LotzParameters><P>eV</P><q>2</q><a>nm * eV^2</a><b>2</b><c>2</c></LotzParameters>
+        </LotzVector>
+      </a>
+    </bad>
+
+  </LotzTest>
+
+</CrossSectionTests>

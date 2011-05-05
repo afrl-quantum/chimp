@@ -1,5 +1,11 @@
-path-constant LOTZ_FILENAME : ./lotz.xml ;
-path-constant DATA_FILENAME : ./data.xml ;
+path-constant XML_FILENAME : ./test.xml ;
 
-unit-test Lotz : Lotz.cpp : <define>XML_FILENAME=$(LOTZ_FILENAME) ;
-unit-test DATA : DATA.cpp : <define>XML_FILENAME=$(DATA_FILENAME) ;
+project
+    : requirements
+        <define>XML_FILENAME=$(XML_FILENAME)
+    ;
+
+unit-test DATA : DATA.cpp ;
+unit-test Lotz : Lotz.cpp ;
+unit-test Log : Log.cpp ;
+unit-test Inverse : Inverse.cpp ;
