@@ -47,39 +47,38 @@ namespace chimp {
 
       /** Generic NON-const accessor for particle velocity. */
       template < typename ParticleT >
-      inline Vector<double,3> & velocity( ParticleT & p ) {
+      inline Vector<double,3u> & velocity( ParticleT & p ) {
         return p.v;
       }
 
       /** Generic const accessor for particle velocity. */
       template < typename ParticleT >
-      inline const Vector<double,3> & velocity( const ParticleT & p ) {
+      inline const Vector<double,3u> & velocity( const ParticleT & p ) {
         return p.v;
       }
 
       /** Generic particle velocity set function. */
-      template < typename ParticleT >
-      inline void setVelocity( ParticleT & p, const Vector<double,3> & v ) {
+      template < typename ParticleT, typename Tv >
+      inline void setVelocity( ParticleT & p, const Vector<Tv,3u> & v ) {
         p.v = v;
       }
 
 
       /** Generic NON-const accessor for particle position. */
       template < typename ParticleT >
-      inline Vector<double,3> & position( ParticleT & p ) {
+      inline Vector<double,3u> & position( ParticleT & p ) {
         return p.x;
       }
 
       /** Generic const accessor for particle position. */
       template < typename ParticleT >
-      inline const Vector<double,3> & position( const ParticleT & p ) {
+      inline const Vector<double,3u> & position( const ParticleT & p ) {
         return p.x;
       }
 
       /** Generic particle position set function. */
-      template < typename ParticleT >
-      inline
-      void setPosition( ParticleT & p, const Vector<double,3u> & x ) {
+      template < typename ParticleT, typename Tx >
+      inline void setPosition( ParticleT & p, const Vector<Tx,3u> & x ) {
         p.x = x;
       }
 
@@ -97,8 +96,8 @@ namespace chimp {
       }
 
       /** Generic particle species set function. */
-      template < typename ParticleT >
-      inline void setSpecies( ParticleT & p, const int & s ) {
+      template < typename ParticleT, typename Ts >
+      inline void setSpecies( ParticleT & p, const Ts & s ) {
         p.species = s;
       }
 
@@ -116,8 +115,8 @@ namespace chimp {
       }
 
       /** Generic particle weight set function. */
-      template < typename ParticleT >
-      inline void setWeight( ParticleT & p, const float & w ) {
+      template < typename ParticleT, typename Tw >
+      inline void setWeight( ParticleT & p, const Tw & w ) {
         p.weight = w;
       }
 
