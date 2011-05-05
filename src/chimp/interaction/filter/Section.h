@@ -31,6 +31,7 @@
 #include <chimp/interaction/filter/Base.h>
 #include <chimp/interaction/filter/Null.h>
 #include <chimp/interaction/filter/detail/EqPair.h>
+#include <chimp/interaction/Equation.h>
 
 #include <xylose/logger.h>
 #include <xylose/strutil.h>
@@ -132,7 +133,7 @@ namespace chimp {
                             end  = fset.end();
                               i != end; ++i ) {
             /* we need to test to see if the section matches. */
-            std::string estr = i->query<std::string>("Eq");
+            std::string estr = formatUniqueEqString( i->find("Eq") );
 
             if      ( section_set.find(*i) != section_set.end() )
               map[estr].matched = &(*i);

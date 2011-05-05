@@ -25,8 +25,9 @@
 #ifndef chimp_interaction_filter_detail_EqPair_h
 #define chimp_interaction_filter_detail_EqPair_h
 
-#include <string>
 #include <map>
+#include <string>
+#include <ostream>
 
 namespace chimp {
   namespace interaction {

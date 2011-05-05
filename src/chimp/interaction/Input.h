@@ -74,8 +74,12 @@ namespace chimp {
       std::ostream & print( std::ostream & out, const RnDB & db ) const {
         Term::printset ps;
 
+        /** We must keep a temporary storage until printset is finished because
+         * it uses references back to the Terms--it does not copy storage. */
+        Term tmp( A.species, 2 );
+
         if ( A.species == B.species )
-          ps.add( Term(A.species, 2), db );
+          ps.add( tmp, db );
         else {
           ps.add(A, db);
           ps.add(B, db);

@@ -34,6 +34,8 @@
 #include <ostream>
 #include <set>
 
+#include <cassert>
+
 namespace chimp {
   namespace interaction {
 
@@ -157,9 +159,27 @@ namespace chimp {
       std::ostream & print(std::ostream & out, const RnDB & db) const {
         const property::name & name = db[species];
 
+        assert( n > 0 );
+
         if (n > 1)
           out << n << ' ';
         out << name.value;
+
+        assert( n == static_cast<int>(from.size()) );
+        {
+          std::ostringstream ostr;
+          const char * comma = ",";
+          const char * csep = "";
+          for ( unsigned int i = 0u; i < from.size(); ++i ) {
+            if ( from[i] >= 0 ) {
+              ostr << csep << from[i];
+              csep = comma;
+            }
+          }
+
+          if ( ostr.str() != "" )
+            out << '[' << ostr.str() << ']';
+        }
 
         return out;
       }

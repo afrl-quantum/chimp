@@ -49,6 +49,42 @@ namespace chimp {
 
   namespace interaction {
 
+    /** Format a set of Equation XML Term nodes into a string that is unique to
+     * the set of Equation Terms represented by the XML node. */
+    inline std::ostream & formatUniqueEqTerms( std::ostream & out,
+                                               const xml::Context & x ) {
+      const char * add = " + ";
+      const char * sep = "";
+      xml::Context::list xl = x.eval("T");
+      for ( xml::Context::list::iterator i = xl.begin(), e = xl.end(); i != e; ++i ) {
+        unsigned int n = i->query<unsigned int>("n",1u);
+        int from = i->query<int>("@from",-1);
+        out << sep;
+
+        if ( n > 1u )
+          out << n << " ";
+
+        out << i->query< std::string >("P");
+
+        if ( from >= 0 )
+          out << "[" << from << "]";
+
+        sep = add;
+      }
+
+      return out;
+    }
+
+    /** Format an Equation XML node into a string that is unique to the Equation
+     * represented by the XML node. */
+    inline std::string formatUniqueEqString( const xml::Context & x ) {
+      std::ostringstream ostr;
+      formatUniqueEqTerms( ostr, x.find("In") ) << "  -->  ";
+      formatUniqueEqTerms( ostr, x.find("Out") );
+      return ostr.str();
+    }
+
+
     /** Detailed balanced equation. */
     template < typename options >
     struct Equation : Input {
