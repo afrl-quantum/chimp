@@ -69,10 +69,10 @@ namespace chimp {
 
 
         /* MEMBER STORAGE */
-        using typename InElastic<options>::mu;
-        using typename InElastic<options>::muQ;
-        using typename InElastic<options>::factories;
-        using typename InElastic<options>::expressions;
+        using InElastic<options>::mu;
+        using InElastic<options>::muQ;
+        using InElastic<options>::factories;
+        using InElastic<options>::expressions;
 
         /** Reduced mass of product particles. */
         ReducedMass mu_1;
