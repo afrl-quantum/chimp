@@ -32,14 +32,15 @@ namespace chimp {
 
         void parse_item( InverseParameters & out, const xml::Context & x ) {
           using runtime::physical::Quantity;
-	  using runtime::physical::unit::m;
-          /** Keep unit-less for now, though value == m^3/s and g == m/s **/
-          x.query<Quantity>("value").assertUnitless().getCoeff(out.value);
-          x.query<Quantity>("g").assertUnitless().getCoeff(out.g);
-          x.query<Quantity>("sigma").assertMatch(m*m).getCoeff(out.sigma);
+          using runtime::physical::unit::m;
+          using runtime::physical::unit::s;
+          const Quantity units = m*m*m/s;
+          /** Keep unit-less for now, though value_vref == m^3/s **/
+          x.query<Quantity>("value_vref")
+           .assertMatch(units).getCoeff(out.value_vref);
         }
 
-	InverseParameters InverseParameters::load(const xml::Context & x) {
+        InverseParameters InverseParameters::load(const xml::Context & x) {
           return x.parse<InverseParameters>();
         }
 

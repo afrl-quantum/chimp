@@ -35,11 +35,9 @@ namespace chimp {
           using runtime::physical::unit::Angstrom;
           x.query<Quantity>("A").assertMatch(Angstrom*Angstrom).getCoeff(out.A);
           x.query<Quantity>("B").assertMatch(Angstrom*Angstrom).getCoeff(out.B);
-          x.query<Quantity>("g").assertUnitless().getCoeff(out.g);
-          x.query<Quantity>("sigma").assertMatch(Angstrom*Angstrom).getCoeff(out.sigma);
         }
 
-	LogParameters LogParameters::load(const xml::Context & x) {
+        LogParameters LogParameters::load(const xml::Context & x) {
           return x.parse<LogParameters>();
         }
 

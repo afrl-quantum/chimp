@@ -36,16 +36,6 @@
 
 #include <ostream>
 
-#if (defined(PGCC) || __sun__ == 1)
-inline double tgamma(double x) {
-  int sign = 0;
-  register double lg = lgamma_r(x,&sign);
-  return sign * exp(lg);
-}
-#endif
-
-
-
 
 namespace chimp {
   namespace interaction {
@@ -61,31 +51,24 @@ namespace chimp {
           /** Second variable in curve-fit. **/
           double B;
 
-	  /** Relative velocity **/
-          double g;
-	  
-	  /** Cross section **/
-          double sigma;
 
           /* MEMBER FUNCTIONS */
-          LogParameters() : A(0), B(0), g(0), sigma(0) { }
-	 
-	  std::ostream & print(std::ostream & out) const {
+          LogParameters() : A(0), B(0) { }
+
+          std::ostream & print(std::ostream & out) const {
             out << "{A: " << A << ", "
                     "B: " << B << ", "
-                    "g: " << g << ", "
-                    "sigma: " << sigma << ", "
                 << '}';
             return out;
           }
-	
+
 
           /* STATIC FUNCTIONS */
           /** Load the information into this properties node.
            *
            * @see DSMCInfo::load().
            * */
-	  static LogParameters load(const xml::Context & x);
+          static LogParameters load(const xml::Context & x);
         };
 
         void parse_item( LogParameters & out, const xml::Context & x );

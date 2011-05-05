@@ -36,16 +36,6 @@
 
 #include <ostream>
 
-#if (defined(PGCC) || __sun__ == 1)
-inline double tgamma(double x) {
-  int sign = 0;
-  register double lg = lgamma_r(x,&sign);
-  return sign * exp(lg);
-}
-#endif
-
-
-
 
 namespace chimp {
   namespace interaction {
@@ -56,21 +46,14 @@ namespace chimp {
         struct InverseParameters {
           /* MEMBER STORAGE */
           /** Numerator in relationship, Dalgarno et al. 1958 **/
-          double value;
+          double value_vref;
 
-	  /** Relative velocity **/
-	  double g;
-
-	  /** Cross-section **/
-          double sigma;
 
           /* MEMBER FUNCTIONS */
-          InverseParameters() : value(0), sigma(0) { }
+          InverseParameters() : value_vref(0) { }
 
           std::ostream & print(std::ostream & out) const {
-            out << "{value: " << value << ", "
-                   "g: " << g << ", "
-                   "sigma: " << sigma << ", "
+            out << "{value_vref: " << value_vref << ", "
                 << '}';
             return out;
           }
@@ -81,10 +64,10 @@ namespace chimp {
            *
            * @see DSMCInfo::load().
            * */
-	  static InverseParameters load(const xml::Context & x);
+          static InverseParameters load(const xml::Context & x);
         };
         
-	void parse_item( InverseParameters & out, const xml::Context & x );
+        void parse_item( InverseParameters & out, const xml::Context & x );
 
       } /* namespace chimp::interaction::cross_section::detail */
     } /* namespace chimp::interaction::cross_section */

@@ -58,12 +58,6 @@ namespace chimp {
       template < typename options >
       struct Inverse : cross_section::Base<options> {
         /* TYPEDEFS */
-        /** The parameters required by the Lotz model. */
-        typedef detail::InverseParameters Parameters;
-
-        /** Type of list/vector of Lotz parameters. */
-        typedef std::vector< Parameters > ParametersVector;
-        
         /* STATIC STORAGE */
         static const std::string label;
 
@@ -71,14 +65,7 @@ namespace chimp {
         /** The inverse information for this particular interaction. */
         detail::InverseParameters inverse;
 
-	/** Table of cross-section data. */
-        ParametersVector parameters;
 
-	/** Constant value in numerator of ratio. **/
-	double value;
-	
-	/** Resulting cross-section. **/
-	double sigma;
 
 
         /* MEMBER FUNCTIONS */
@@ -106,16 +93,17 @@ namespace chimp {
         inline virtual double operator() (const double & v_relative) const {
 
           /* the collision cross-section is a simple inverse relation to a constant,
-	  species dependent.
+           * species dependent.
            */
-          return value / v_relative ;
+          return inverse.value_vref / v_relative ;
         }
 
         virtual std::pair<double,double>
         findMaxSigmaV(const double & v_rel_max) const {
-          /* just return the product since the product is monotonically
-           * increasing. */
-          return std::make_pair(operator()(v_rel_max) * v_rel_max, v_rel_max);
+          /* just return param.value_vref since the product is constant.
+           * We'll return the threshold value as the reference point.
+           */
+          return std::make_pair( param.value_vref, 0.0 );
         }
 
         virtual Inverse * new_load( const xml::Context & x,

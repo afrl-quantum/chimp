@@ -58,12 +58,6 @@ namespace chimp {
       template < typename options >
       struct Log : cross_section::Base<options> {
         /* TYPEDEFS */
-        /** The parameters required by the Lotz model. */
-        typedef detail::LogParameters Parameters;
-
-        /** Type of list/vector of Lotz parameters. */
-        typedef std::vector< Parameters > ParametersVector;
-
         /* STATIC STORAGE */
         static const std::string label;
 
@@ -72,14 +66,7 @@ namespace chimp {
         /** The log information for this particular interaction. */
         detail::LogParameters log;
 
-	/** Table of cross-section data. */
-        ParametersVector parameters;
 
-	/** Relative velocity **/
-	double g;
-
-	/** Resulting cross-section **/
-	double sigma;
 
 
         /* MEMBER FUNCTIONS */
