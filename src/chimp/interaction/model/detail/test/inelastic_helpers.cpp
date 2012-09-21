@@ -28,6 +28,14 @@
 
 
 #include <chimp/interaction/model/detail/inelastic_helpers.h>
+#include <chimp/accessors.h>
+#include <chimp/property/mass.h>
+#include <chimp/property/charge.h>
+#include <chimp/interaction/ReducedMass.h>
+
+#include <xylose/Vector.h>
+
+#include <physical/calc/Driver.h>
 
 #include <boost/test/unit_test.hpp>
 
@@ -296,6 +304,118 @@ BOOST_AUTO_TEST_SUITE( inelastic_helpers_tests ); // {
         "1\t3\tNOOP\n"
       );
     }
+  }
+
+
+  /* simple mimick of DB class */
+  namespace {
+    using xylose::Vector;
+    using xylose::V3;
+
+    struct MyParticle {
+      typedef Vector<double,3u> V;
+      V x;
+      V v;
+      float weight;
+      int species;
+
+      MyParticle( const V & x = 0.0,
+                  const V & v = 0.0,
+                  const float weight = 1.f,
+                  const int & species = 0 )
+      : x(x), v(v), weight(weight), species(species) { }
+    };
+
+    struct DB {
+      struct options {
+        typedef MyParticle Particle;
+      };
+      struct property : chimp::property::mass, chimp::property::charge { };
+      property operator[](const int & i) const { return property(); }
+    };
+
+    using chimp::accessors::particle::setPosition;
+    using chimp::accessors::particle::setVelocity;
+    using chimp::accessors::particle::setWeight;
+    using chimp::accessors::particle::position;
+    using chimp::accessors::particle::velocity;
+    using chimp::accessors::particle::weight;
+    using chimp::accessors::particle::species;
+
+    using runtime::physical::calc::Driver;
+    void parse( const std::string & expr,
+                Driver::ExpressionVector & expressions ) {
+
+      Driver & calc = Driver::instance();
+      unsigned int cesz = calc.expressions.size();
+      calc.parse( expr );
+
+      Driver::ExpressionVector::iterator beg = calc.expressions.begin() + cesz,
+                                         end = calc.expressions.end();
+      expressions.insert( expressions.end(), beg, end );
+      // clean up
+      calc.expressions.erase( beg, end );
+    }
+  }
+
+  BOOST_AUTO_TEST_CASE( InteractionHelpers ) {
+    ////// adding the helpers...       //////
+    typedef cimd::InElasticExpressions<DB> Stuff;
+    Stuff::addInteractionHelpers();
+
+
+    Driver::ExpressionVector expressions;
+    ////// building cached expressions //////
+    parse( "P(0,X)", expressions );
+    parse( "setPosition(P(0,X)*P(0,Y),P(1,Y),P(0,Z))", expressions );
+    parse( "setVelocity(P(0,X)*P(0,VY),P(1,VY),P(0,VZ))", expressions );
+    parse( "setPosition(CM(0), CM(1), CM(2))", expressions );
+    parse( "setPosition(CQ(0), CQ(1), CQ(2))", expressions );
+
+    ////// evaluate some expressions...//////
+    MyParticle r1, part1(V3(1,2,3),V3(4,5,6),1,0), part2(V3(7,8,9),V3(10,11,12),1,1);
+    cimd::ParticleFactory::Scratch scratch(
+      std::vector< cimd::ParticleFactory >(),
+      part1, part2,
+      chimp::interaction::ReducedMass(1,2), /* mu (mass) */
+      chimp::interaction::ReducedMass(1,4), /* muQ (charge) */
+      true, /* force stash of cm */
+      true  /* force stash of cq */
+    );
+    DB db;
+
+    Stuff & stuff = Stuff::instance();
+    stuff.target = & r1;
+    stuff.p0 = & part1;
+    stuff.p1 = & part2;
+    stuff.db_ptr = & db;
+    stuff.scratch = & scratch;
+
+    BOOST_CHECK_EQUAL( r1.x[0], 0.0 );
+    BOOST_CHECK_EQUAL( r1.x[1], 0.0 );
+    BOOST_CHECK_EQUAL( r1.x[2], 0.0 );
+
+    expressions[0]->evaluate();
+    expressions[1]->evaluate();
+    expressions[2]->evaluate();
+
+    BOOST_CHECK_EQUAL( r1.x[0], 2.0 );
+    BOOST_CHECK_EQUAL( r1.x[1], 8.0 );
+    BOOST_CHECK_EQUAL( r1.x[2], 3.0 );
+
+    BOOST_CHECK_EQUAL( r1.v[0], 5.0 );
+    BOOST_CHECK_EQUAL( r1.v[1], 11.0 );
+    BOOST_CHECK_EQUAL( r1.v[2], 6.0 );
+
+    expressions[3]->evaluate(); // CM tests
+    BOOST_CHECK_CLOSE( r1.x[0], 5.0, 1e-10 );
+    BOOST_CHECK_CLOSE( r1.x[1], 6.0, 1e-10 );
+    BOOST_CHECK_CLOSE( r1.x[2], 7.0, 1e-10 );
+
+    expressions[4]->evaluate(); // CQ tests
+    BOOST_CHECK_CLOSE( r1.x[0], 5.8, 1e-10 );
+    BOOST_CHECK_CLOSE( r1.x[1], 6.8, 1e-10 );
+    BOOST_CHECK_CLOSE( r1.x[2], 7.8, 1e-10 );
   }
 
 BOOST_AUTO_TEST_SUITE_END(); // }

@@ -19,13 +19,63 @@
           Example of how to explicitly set the source particles and optional
           operations to perform for an inelastic interaction.
 
-          <Out><T from="0" ops="setPosition(.5*P(0,X)+.5*P(0,CHARGE)/P(1,CHARGE)*P(0,X), P(0,Y), P(0,Z))" ><n>2</n> <P>87Rb</P></T></Out>
+          <Out><T from="0" ops="setPosition(.5*P(0,X)+.5*P(0,CHARGE)/P(1,CHARGE)*P(0,X), P(0,Y), P(0,Z)*CM(0))" ><n>2</n> <P>87Rb</P></T></Out>
 
           from=   The index of the source particle.
           If <n/> > 1, then  from= and ops= apply to all 'n' output particles.
           If you want from= to apply differently to all 'n' particles of a
           single term, then split the term up.
 
+          functions that can be used nearly everywhere:
+            abs  ( <value> )
+            acos ( <value> )
+            acosh( <value> )
+            asin ( <value> )
+            asinh( <value> )
+            atan ( <value> )
+            atanh( <value> )
+            ceil ( <value> )
+            conj ( <value> )
+            cos  ( <value> )
+            cosh ( <value> )
+            erf  ( <value> )
+            erfc ( <value> )
+            exp  ( <value> )
+            floor( <value> )
+            gamma( <value> )
+            imag ( <value> )
+            ln   ( <value> )
+            log10( <value> )
+            max  ( <value>, <value> )
+            min  ( <value>, <value> )
+            new_unit( <string> )
+            real ( <value> )
+            sin  ( <value> )
+            sinc ( <value> )
+            sinh ( <value> )
+            sqrt ( <value> )
+            tan  ( <value> )
+            tanh ( <value> )
+
+          Additional functions that can be used inside the 'ops' parameter:
+            setPosition( <x>, <y>, <z )
+            setVelocity( <vx>, <vy>, <vz> )
+            setWeight( <w> )
+            P(<n>, X || Y || Z):
+              obtain the x, y, or z position of the nth source particle
+            P(<n>, VX || VY || VZ):
+              obtain the x, y, or z velocity of the nth source particle
+            P(<n>, WEIGHT):
+              obtain the weight of the nth source particle
+            P(<n>, SPECIES_CHARGE):
+              obtain the charge of the nth source particle species
+              the total charge is weight * species_charge
+            CQ( X || Y || Z )
+              obtain the x, y, or z component of the pre-calculated center
+              of mass position
+            CM( X || Y || Z )
+              obtain the x, y, or z component of the pre-calculated center
+              of charge position
         -->
 
         <Interaction>

@@ -73,6 +73,9 @@ namespace chimp {
         using InElastic<options>::muQ;
         using InElastic<options>::factories;
         using InElastic<options>::expressions;
+        using InElastic<options>::db_ptr;
+        using InElastic<options>::force_cm_calc;
+        using InElastic<options>::force_cq_calc;
 
         /** Reduced mass of product particles p1 and (p2+p3). */
         ReducedMass mu_1;
@@ -158,7 +161,9 @@ namespace chimp {
           /* Create products based on reactants. */
           detail::ParticleFactory::Scratch scratch( factories,
                                                     part1, part2,
-                                                    mu, muQ );
+                                                    mu, muQ,
+                                                    force_cm_calc,
+                                                    force_cq_calc );
           /* ensure that there is enough room for both so that products.back()
            * doesn't become invalid after adding another. */
           products.reserve( products.size() + 3u );
@@ -247,9 +252,9 @@ namespace chimp {
           setVelocity(r3, VelCM - ( mu_2.over_m2 * mu_2_scale * VelRelPost ) );
 
           /* now process any specialized commands inside expression parser. */
-          Process()( expressions[0], r1, part1, part2 );
-          Process()( expressions[1], r2, part1, part2 );
-          Process()( expressions[2], r3, part1, part2 );
+          Process()( expressions[0], r1, part1, part2, *db_ptr, scratch );
+          Process()( expressions[1], r2, part1, part2, *db_ptr, scratch );
+          Process()( expressions[2], r3, part1, part2, *db_ptr, scratch );
         }
       };
 

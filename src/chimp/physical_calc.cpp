@@ -26,10 +26,12 @@
  */
 
 #include <chimp/physical_calc.h>
+#include <chimp/interaction/model/detail/inelastic_helpers.h>
 
 #include <physical/calc/Driver.h>
 
 namespace chimp {
+
   void prepareCalculator( const xml::Doc & doc ) {
     /* prepare infix units calculator. */
     using runtime::physical::calc::Driver;

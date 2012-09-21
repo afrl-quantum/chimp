@@ -32,12 +32,14 @@
 #include <chimp/interaction/Term.h>
 #include <chimp/interaction/ReducedMass.h>
 
-#include <xylose/xml/Doc.h>
 #include <xylose/Vector.h>
+#include <xylose/xml/Doc.h>
+#include <xylose/strutil.h>
 
 #include <physical/calc/Driver.h>
 
 #include <vector>
+#include <sstream>
 
 namespace chimp {
   namespace xml = xylose::xml;
@@ -88,7 +90,7 @@ namespace chimp {
           enum Op {
             NOOP, // No extra operations
             CM, // set position to original center of mass
-            CQ  // set possition to original center of charge
+            CQ  // set position to original center of charge
           };
 
           /** Scratch space for things needed by ParticleFactory::create. */
@@ -102,9 +104,11 @@ namespace chimp {
                      const Particle & p1,
                      const Particle & p2,
                      const ReducedMass & mu,
-                     const ReducedMass & muQ ) {
-              bool yes_cm = false;
-              bool yes_cq = false;
+                     const ReducedMass & muQ,
+                     const bool & force_cm_calc,
+                     const bool & force_cq_calc ) {
+              bool yes_cm = force_cm_calc;
+              bool yes_cq = force_cq_calc;
               typedef std::vector< ParticleFactory >::const_iterator FIter;
               for ( FIter i = v.begin(), e = v.end(); i != e; ++i ) {
                 yes_cm |= i->op == CM;
@@ -193,6 +197,216 @@ namespace chimp {
 
 
 
+        template < typename DB >
+        struct InElasticExpressions {
+          /* TYPEDEF  */
+          typedef runtime::physical::Quantity Quantity;
+          typedef runtime::physical::calc::symbol_error symbol_error;
+          struct value_type {
+            enum VALUE_TYPE {
+              X=0, Y=1, Z=2,
+              VX=3, VY=4, VZ=5,
+              WEIGHT,
+              SPECIES_CHARGE
+            };
+          };
+          typedef typename DB::options::Particle Particle;
+          typedef std::string string;
+
+
+          /* MEMBER STORAGE */
+          Particle * target;
+          const Particle * p0;
+          const Particle * p1;
+          const DB * db_ptr;
+          const ParticleFactory::Scratch * scratch;
+
+
+          /* MEMBER FUNCTIONS */
+          InElasticExpressions()
+            : target(NULL), p0(NULL), p1(NULL), db_ptr(NULL), scratch(NULL) { }
+
+
+
+          /* STATIC MEMBER FUNCTIONS */
+          static InElasticExpressions & instance() {
+            static InElasticExpressions ins;
+            return ins;
+          }
+
+          static Quantity QsetVelocity( const std::vector<Quantity> & v ) {
+            const char * me = "chimp::interaction::model::detail::setVelocity";
+            if ( v.size() != 3u )
+              throw symbol_error( string(me)+":  expected 3 arguments");
+            if ( !instance().target )
+              throw symbol_error( string(me)+":  target particle address not set");
+
+            setVelocity( *instance().target,
+                          xylose::V3( v[0].getCoeff<double>(),
+                                      v[1].getCoeff<double>(),
+                                      v[2].getCoeff<double>() ) );
+            return Quantity(1.0);
+          }
+
+          static Quantity QsetPosition( const std::vector<Quantity> & x ) {
+            const char * me = "chimp::interaction::model::detail::setPosition";
+            if ( x.size() != 3u )
+              throw symbol_error( string(me)+":  expected 3 arguments");
+            if ( !instance().target )
+              throw symbol_error(
+                string(me)+":  target particle address not set"
+               );
+
+            setPosition( *instance().target,
+                          xylose::V3( x[0].getCoeff<double>(),
+                                      x[1].getCoeff<double>(),
+                                      x[2].getCoeff<double>() ) );
+            return Quantity(1.0);
+          }
+
+          static Quantity QsetWeight( const Quantity & W ) {
+            const char * me = "chimp::interaction::model::detail::setWeight";
+            if ( !instance().target )
+              throw symbol_error(
+                string(me)+":  target particle address not set"
+              );
+
+            setWeight( *instance().target, W.getCoeff<double>() );
+            return Quantity(1.0);
+          }
+
+          /** Obtain all sorts of information pertaining to a source particle */
+          static Quantity QP( const Quantity & particle_indx,
+                              const Quantity & requested_value_type ) {
+            const char * me = "chimp::interaction::model::detail::P";
+            const InElasticExpressions & stuff = instance();
+            const Particle * p = NULL;
+
+            switch ( particle_indx.getCoeff<int>() ) {
+              case 0:
+                p = stuff.p0;
+                break;
+              case 1:
+                p = stuff.p1;
+                break;
+              default:
+                throw symbol_error(
+                  string(me) + ":  "
+                  "'ops' expression P(n,item) only currently for 2 source "
+                  "particles" );
+            }
+
+            if ( !p )
+              // something better to do on failure?
+              throw symbol_error( string(me)+":  source particle(s) address not set" );
+
+            enum value_type::VALUE_TYPE request
+              = requested_value_type.getCoeff<enum value_type::VALUE_TYPE>();
+
+            using chimp::property::charge;
+            switch ( request ) {
+              case value_type::X:
+              case value_type::Y:
+              case value_type::Z:
+                return Quantity( position(*p)[request] );
+
+              case value_type::VX:
+              case value_type::VY:
+              case value_type::VZ:
+                return Quantity( velocity(*p)[request-3u] );
+
+              case value_type::WEIGHT:
+                return Quantity( weight(*p) );
+
+              case value_type::SPECIES_CHARGE:
+                return Quantity( (*stuff.db_ptr)[species(*p)].charge::value );
+
+              default:
+                throw symbol_error(
+                  "chimp::interaction::model::detail::P:  "
+                  "'ops' expression P(n,item) used an invalid value for 'item'."
+                );
+            }
+          }
+
+          /** Return a component of the center of mass */
+          static Quantity QCM( const Quantity & indx ) {
+            const char * me = "chimp::interaction::model::detail::CM";
+            const InElasticExpressions & stuff = instance();
+            if ( !stuff.scratch )
+              throw symbol_error( string(me)+":  scratch space address not set");
+
+            switch ( indx.getCoeff<int>() ) {
+              case 0:
+                return Quantity( stuff.scratch->cm[0] );
+              case 1:
+                return Quantity( stuff.scratch->cm[1] );
+              case 2:
+                return Quantity( stuff.scratch->cm[2] );
+              default:
+                throw symbol_error(
+                  string(me) + "(n):  n must be 0,1,2"
+                  "; was " + xylose::to_string(indx.getCoeff<int>()) );
+            }
+          }
+
+
+          /** Return a component of the center of charge */
+          static Quantity QCQ( const Quantity & indx ) {
+            const char * me = "chimp::interaction::model::detail::CQ";
+            const InElasticExpressions & stuff = instance();
+            if ( !stuff.scratch )
+              throw symbol_error( string(me)+":  scratch space address not set");
+
+            switch ( indx.getCoeff<int>() ) {
+              case 0:
+                return Quantity( stuff.scratch->cq[0] );
+              case 1:
+                return Quantity( stuff.scratch->cq[1] );
+              case 2:
+                return Quantity( stuff.scratch->cq[2] );
+              default:
+                throw symbol_error(
+                  string(me) + "(n):  n must be 0,1,2"
+                  "; was " + xylose::to_string(indx.getCoeff<int>()) );
+            }
+          }
+
+
+          static void addInteractionHelpers() {
+            static bool added_helpers = false;
+
+            if ( added_helpers ) {
+              return;
+            }
+
+            using runtime::physical::calc::Driver;
+            Driver & calc = Driver::instance();
+
+            typedef value_type vt;
+            typedef Quantity Q;
+            typedef double D;
+            calc.symbols["setPosition"]     = &QsetPosition;
+            calc.symbols["setVelocity"]     = &QsetVelocity;
+            calc.symbols["setWeight"]       = &QsetWeight;
+            calc.symbols["P"]               = &QP;
+            calc.symbols["CM"]              = &QCM;
+            calc.symbols["CQ"]              = &QCQ;
+            calc.symbols["X"]               = Q(D(vt::X));
+            calc.symbols["Y"]               = Q(D(vt::Y));
+            calc.symbols["Z"]               = Q(D(vt::Z));
+            calc.symbols["VX"]              = Q(D(vt::VX));
+            calc.symbols["VY"]              = Q(D(vt::VY));
+            calc.symbols["VZ"]              = Q(D(vt::VZ));
+            calc.symbols["WEIGHT"]          = Q(D(vt::WEIGHT));
+            calc.symbols["SPECIES_CHARGE"]  = Q(D(vt::SPECIES_CHARGE));
+            /* only do this once */
+            added_helpers = true;
+          }
+
+        };
+
+
         template < typename Eq,
                    typename DB >
         inline void setFactories( std::vector< ParticleFactory > & factories,
@@ -239,16 +453,19 @@ namespace chimp {
               if ( i->product_ops[ni].size() == 0u )
                 expressions.push_back( ExpressionVector() );
               else {
-                ExpressionVector::iterator beg = calc.expressions.end();
+                InElasticExpressions<DB>::addInteractionHelpers();
+
+                unsigned int cesz = calc.expressions.size();
 
                 // create abstract expression tree and save it
                 calc.parse( i->product_ops[ni] );
-                expressions.push_back(
-                  ExpressionVector( beg, calc.expressions.end() )
-                );
+
+                ExpressionVector::iterator beg = calc.expressions.begin()+cesz,
+                                           end = calc.expressions.end();
+                expressions.push_back( ExpressionVector( beg, end ) );
 
                 // clean up
-                calc.expressions.erase( beg, calc.expressions.end() );
+                calc.expressions.erase( beg, end );
               }
             }//for
           }//for
@@ -264,39 +481,49 @@ namespace chimp {
         }
 
 
-        template < typename Particle >
-        struct InElasticExpressions {
-          Particle * target;
-          const Particle * p0;
-          const Particle * p1;
-
-          InElasticExpressions() : target(NULL), p0(NULL), p1(NULL) { }
-
-          static InElasticExpressions & instance() {
-            static InElasticExpressions ins;
-            return ins;
-          }
-        };
 
 
-        /** Process all post-collision expressions--if they exist. */
+        inline bool hasToken( const std::string & token,
+                              const std::vector< ExpressionVector > & eV ) {
+          typedef std::vector< ExpressionVector >::const_iterator EVVIter;
+          typedef ExpressionVector::const_iterator EVIter;
+          std::ostringstream ostr;
+          for ( EVVIter i = eV.begin(), ie = eV.end(); i != ie; ++i )
+            for ( EVIter j = i->begin(), je = i->end(); j != je; ++j )
+              (*j)->print(ostr);
+
+          return ostr.str().find(token) != std::string::npos;
+        }
+
+
+
+
+        /** Process all post-collision expressions--if they exist.
+         * operator() of this functor is _NOT_ reentrant since the global
+         * calculator is used.  Perhaps there ought to be a lock on the
+         * calculator(?)
+         */
         template < bool >
         struct Process;
 
         template<>
         struct Process<true> {
-          template < typename Particle >
+          template < typename Particle, typename DB >
           inline void operator() ( const ExpressionVector & expr,
                                    Particle & r1,
                                    const Particle & part1,
-                                   const Particle & part2 ) const {
+                                   const Particle & part2,
+                                   const DB & db,
+                                   const ParticleFactory::Scratch & scratch ) const {
 
             /* Set the global Particle info. */
-            typedef InElasticExpressions< Particle > Stuff;
+            typedef InElasticExpressions< DB > Stuff;
             Stuff & stuff = Stuff::instance();
             stuff.target = & r1;
             stuff.p0 = & part1;
             stuff.p1 = & part2;
+            stuff.db_ptr = & db;
+            stuff.scratch = & scratch;
 
             for ( ExpressionVector::const_iterator i = expr.begin(),
                                                  end = expr.end();
@@ -308,11 +535,13 @@ namespace chimp {
 
         template<>
         struct Process<false> {
-          template < typename Particle >
+          template < typename Particle, typename DB, typename Scratch >
           inline void operator() ( const ExpressionVector & expr,
                                    Particle & r1,
                                    const Particle & part1,
-                                   const Particle & part2 ) const { }
+                                   const Particle & part2,
+                                   const DB & db,
+                                   const Scratch & scratch ) const { }
         };
 
       } /* namespace chimp::interaction::model::detail */

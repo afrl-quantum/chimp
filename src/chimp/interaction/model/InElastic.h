@@ -71,12 +71,22 @@ namespace chimp {
           runtime::physical::calc::Driver::ExpressionVector
         > expressions;
 
+        /** A constant pointer to the database. */
+        const RuntimeDB<options> * db_ptr;
+
+        /** Boolean to indicate that the center of mass should be calculated and
+         * stashed for use in 'ops' expressions. */
+        bool force_cm_calc;
+
+        /** Boolean to indicate that the center of charge should be calculated and
+         * stashed for use in 'ops' expressions. */
+        bool force_cq_calc;
 
 
         /* MEMBER FUNCTIONS */
         /** Default constructor sets bogus values--mostly useful for loading
          * with InElastic::load. */
-        InElastic() { }
+        InElastic() : db_ptr(NULL) { }
 
         /** Constructor to set up factories and expressions. */
         InElastic( const xml::Context & x,
@@ -84,8 +94,11 @@ namespace chimp {
                    const RuntimeDB<options> & db )
           : mu( eq.reducedMass ),
             muQ( db[eq.A.species].chimp::property::charge::value,
-                 db[eq.B.species].chimp::property::charge::value ) {
+                 db[eq.B.species].chimp::property::charge::value ),
+            db_ptr(&db) {
           detail::setFactories( factories, expressions, x, eq, db );
+          force_cm_calc = detail::hasToken( "CM()", expressions );
+          force_cq_calc = detail::hasToken( "CQ()", expressions );
         }
 
         /** Virtual NO-OP destructor. */
