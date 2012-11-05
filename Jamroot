@@ -73,14 +73,14 @@ project /chimp
         <library>/boost//headers
         $(xml2-features)
         <define>CHIMP_PARTICLEDB_XML=$(CHIMP_PARTICLEDB_XML)
-        <define>CHIMP_VERSION=\\\"$(VERSION)\\\"
+        <define>CHIMP_VERSION=$(VERSION)
     : usage-requirements
         <include>src
         <library>/xylose//headers
         <library>/boost//headers
         $(xml2-features)
         <define>CHIMP_PARTICLEDB_XML=$(CHIMP_PARTICLEDB_XML)
-        <define>CHIMP_VERSION=\\\"$(VERSION)\\\"
+        <define>CHIMP_VERSION=$(VERSION)
     ;
 
 alias headers : : : : <include>src ;
