@@ -1,0 +1,9 @@
+CrossSection/all/getCrossSection
+CrossSection/single-input-equation/getCrossSection
+CrossSection/xpath-access/testCrossSection
+Properties/simple/getProperties
+Properties/specify-properties/getProperties
+Properties/xpath-access/getProperties
+RuntimeDB/testRuntimeDB
+simtest/simtest
+xmldb/testXML
