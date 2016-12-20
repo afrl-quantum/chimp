@@ -75,6 +75,12 @@ namespace simtest {
   }
 
 
+  template < typename Tw >
+  inline void setWeight( Particle & p, const Tw & w ) {
+    throw std::runtime_error("Cannot change weight of this particle");
+  }
+
+
   std::ostream & operator<< (std::ostream & out, const Particle & p) {
     return out << "{x: (" << p.x[0] << ", " << p.x[1] << ", " << p.x[2] << "), "
                    "v: (" << p.v[0] << ", " << p.v[1] << ", " << p.v[2] << "), "
