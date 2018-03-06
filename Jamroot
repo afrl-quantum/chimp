@@ -62,7 +62,7 @@ constant VERSION : [ SHELL "printf `cd $(TOP); git describe --tags 2> /dev/null`
 local xml2-features = [ mpi.cmdline_to_features [ SHELL "printf '%s ' compiler `xml2-config --cflags --libs`" ] ] ;
 
 # root-project loads boost and others...
-use-project /root-project : ../ ;
+#use-project /root-project : ../ ;
 
 path-constant CHIMP_PARTICLEDB_XML : $(TOP)/data/particledb.xml ;
 
