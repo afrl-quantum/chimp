@@ -1,6 +1,15 @@
 echo "" ;
-echo "" ;
-echo "After building testXML, do  './testXML xpath-query'" ;
+echo "examples/xmldb:  Demonstrate various XMl queries on the Chimp database" ;
+echo "  After building, do  './testXML xpath-query'" ;
+echo "  Examples:" ;
+echo "     ./testXML \"//Interaction[cross_section/@model='vhs']\"" ;
+echo "        Lists all the interactions with vhs cross section models." ;
+echo "     ./testXML \"//Interaction[cross_section/@model='data']\"" ;
+echo "        Lists all the interactions with emperical cross section data." ;
+echo "     ./testXML \"//Particle/@name\"" ;
+echo "        Lists the names of all known particles. " ;
+echo "     ./testXML \"//Particle[@name='87Rb']/mass\"" ;
+echo "        Shows the mass of 87Rb. " ;
 echo "" ;
 echo "" ;
 echo "" ;
