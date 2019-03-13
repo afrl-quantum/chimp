@@ -34,6 +34,8 @@ namespace chimp {
     /** Simple routine for selecting a random pair of particles from two (or
      * one) random access containers, such as std::vector<>.
      *
+     * @tparam allowSelfSelections
+     *    Allow pair selections with the same particles as first/second.
      * @tparam RandomAccessParticleContainer
      *    The type of random access container.
      * @tparam RNG
@@ -50,6 +52,7 @@ namespace chimp {
      * @see xylose::random for compatible pseudo-random number generators.
      */
     template <
+      bool allowSelfSelections = false,
       typename RandomAccessParticleContainer,
       typename RNG
     >
@@ -68,12 +71,19 @@ namespace chimp {
       /* First pick pA */
       PIter pA = Aparticles.begin()
                + static_cast<int>( Asz * rng.randExc() );
-      PIter pB = pA;
-      PIter Bbegin = Bparticles.begin();
+      PIter pB;
 
-      /* now we pick pB */
-      while ( pA == pB )
-        pB = Bbegin + static_cast<int>( Bsz * rng.randExc() );
+      if (allowSelfSelections) {
+        pB = Bparticles.begin()
+           + static_cast<int>( Bsz * rng.randExc() );
+      } else {
+        PIter Bbegin = Bparticles.begin();
+        pB = pA;
+
+        /* now we pick pB */
+        while ( pA == pB )
+          pB = Bbegin + static_cast<int>( Bsz * rng.randExc() );
+      }
 
       return std::make_pair(pA, pB);
     }
