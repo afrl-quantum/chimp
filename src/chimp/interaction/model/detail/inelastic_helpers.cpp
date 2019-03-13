@@ -63,7 +63,6 @@ namespace chimp {
                                      const std::vector< MassChargeTuple >
                                            & massChargeOut ) {
           using std::pow;
-          typedef std::vector< MassChargeTuple >::iterator MCIter;
           const double inf = std::numeric_limits<double>::infinity();
           double CM = 0.0;
           double mass_total = 0.0;

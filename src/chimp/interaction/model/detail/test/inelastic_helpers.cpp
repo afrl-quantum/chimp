@@ -79,7 +79,7 @@ BOOST_AUTO_TEST_SUITE( inelastic_helpers_tests ); // {
     typedef cimd::ParticleFactory PF;
     typedef cimd::MassChargeTuple MCT;
 
-    { BOOST_MESSAGE(
+    { BOOST_TEST_MESSAGE(
         "A + e^-  -->  A(^+) + 2 e^-, where A(^+) is really an A species"
       );
 
@@ -108,7 +108,7 @@ BOOST_AUTO_TEST_SUITE( inelastic_helpers_tests ); // {
       );
     }
 
-    { BOOST_MESSAGE( "A + e^-  -->  A^- + 2 e^-");
+    { BOOST_TEST_MESSAGE( "A + e^-  -->  A^- + 2 e^-");
       std::vector< PF > factories;
       std::vector< MCT > in, out;
 
@@ -134,7 +134,7 @@ BOOST_AUTO_TEST_SUITE( inelastic_helpers_tests ); // {
       );
     }
 
-    { BOOST_MESSAGE( "AB + e^-  -->  A^- + B (dissociative attachment)" );
+    { BOOST_TEST_MESSAGE( "AB + e^-  -->  A^- + B (dissociative attachment)" );
       std::vector< PF > factories;
       std::vector< MCT > in, out;
 
@@ -163,7 +163,7 @@ BOOST_AUTO_TEST_SUITE( inelastic_helpers_tests ); // {
       );
     }
 
-    { BOOST_MESSAGE( "A^+ + e^-  -->  A" );
+    { BOOST_TEST_MESSAGE( "A^+ + e^-  -->  A" );
       std::vector< PF > factories;
       std::vector< MCT > in, out;
 
@@ -185,7 +185,7 @@ BOOST_AUTO_TEST_SUITE( inelastic_helpers_tests ); // {
       );
     }
 
-    { BOOST_MESSAGE( "e^- + A  -->  A^-" );
+    { BOOST_TEST_MESSAGE( "e^- + A  -->  A^-" );
       std::vector< PF > factories;
       std::vector< MCT > in, out;
 
@@ -207,7 +207,7 @@ BOOST_AUTO_TEST_SUITE( inelastic_helpers_tests ); // {
       );
     }
 
-    { BOOST_MESSAGE( "A + B*  -->  A + B + K.E." );
+    { BOOST_TEST_MESSAGE( "A + B*  -->  A + B + K.E." );
       std::vector< PF > factories;
       std::vector< MCT > in, out;
 
@@ -231,7 +231,7 @@ BOOST_AUTO_TEST_SUITE( inelastic_helpers_tests ); // {
       );
     }
 
-    { BOOST_MESSAGE( "A^- + A  -->  A + A^- (charge exchange)" );
+    { BOOST_TEST_MESSAGE( "A^- + A  -->  A + A^- (charge exchange)" );
       std::vector< PF > factories;
       std::vector< MCT > in, out;
 
@@ -255,7 +255,7 @@ BOOST_AUTO_TEST_SUITE( inelastic_helpers_tests ); // {
       );
     }
 
-    { BOOST_MESSAGE( "e^- + A  -->  e^- + A*" );
+    { BOOST_TEST_MESSAGE( "e^- + A  -->  e^- + A*" );
       std::vector< PF > factories;
       std::vector< MCT > in, out;
 
@@ -279,7 +279,7 @@ BOOST_AUTO_TEST_SUITE( inelastic_helpers_tests ); // {
       );
     }
 
-    { BOOST_MESSAGE( "e^- + A2  -->  e^- + A + A*" );
+    { BOOST_TEST_MESSAGE( "e^- + A2  -->  e^- + A + A*" );
       std::vector< PF > factories;
       std::vector< MCT > in, out;
 
